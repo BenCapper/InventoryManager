@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InventoryManager">
         <activity
-            android:name=".main.MainActivity"
+            android:name=".activities.Home"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
