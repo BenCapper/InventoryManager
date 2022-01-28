@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/donateFragment"
+            android:icon="@drawable/ic_location"
+            android:title="@string/action_location" />
+        <item
+            android:id="@+id/reportFragment"
+            android:icon="@drawable/ic_stock"
+            android:title="@string/action_stock" />
+    </group>
+
+    <item android:title="@string/group_communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share"
+                android:title="@string/action_share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_send"
+                android:title="@string/action_send" />
+        </menu>
+    </item>
 </menu>
