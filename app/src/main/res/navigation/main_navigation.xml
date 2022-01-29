@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/buildingFragment"
-        android:name="org.wit.inventorymanager.BuildingFragment"
-        android:label="fragment_building"
+        android:name="org.wit.inventorymanager.fragments.BuildingFragment"
+        android:label="Location"
         tools:layout="@layout/fragment_building" >
         <action
-            android:id="@+id/action_buildingFragment_to_stockFragment"
-            app:destination="@id/stockFragment"
+            android:id="@+id/action_buildingFragment_to_buildingListFragment"
+            app:destination="@id/buildingListFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
@@ -21,4 +21,20 @@
         android:name="org.wit.inventorymanager.fragments.StockFragment"
         android:label="fragment_stock"
         tools:layout="@layout/fragment_stock" />
+    <fragment
+        android:id="@+id/buildingListFragment"
+        android:name="org.wit.inventorymanager.fragments.BuildingListFragment"
+        android:label="fragment_building_list"
+        tools:layout="@layout/fragment_building_list" >
+        <action
+            android:id="@+id/action_buildingListFragment_to_buildingFragment"
+            app:destination="@id/buildingFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_buildingListFragment_to_stockFragment"
+            app:destination="@id/stockFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
 </navigation>
