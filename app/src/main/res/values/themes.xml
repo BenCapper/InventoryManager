@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="Theme.InventoryManager" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/color_primary</item>
-        <item name="colorPrimaryVariant">@color/color_secondary</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/dark</item>
+        <item name="colorPrimaryVariant">@color/dark</item>
+        <item name="colorOnPrimary">@color/orange</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/color_secondary</item>
         <item name="colorOnSecondary">@color/black</item>
@@ -18,7 +18,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.InventoryManager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.InventoryManager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlNormal">@color/orange</item>"
+    </style>
 
     <style name="Theme.InventoryManager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

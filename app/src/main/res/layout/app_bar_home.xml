@@ -16,8 +16,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.InventoryManager.PopupOverlay" />
+            android:background="@color/dark"
+            app:navigationIcon="@drawable/ic_menu_orange"
+            app:itemIconTint="@color/orange"
+            app:titleTextColor="@color/orange" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -21,11 +21,12 @@
     <string name="select_building_image">Select Branch Image</string>
     <string name="change_building_image">Change Image</string>
     <string name="building_image">Branch Image</string>
-    <string name="button_location">Set Location</string>
+    <string name="button_location">Location</string>
     <string name="title_activity_maps">Map</string>
     <string name="menu_deleteBuilding">Delete</string>
     <string name="edit">Edit</string>
     <string name="select">Select</string>
+    <string name="img_choose">Choose Image</string>
 
     <string name="button_addStock">Add Item</string>
     <string name="hint_stockName">Item Name</string>
@@ -63,4 +64,19 @@
     <string name="nav_header_title">Donation</string>
     <string name="nav_header_subtitle">voteforhomer@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+
+    <string name="buildingTitle">Locations</string>
+    <string name="buildingSubtitle">i hope...</string>
+    <string name="buildingButton">Build</string>
+    <string name="paypal">PayPal</string>
+    <string name="direct">Direct</string>
+    <string name="amount">Amount</string>
+    <string name="total">Total so Far</string>
+    <string name="totalSoFar">$ Total</string>
+    <string name="stockTitle">Stock Report</string>
+    <string name="defaultAmount">00</string>
+    <string name="defaultMethod">N/A</string>
+    <string name="enter_amount">Enter Amount</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
