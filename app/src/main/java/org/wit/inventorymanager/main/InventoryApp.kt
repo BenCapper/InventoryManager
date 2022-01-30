@@ -17,8 +17,8 @@ class InventoryApp : Application() {
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
-        //builds = FirebaseBuildings()
-        //stocks = FirebaseStock()
+        builds = FirebaseBuildings()
+        stocks = FirebaseStock()
         Timber.i("Inventory Manager Started")
     }
 }

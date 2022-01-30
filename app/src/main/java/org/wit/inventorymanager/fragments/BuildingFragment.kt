@@ -6,15 +6,21 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
+import timber.log.Timber
+import java.util.*
 
 lateinit var app: InventoryApp
 private var _fragBinding: FragmentBuildingBinding? = null
 private val fragBinding get() = _fragBinding!!
 private var building = BuildingModel()
+
 
 
 class BuildingFragment : Fragment() {
@@ -33,7 +39,7 @@ class BuildingFragment : Fragment() {
         _fragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
         val root = fragBinding.root
         activity?.title = getString(R.string.action_location)
-
+        setButtonListener(fragBinding)
         return root
     }
 
@@ -48,8 +54,11 @@ class BuildingFragment : Fragment() {
 
     private fun setButtonListener(layout: FragmentBuildingBinding) {
         layout.btnAdd.setOnClickListener {
+            building.id = Random().nextLong()
             building.name = layout.buildingName.text.toString()
             building.address = layout.buildingAddress.text.toString()
+            app.builds.create(building)
+            Timber.i(building.toString())
         }
     }
 
