@@ -1,12 +1,16 @@
 package org.wit.inventorymanager.models
 
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import timber.log.Timber
 import java.util.*
 
 class FirebaseBuildings : BuildingStore{
 
     var buildings = mutableListOf<BuildingModel>()
-    private val db = FirebaseDatabase.getInstance().reference.child("Building")
+    val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
+        .getReference("Building")
 
 
     override fun findAll(): MutableList<BuildingModel> {
@@ -14,11 +18,9 @@ class FirebaseBuildings : BuildingStore{
     }
 
 
-    fun generateRandomBuildId(): Long {
-        return Random().nextLong()
-    }
     override fun create(building: BuildingModel) {
         db.child(building.id.toString()).setValue(building)
+        Timber.i(db.toString())
     }
 
 
