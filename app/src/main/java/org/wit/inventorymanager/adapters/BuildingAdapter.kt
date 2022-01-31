@@ -29,7 +29,7 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>)
         fun bind(building: BuildingModel) {
             binding.buildingName.text = building.name
             binding.address.text= building.address
-            binding.imageIcon.setImageResource(R.mipmap.ic_launcher_round)
+            //binding.imageIcon.setImageResource(R.mipmap.ic_launcher_round)
         }
     }
 }
