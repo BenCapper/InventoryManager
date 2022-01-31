@@ -14,7 +14,7 @@
     <string name="hint_buildingName">Branch Name</string>
     <string name="hint_buildingAddress">Branch Address</string>
     <string name="menu_addBuilding">Add</string>
-    <string name="menu_cancelBuilding">Cancel</string>
+    <string name="menu_building_new">New</string>
     <string name="enter_building_name">Enter the Branch Name</string>
     <string name="save_building">Save Branch</string>
     <string name="button_addImage">Add Image</string>
