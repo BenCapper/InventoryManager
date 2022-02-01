@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".fragments.BuildingFragment">
 
+    <ImageView
+        android:id="@+id/buildingImage"
+        android:layout_width="326dp"
+        android:layout_height="169dp"
+        android:contentDescription="@string/img_choose"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.457"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buildingLocation"
+        app:layout_constraintVertical_bias="0.237"
+        app:srcCompat="@color/cardview_shadow_end_color" />
+
     <EditText
         android:id="@+id/buildingAddress"
         android:layout_width="255dp"
@@ -56,10 +69,10 @@
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.888"
+        app:layout_constraintHorizontal_bias="0.943"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.389" />
+        app:layout_constraintVertical_bias="0.499" />
 
     <Button
         android:id="@+id/chooseImage"
@@ -73,10 +86,10 @@
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintHorizontal_bias="0.056"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.389" />
+        app:layout_constraintVertical_bias="0.499" />
 
     <EditText
         android:id="@+id/buildingName"
@@ -99,16 +112,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.156" />
 
-    <ImageView
-        android:id="@+id/buildingImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/img_choose"
+    <EditText
+        android:id="@+id/editTextPhone"
+        android:layout_width="258dp"
+        android:layout_height="48dp"
+        android:backgroundTint="@color/orange"
+        android:ems="10"
+        android:hint="@string/hint_buildingPhone"
+        android:inputType="phone"
+        android:textColor="@color/orange"
+        android:textColorHint="@color/d_grey"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.104"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499"
-        app:srcCompat="@color/cardview_shadow_end_color" />
+        app:layout_constraintVertical_bias="0.36" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package org.wit.inventorymanager.activities
 
+
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -17,7 +18,6 @@ class Home : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         homeBinding = HomeBinding.inflate(layoutInflater)
         setContentView(homeBinding.root)
         drawerLayout = homeBinding.drawerLayout
@@ -30,8 +30,10 @@ class Home : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.buildingFragment, R.id.buildingListFragment,), drawerLayout)
+            R.id.buildingListFragment, R.id.buildingFragment), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -1,14 +1,17 @@
 package org.wit.inventorymanager.fragments
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
+import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 import org.wit.inventorymanager.main.InventoryApp
@@ -17,6 +20,8 @@ import timber.log.Timber
 import java.util.*
 
 lateinit var app: InventoryApp
+
+
 private var _fragBinding: FragmentBuildingBinding? = null
 private val fragBinding get() = _fragBinding!!
 private var building = BuildingModel()
@@ -25,10 +30,13 @@ private var building = BuildingModel()
 
 class BuildingFragment : Fragment() {
 
+    private lateinit var uri: Uri
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         app = activity?.application as InventoryApp
         setHasOptionsMenu(true)
+
     }
 
     override fun onCreateView(
@@ -39,8 +47,19 @@ class BuildingFragment : Fragment() {
         _fragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
         val root = fragBinding.root
         activity?.title = getString(R.string.action_location)
+
+        val selectPictureLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
+            fragBinding.buildingImage.setImageURI(it)
+            uri = it
+        }
+        fragBinding.chooseImage.setOnClickListener{
+            selectPictureLauncher.launch("image/*")
+        }
         setButtonListener(fragBinding)
+
+
         return root
+
     }
 
     override fun onDestroyView() {
@@ -57,8 +76,20 @@ class BuildingFragment : Fragment() {
             building.id = Random().nextLong()
             building.name = layout.buildingName.text.toString()
             building.address = layout.buildingAddress.text.toString()
+            building.image = uri.toString()
             app.builds.create(building)
             Timber.i(building.toString())
+
+
+
+            val nextFrag = BuildingListFragment()
+
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(((view as ViewGroup).parent as View).id, nextFrag)
+                .addToBackStack(null)
+                .commit()
+
         }
     }
 
@@ -71,6 +102,8 @@ class BuildingFragment : Fragment() {
         return NavigationUI.onNavDestinationSelected(item,
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
+
+
     companion object {
         @JvmStatic
         fun newInstance() =
@@ -78,4 +111,5 @@ class BuildingFragment : Fragment() {
                 arguments = Bundle().apply {}
             }
     }
+
 }

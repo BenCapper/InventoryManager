@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.CardBuildingBinding
+import org.wit.inventorymanager.helpers.readImageFromPath
 import org.wit.inventorymanager.models.BuildingModel
 
 class BuildingAdapter constructor(private var buildings: List<BuildingModel>)
@@ -29,7 +30,7 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>)
         fun bind(building: BuildingModel) {
             binding.buildingName.text = building.name
             binding.address.text= building.address
-            //binding.imageIcon.setImageResource(R.mipmap.ic_launcher_round)
+            binding.imageIcon.setImageBitmap(readImageFromPath(itemView.context, building.image))
         }
     }
 }
