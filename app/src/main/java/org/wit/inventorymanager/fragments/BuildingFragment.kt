@@ -1,7 +1,13 @@
 package org.wit.inventorymanager.fragments
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -24,6 +30,8 @@ private var building = BuildingModel()
 
 class BuildingFragment : Fragment() {
 
+    private lateinit var uri: Uri
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         app = activity?.application as InventoryApp
@@ -39,7 +47,17 @@ class BuildingFragment : Fragment() {
         _fragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
         val root = fragBinding.root
         activity?.title = getString(R.string.action_location)
+
+        val selectPictureLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
+            fragBinding.buildingImage.setImageURI(it)
+            uri = it
+        }
+        fragBinding.chooseImage.setOnClickListener{
+            selectPictureLauncher.launch("image/*")
+        }
         setButtonListener(fragBinding)
+
+
         return root
 
     }
@@ -58,6 +76,7 @@ class BuildingFragment : Fragment() {
             building.id = Random().nextLong()
             building.name = layout.buildingName.text.toString()
             building.address = layout.buildingAddress.text.toString()
+            building.image = uri.toString()
             app.builds.create(building)
             Timber.i(building.toString())
 
@@ -71,8 +90,8 @@ class BuildingFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
 
-            }
         }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         //inflater.inflate(R.menu.menu_building, menu)
@@ -92,4 +111,5 @@ class BuildingFragment : Fragment() {
                 arguments = Bundle().apply {}
             }
     }
+
 }
