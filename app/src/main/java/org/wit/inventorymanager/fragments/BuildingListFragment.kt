@@ -39,12 +39,12 @@ class BuildingListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _fragBinding = FragmentBuildingListBinding.inflate(inflater, container, false)
         val root = fragBinding.root
         activity?.title = getString(R.string.action_location)
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
         fragBinding.recyclerView.adapter = BuildingAdapter(app.builds.findAll())
-
         return root
     }
 

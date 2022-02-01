@@ -2,13 +2,10 @@ package org.wit.inventorymanager.fragments
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 import org.wit.inventorymanager.main.InventoryApp
@@ -17,6 +14,8 @@ import timber.log.Timber
 import java.util.*
 
 lateinit var app: InventoryApp
+
+
 private var _fragBinding: FragmentBuildingBinding? = null
 private val fragBinding get() = _fragBinding!!
 private var building = BuildingModel()
@@ -29,6 +28,7 @@ class BuildingFragment : Fragment() {
         super.onCreate(savedInstanceState)
         app = activity?.application as InventoryApp
         setHasOptionsMenu(true)
+
     }
 
     override fun onCreateView(
@@ -41,6 +41,7 @@ class BuildingFragment : Fragment() {
         activity?.title = getString(R.string.action_location)
         setButtonListener(fragBinding)
         return root
+
     }
 
     override fun onDestroyView() {
@@ -59,8 +60,19 @@ class BuildingFragment : Fragment() {
             building.address = layout.buildingAddress.text.toString()
             app.builds.create(building)
             Timber.i(building.toString())
+
+
+
+            val nextFrag = BuildingListFragment()
+
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(((view as ViewGroup).parent as View).id, nextFrag)
+                .addToBackStack(null)
+                .commit()
+
+            }
         }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         //inflater.inflate(R.menu.menu_building, menu)
@@ -71,6 +83,8 @@ class BuildingFragment : Fragment() {
         return NavigationUI.onNavDestinationSelected(item,
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
+
+
     companion object {
         @JvmStatic
         fun newInstance() =
