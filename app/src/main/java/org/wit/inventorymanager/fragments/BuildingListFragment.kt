@@ -1,10 +1,15 @@
 package org.wit.inventorymanager.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Adapter
+import android.widget.BaseAdapter
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +29,7 @@ class BuildingListFragment : Fragment() {
     lateinit var app: InventoryApp
     private var _fragBinding: FragmentBuildingListBinding? = null
     private val fragBinding get() = _fragBinding!!
-    private lateinit var builds: MutableList<BuildingModel>
+    private lateinit var buildings: MutableList<BuildingModel>
     private val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
         .getReference("Building")
 
@@ -53,16 +58,15 @@ class BuildingListFragment : Fragment() {
         inflater.inflate(R.menu.menu_building, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return NavigationUI.onNavDestinationSelected(item,
-            requireView().findNavController()) || super.onOptionsItemSelected(item)
-    }
+        val id = item!!.itemId
+        if (id == R.id.item_building_new){
+            findNavController().navigate(R.id.action_buildingListFragment_to_buildingFragment)
+        }
+        return super.onOptionsItemSelected(item)
+}
 
-    private fun showBuildings (buildings: List<BuildingModel>) {
-        fragBinding.recyclerView.adapter = BuildingAdapter(buildings)
-        fragBinding.recyclerView.adapter?.notifyDataSetChanged()
-    }
+
 
     override fun onResume(){
         super.onResume()
@@ -72,15 +76,15 @@ class BuildingListFragment : Fragment() {
     private fun getBuildingData(){
         db.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                builds = mutableListOf()
+                buildings = mutableListOf()
                 if(snapshot.exists()){
                     for(buildSnap in snapshot.children){
                         val build = buildSnap.getValue(BuildingModel::class.java)
-                        builds.add(build!!)
-                        Timber.i(build.toString())
+                        buildings.add(build!!)
                     }
                 }
-                showBuildings(builds)
+                view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildings)
+                view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
