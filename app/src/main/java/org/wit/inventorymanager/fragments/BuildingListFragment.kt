@@ -17,6 +17,7 @@ import org.wit.inventorymanager.adapters.BuildingAdapter
 import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
+import timber.log.Timber
 
 class BuildingListFragment : Fragment() {
 
@@ -30,9 +31,9 @@ class BuildingListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getBuildingData()
         app = activity?.application as InventoryApp
         setHasOptionsMenu(true)
+
     }
 
     override fun onCreateView(
@@ -44,7 +45,7 @@ class BuildingListFragment : Fragment() {
         val root = fragBinding.root
         activity?.title = getString(R.string.action_location)
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
-        fragBinding.recyclerView.adapter = BuildingAdapter(app.builds.findAll())
+        getBuildingData()
         return root
     }
 
@@ -63,6 +64,11 @@ class BuildingListFragment : Fragment() {
         fragBinding.recyclerView.adapter?.notifyDataSetChanged()
     }
 
+    override fun onResume(){
+        super.onResume()
+        getBuildingData()
+    }
+
     private fun getBuildingData(){
         db.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -71,6 +77,7 @@ class BuildingListFragment : Fragment() {
                     for(buildSnap in snapshot.children){
                         val build = buildSnap.getValue(BuildingModel::class.java)
                         builds.add(build!!)
+                        Timber.i(build.toString())
                     }
                 }
                 showBuildings(builds)

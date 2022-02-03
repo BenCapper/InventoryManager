@@ -46,8 +46,8 @@ class BuildingFragment : Fragment() {
 
         _fragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
         val root = fragBinding.root
+        setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
-
         val selectPictureLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
             fragBinding.buildingImage.setImageURI(it)
             uri = it
@@ -55,7 +55,6 @@ class BuildingFragment : Fragment() {
         fragBinding.chooseImage.setOnClickListener{
             selectPictureLauncher.launch("image/*")
         }
-        setButtonListener(fragBinding)
 
 
         return root
@@ -69,6 +68,8 @@ class BuildingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        setButtonListener(fragBinding)
+
     }
 
     private fun setButtonListener(layout: FragmentBuildingBinding) {
@@ -79,18 +80,8 @@ class BuildingFragment : Fragment() {
             building.image = uri.toString()
             app.builds.create(building)
             Timber.i(building.toString())
-
-
-
-            val nextFrag = BuildingListFragment()
-
-
-            requireActivity().supportFragmentManager.beginTransaction()
-                .add(((view as ViewGroup).parent as View).id, nextFrag)
-                .addToBackStack(null)
-                .commit()
-
-        }
+            it.findNavController().navigate(R.id.action_buildingFragment_to_buildingListFragment)
+            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
