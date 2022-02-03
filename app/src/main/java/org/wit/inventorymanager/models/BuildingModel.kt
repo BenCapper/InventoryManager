@@ -8,6 +8,7 @@ data class BuildingModel(var id: Long = 0,
                          var name: String = "",
                          var address: String = "",
                          var image: String = "",
+                         var phone: String = "",
                          var lat: Double = 0.0,
                          var lng: Double = 0.0,
                          var zoom: Float = 0f) : Parcelable

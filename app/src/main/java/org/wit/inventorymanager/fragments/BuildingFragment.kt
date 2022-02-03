@@ -1,21 +1,18 @@
 package org.wit.inventorymanager.fragments
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
+
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
+import splitties.toast.toast
 import timber.log.Timber
 import java.util.*
 
@@ -30,7 +27,8 @@ private var building = BuildingModel()
 
 class BuildingFragment : Fragment() {
 
-    private lateinit var uri: Uri
+    private var uri: android.net.Uri? =  null
+    var ur = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +44,8 @@ class BuildingFragment : Fragment() {
 
         _fragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
         val root = fragBinding.root
+        setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
-
         val selectPictureLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
             fragBinding.buildingImage.setImageURI(it)
             uri = it
@@ -55,7 +53,6 @@ class BuildingFragment : Fragment() {
         fragBinding.chooseImage.setOnClickListener{
             selectPictureLauncher.launch("image/*")
         }
-        setButtonListener(fragBinding)
 
 
         return root
@@ -69,33 +66,35 @@ class BuildingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        setButtonListener(fragBinding)
+
     }
 
     private fun setButtonListener(layout: FragmentBuildingBinding) {
         layout.btnAdd.setOnClickListener {
+
             building.id = Random().nextLong()
             building.name = layout.buildingName.text.toString()
             building.address = layout.buildingAddress.text.toString()
+            building.phone = layout.editTextPhone.text.toString()
             building.image = uri.toString()
-            app.builds.create(building)
-            Timber.i(building.toString())
 
-
-
-            val nextFrag = BuildingListFragment()
-
-
-            requireActivity().supportFragmentManager.beginTransaction()
-                .add(((view as ViewGroup).parent as View).id, nextFrag)
-                .addToBackStack(null)
-                .commit()
-
+            if (building.name.isEmpty()) {
+                toast(R.string.loc_name)
+            } else if (building.address.isEmpty()) {
+                toast(R.string.loc_address)
+            }  else if (building.phone.isEmpty()) {
+                toast(R.string.loc_phone)
+            }  else if ( building.image == "null") {
+                toast(R.string.loc_img)
+            }else {
+                app.builds.create(building)
+                Timber.i(building.toString())
+                uri = null
+                it.findNavController()
+                    .navigate(R.id.action_buildingFragment_to_buildingListFragment)
+            }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        //inflater.inflate(R.menu.menu_building, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
