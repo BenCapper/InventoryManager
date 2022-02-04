@@ -2,8 +2,8 @@ package org.wit.inventorymanager.fragments
 
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.*
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -12,9 +12,11 @@ import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
+import org.wit.inventorymanager.models.Location
 import splitties.toast.toast
 import timber.log.Timber
 import java.util.*
+import kotlin.collections.ArrayList
 
 lateinit var app: InventoryApp
 
@@ -28,7 +30,7 @@ private var building = BuildingModel()
 class BuildingFragment : Fragment() {
 
     private var uri: android.net.Uri? =  null
-    var ur = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +48,38 @@ class BuildingFragment : Fragment() {
         val root = fragBinding.root
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
+        val bundle = arguments
+        if (arguments?.isEmpty == false) {
+            var location = Location()
+            location = bundle?.getParcelable<Location>("loc")!!
+            building.zoom = location.zoom
+            building.lng = location.lng
+            building.lat = location.lat
+            toast(building.lat.toString())
+
+        }
+
         val selectPictureLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
             fragBinding.buildingImage.setImageURI(it)
             uri = it
         }
         fragBinding.chooseImage.setOnClickListener{
             selectPictureLauncher.launch("image/*")
+        }
+        fragBinding.buildingLocation.setOnClickListener{
+            val location = Location(52.245696, -7.139102, 15f)
+            if (building.zoom != 0f) {
+                location.lat =  building.lat
+                location.lng = building.lng
+                location.zoom = building.zoom
+            }
+
+            val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
+
+            action.arguments.putFloat("loc", location.zoom)
+            action.arguments.putDouble("lat", location.lat)
+            action.arguments.putDouble("lng", location.lng)
+            it.findNavController().navigate(action)
         }
 
 
