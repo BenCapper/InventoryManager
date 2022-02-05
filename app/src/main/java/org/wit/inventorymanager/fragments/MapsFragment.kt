@@ -1,10 +1,7 @@
 package org.wit.inventorymanager.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.activity.addCallback
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
@@ -29,6 +26,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
     private lateinit var map: GoogleMap
     var location = Location()
     val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment()
+    var uri = ""
 
 
     private val callback = OnMapReadyCallback { googleMap ->
@@ -64,9 +62,10 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         location.zoom = bundle?.getFloat("loc")!!
         location.lng = bundle.getDouble("lng")
         location.lat = bundle.getDouble("lat")
+        uri = bundle.getString("uri")!!
         toast(location.lng.toString())
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            requireView().findNavController().navigate(action)
+            requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
     }
 
@@ -83,20 +82,12 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
     override fun onMarkerDrag(p0: Marker) {
     }
 
-    override fun onPause() {
-
-        //requireView().findNavController().navigate(action)
-        super.onPause()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var build = BuildingFragment.newInstance()
-        build.arguments?.putFloat("loc", location.zoom)
-        build.arguments?.putDouble("lat", location.lat)
-        build.arguments?.putDouble("lng", location.lng)
-        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, build).addToBackStack(null).commit()
+
+        requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         return super.onOptionsItemSelected(item)
     }
+
 
     override fun onMarkerDragEnd(marker: Marker) {
         location.lat = marker.position.latitude
@@ -105,6 +96,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         action.arguments.putFloat("loc", location.zoom)
         action.arguments.putDouble("lat", location.lat)
         action.arguments.putDouble("lng", location.lng)
+        action.arguments.putString("uri", uri)
         Timber.i(arguments.toString())
         Timber.i(action.toString())
     }
