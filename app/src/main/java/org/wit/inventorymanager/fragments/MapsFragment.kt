@@ -1,19 +1,17 @@
 package org.wit.inventorymanager.fragments
 
-import android.app.Activity
-import android.content.Intent
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.fragment.app.findFragment
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-
+import androidx.navigation.ui.onNavDestinationSelected
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -24,11 +22,14 @@ import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.Location
 import splitties.toast.toast
+import timber.log.Timber
 
 class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
 
     private lateinit var map: GoogleMap
     var location = Location()
+    val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment()
+
 
     private val callback = OnMapReadyCallback { googleMap ->
 
@@ -50,11 +51,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val bundle = arguments
-        location.zoom = bundle?.getFloat("loc")!!
-        location.lng = bundle?.getDouble("lng")
-        location.lat = bundle?.getDouble("lat")
-        toast(location.lng.toString())
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_maps, container, false)
     }
 
@@ -63,8 +60,14 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-
-
+        val bundle = arguments
+        location.zoom = bundle?.getFloat("loc")!!
+        location.lng = bundle.getDouble("lng")
+        location.lat = bundle.getDouble("lat")
+        toast(location.lng.toString())
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            requireView().findNavController().navigate(action)
+        }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -73,10 +76,6 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         return false
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable("loc", location)
-        super.onSaveInstanceState(outState)
-    }
 
     override fun onMarkerDragStart(marker: Marker) {
     }
@@ -84,13 +83,18 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
     override fun onMarkerDrag(p0: Marker) {
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment()
+    override fun onPause() {
 
-        action.arguments.putFloat("loc", location.zoom)
-        action.arguments.putDouble("lat", location.lat)
-        action.arguments.putDouble("lng", location.lng)
-        findNavController().navigate(action)
+        //requireView().findNavController().navigate(action)
+        super.onPause()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        var build = BuildingFragment.newInstance()
+        build.arguments?.putFloat("loc", location.zoom)
+        build.arguments?.putDouble("lat", location.lat)
+        build.arguments?.putDouble("lng", location.lng)
+        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, build).addToBackStack(null).commit()
         return super.onOptionsItemSelected(item)
     }
 
@@ -98,6 +102,12 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         location.lat = marker.position.latitude
         location.lng = marker.position.longitude
         location.zoom = map.cameraPosition.zoom
+        action.arguments.putFloat("loc", location.zoom)
+        action.arguments.putDouble("lat", location.lat)
+        action.arguments.putDouble("lng", location.lng)
+        Timber.i(arguments.toString())
+        Timber.i(action.toString())
     }
+
 
 }
