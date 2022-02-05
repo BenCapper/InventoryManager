@@ -38,7 +38,7 @@ private var building = BuildingModel()
 class BuildingFragment : Fragment() {
 
     private var uri: android.net.Uri? =  null
-    private var img = ""
+    private var img = "null"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,13 +62,13 @@ class BuildingFragment : Fragment() {
             building.zoom = bundle?.getFloat("loc")!!
             building.lng = bundle?.getDouble("lng")!!
             building.lat = bundle?.getDouble("lat")!!
-            building.image = bundle?.getString("uri")!!
+            //img = bundle?.getString("uri")!!
 
 
         }
         toast(building.lat.toString())
 
-        if(building.image !== "null" && building.image !== ""){
+        if(building.image !== "null"){
             fragBinding.buildingImage.setImageURI(Uri.parse(building.image))
         }
 
@@ -108,9 +108,6 @@ class BuildingFragment : Fragment() {
         if (building.phone !== ""){
             fragBinding.editTextPhone.setText(building.phone)
         }
-        if (building.image !== "null" && building.image !== ""){
-            fragBinding.buildingImage.setImageURI(Uri.parse(building.image))
-        }
 
         return root
 
@@ -141,7 +138,7 @@ class BuildingFragment : Fragment() {
             building.name = layout.buildingName.text.toString()
             building.address = layout.buildingAddress.text.toString()
             building.phone = layout.editTextPhone.text.toString()
-            if(building.image == "null" && building.image == "") {
+            if(building.image == "null") {
                 building.image = uri.toString()
             }
             if (building.name.isEmpty()) {
@@ -157,6 +154,10 @@ class BuildingFragment : Fragment() {
                 Timber.i(building.toString())
                 uri = null
                 building.name = ""
+                layout.buildingName.setText("")
+                layout.buildingAddress.setText("")
+                layout.editTextPhone.setText("")
+                layout.buildingImage.setImageURI(null)
                 building.phone = ""
                 building.address = ""
                 building.image = "null"

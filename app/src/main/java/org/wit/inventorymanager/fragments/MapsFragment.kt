@@ -65,6 +65,9 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         uri = bundle.getString("uri")!!
         toast(location.lng.toString())
         requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (!action.arguments.containsKey("uri")){
+                action.arguments.putString("uri", uri)
+            }
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
     }
