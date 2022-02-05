@@ -50,14 +50,13 @@ class BuildingFragment : Fragment() {
         activity?.title = getString(R.string.action_location)
         val bundle = arguments
         if (arguments?.isEmpty == false) {
-            var location = Location()
-            location = bundle?.getParcelable<Location>("loc")!!
-            building.zoom = location.zoom
-            building.lng = location.lng
-            building.lat = location.lat
-            toast(building.lat.toString())
+            building.zoom = bundle?.getFloat("loc")!!
+            building.lng = bundle?.getDouble("lng")!!
+            building.lat = bundle?.getDouble("lat")!!
+
 
         }
+        toast(building.lat.toString())
 
         val selectPictureLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
             fragBinding.buildingImage.setImageURI(it)
@@ -93,9 +92,18 @@ class BuildingFragment : Fragment() {
     }
 
     override fun onResume() {
-        super.onResume()
-        setButtonListener(fragBinding)
 
+        setButtonListener(fragBinding)
+        val bundle = arguments
+        if (arguments?.isEmpty == false) {
+            building.zoom = bundle?.getFloat("loc")!!
+            building.lng = bundle?.getDouble("lng")!!
+            building.lat = bundle?.getDouble("lat")!!
+
+
+        }
+        toast(building.lat.toString())
+        super.onResume()
     }
 
     private fun setButtonListener(layout: FragmentBuildingBinding) {
