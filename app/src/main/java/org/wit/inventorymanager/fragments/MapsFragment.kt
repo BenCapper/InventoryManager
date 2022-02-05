@@ -1,21 +1,17 @@
 package org.wit.inventorymanager.fragments
 
-import android.app.Activity
-import android.content.Intent
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.fragment.app.findFragment
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.fragment.findNavController
-
+import androidx.navigation.ui.onNavDestinationSelected
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -25,7 +21,6 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.Location
-import splitties.bundle.put
 import splitties.toast.toast
 import timber.log.Timber
 
@@ -56,7 +51,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_maps, container, false)
     }
 
@@ -70,8 +65,9 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         location.lng = bundle.getDouble("lng")
         location.lat = bundle.getDouble("lat")
         toast(location.lng.toString())
-
-
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            requireView().findNavController().navigate(action)
+        }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -87,7 +83,18 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
     override fun onMarkerDrag(p0: Marker) {
     }
 
+    override fun onPause() {
+
+        //requireView().findNavController().navigate(action)
+        super.onPause()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        var build = BuildingFragment.newInstance()
+        build.arguments?.putFloat("loc", location.zoom)
+        build.arguments?.putDouble("lat", location.lat)
+        build.arguments?.putDouble("lng", location.lng)
+        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, build).addToBackStack(null).commit()
         return super.onOptionsItemSelected(item)
     }
 
@@ -100,7 +107,6 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         action.arguments.putDouble("lng", location.lng)
         Timber.i(arguments.toString())
         Timber.i(action.toString())
-        findNavController().navigate(action)
     }
 
 
