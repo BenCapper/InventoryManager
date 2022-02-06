@@ -1,10 +1,15 @@
 package org.wit.inventorymanager.fragments
 
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.view.*
+import android.widget.EditText
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -27,9 +32,13 @@ private var building = BuildingModel()
 
 
 
+
+
+
 class BuildingFragment : Fragment() {
 
     private var uri: android.net.Uri? =  null
+    private var img = "null"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,11 +62,19 @@ class BuildingFragment : Fragment() {
             building.zoom = bundle?.getFloat("loc")!!
             building.lng = bundle?.getDouble("lng")!!
             building.lat = bundle?.getDouble("lat")!!
+            //img = bundle?.getString("uri")!!
 
 
         }
         toast(building.lat.toString())
 
+        if(building.image !== "null"){
+            fragBinding.buildingImage.setImageURI(Uri.parse(building.image))
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+        requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
+        }
         val selectPictureLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
             fragBinding.buildingImage.setImageURI(it)
             uri = it
@@ -78,9 +95,19 @@ class BuildingFragment : Fragment() {
             action.arguments.putFloat("loc", location.zoom)
             action.arguments.putDouble("lat", location.lat)
             action.arguments.putDouble("lng", location.lng)
-            it.findNavController().navigate(action)
+            action.arguments.putString("uri", building.image)
+            //it.findNavController().navigate(action)
+            requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
-
+        if (building.name !== ""){
+            fragBinding.buildingName.setText(building.name)
+        }
+        if (building.address !== ""){
+            fragBinding.buildingAddress.setText(building.address)
+        }
+        if (building.phone !== ""){
+            fragBinding.editTextPhone.setText(building.phone)
+        }
 
         return root
 
@@ -91,18 +118,16 @@ class BuildingFragment : Fragment() {
 
     }
 
+    override fun onPause() {
+        building.name = fragBinding.buildingName.text.toString()
+        building.address = fragBinding.buildingAddress.text.toString()
+        building.phone = fragBinding.editTextPhone.text.toString()
+        building.image = uri.toString()
+        super.onPause()
+    }
+
     override fun onResume() {
-
         setButtonListener(fragBinding)
-        val bundle = arguments
-        if (arguments?.isEmpty == false) {
-            building.zoom = bundle?.getFloat("loc")!!
-            building.lng = bundle?.getDouble("lng")!!
-            building.lat = bundle?.getDouble("lat")!!
-
-
-        }
-        toast(building.lat.toString())
         super.onResume()
     }
 
@@ -113,8 +138,9 @@ class BuildingFragment : Fragment() {
             building.name = layout.buildingName.text.toString()
             building.address = layout.buildingAddress.text.toString()
             building.phone = layout.editTextPhone.text.toString()
-            building.image = uri.toString()
-
+            if(building.image == "null") {
+                building.image = uri.toString()
+            }
             if (building.name.isEmpty()) {
                 toast(R.string.loc_name)
             } else if (building.address.isEmpty()) {
@@ -127,6 +153,14 @@ class BuildingFragment : Fragment() {
                 app.builds.create(building)
                 Timber.i(building.toString())
                 uri = null
+                building.name = ""
+                layout.buildingName.setText("")
+                layout.buildingAddress.setText("")
+                layout.editTextPhone.setText("")
+                layout.buildingImage.setImageURI(null)
+                building.phone = ""
+                building.address = ""
+                building.image = "null"
                 it.findNavController()
                     .navigate(R.id.action_buildingFragment_to_buildingListFragment)
             }
