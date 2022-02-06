@@ -6,7 +6,10 @@ import android.util.Log
 import android.view.*
 import android.widget.Adapter
 import android.widget.BaseAdapter
+import android.widget.Button
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -51,6 +54,15 @@ class BuildingListFragment : Fragment() {
         activity?.title = getString(R.string.action_location)
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
         getBuildingData()
+        if (app.builds.findAll().isEmpty()) {
+            Timber.i("APP BUILDS: "+ app.builds.toString())
+            fragBinding.noList.visibility = View.VISIBLE
+        }
+        if (app.builds.findAll().isNotEmpty()) {
+            Timber.i("APP BUILDS: "+ app.builds.toString())
+            fragBinding.noList.visibility = View.INVISIBLE
+        }
+
         return root
     }
 
@@ -69,8 +81,8 @@ class BuildingListFragment : Fragment() {
 
 
     override fun onResume(){
-        super.onResume()
         getBuildingData()
+        super.onResume()
     }
 
     private fun getBuildingData(){

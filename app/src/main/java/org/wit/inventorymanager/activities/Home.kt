@@ -2,19 +2,25 @@ package org.wit.inventorymanager.activities
 
 
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
+import com.google.firebase.database.FirebaseDatabase
 import org.wit.inventorymanager.databinding.HomeBinding
 import org.wit.inventorymanager.R
+import org.wit.inventorymanager.fragments.app
 
 class Home : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var homeBinding : HomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
+    val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
+        .getReference("Building")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +34,8 @@ class Home : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
         val navView = homeBinding.navView
         navView.setupWithNavController(navController)
+
+
 
         appBarConfiguration = AppBarConfiguration(setOf(
             R.id.buildingListFragment), drawerLayout)
