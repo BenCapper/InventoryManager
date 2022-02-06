@@ -57,6 +57,10 @@ class BuildingListFragment : Fragment() {
         if (app.builds.findAll().isEmpty()) {
             Timber.i("APP BUILDS: "+ app.builds.toString())
             fragBinding.noList.visibility = View.VISIBLE
+            fragBinding.noList.setOnClickListener {
+                it.findNavController()
+                    .navigate(R.id.action_buildingListFragment_to_buildingFragment)
+            }
         }
         if (app.builds.findAll().isNotEmpty()) {
             Timber.i("APP BUILDS: "+ app.builds.toString())
