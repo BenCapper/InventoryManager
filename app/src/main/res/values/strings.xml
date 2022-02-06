@@ -83,6 +83,8 @@
     <string name="loc_phone">Enter the Location Phone Number</string>
     <string name="loc_img">Select a Location Image</string>
 
+    <string name="no_list">Create Location</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
