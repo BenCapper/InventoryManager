@@ -1,6 +1,7 @@
 package org.wit.inventorymanager.fragments
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -22,12 +23,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.adapters.BuildingAdapter
+import org.wit.inventorymanager.adapters.BuildingListener
 import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import timber.log.Timber
 
-class BuildingListFragment : Fragment() {
+class BuildingListFragment : Fragment(), BuildingListener {
 
     lateinit var app: InventoryApp
     private var _fragBinding: FragmentBuildingListBinding? = null
@@ -36,6 +38,7 @@ class BuildingListFragment : Fragment() {
     private val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
         .getReference("Building")
     var builds = mutableListOf<BuildingModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +57,6 @@ class BuildingListFragment : Fragment() {
         activity?.title = getString(R.string.action_location)
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
         getBuildingData()
-
-
         db.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
@@ -77,10 +78,6 @@ class BuildingListFragment : Fragment() {
                 Log.w("Failed", error.toException())
             }
         })
-
-
-
-
         return root
     }
 
@@ -96,7 +93,18 @@ class BuildingListFragment : Fragment() {
         return super.onOptionsItemSelected(item)
 }
 
+    override fun onBuildingClick(building: BuildingModel) {
+        TODO("Not yet implemented")
+    }
 
+    override fun onEditBuildingClick(building: BuildingModel) {
+        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment()
+        action.arguments.putString("name", building.name)
+        action.arguments.putString("address", building.address)
+        action.arguments.putString("phone", building.phone)
+        action.arguments.putString("uri", building.image)
+        findNavController().navigate(action)
+    }
 
     override fun onResume(){
         getBuildingData()
@@ -113,7 +121,7 @@ class BuildingListFragment : Fragment() {
                         buildings.add(build!!)
                     }
                 }
-                view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildings)
+                view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildings, this@BuildingListFragment)
                 view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
             }
 

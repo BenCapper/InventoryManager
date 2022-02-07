@@ -61,6 +61,14 @@ class BuildingFragment : Fragment() {
             building.zoom = bundle?.getFloat("loc")!!
             building.lng = bundle?.getDouble("lng")!!
             building.lat = bundle?.getDouble("lat")!!
+            building.name = bundle?.getString("name")!!
+            building.address = bundle?.getString("address")!!
+            building.phone = bundle?.getString("phone")!!
+            //building.image = bundle?.getString("uri")!!
+            fragBinding.buildingName.setText(bundle?.getString("name"))
+            fragBinding.buildingAddress.setText(bundle?.getString("address"))
+            fragBinding.editTextPhone.setText(bundle?.getString("phone"))
+            //fragBinding.buildingImage.setImageURI(Uri.parse(bundle?.getString("uri")))
             //img = bundle?.getString("uri")!!
 
 
