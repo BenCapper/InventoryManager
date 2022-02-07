@@ -86,8 +86,12 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+        val frag = BuildingFragment.newInstance()
+        frag.arguments?.putFloat("loc", location.zoom)
+        frag.arguments?.putDouble("lat", location.lat)
+        frag.arguments?.putDouble("lng", location.lng)
+        frag.arguments?.putString("uri", uri)
+        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit()
         return super.onOptionsItemSelected(item)
     }
 

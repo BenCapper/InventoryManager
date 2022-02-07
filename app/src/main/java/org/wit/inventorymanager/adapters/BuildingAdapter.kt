@@ -30,6 +30,7 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>)
         fun bind(building: BuildingModel) {
             binding.buildingName.text = building.name
             binding.address.text= building.address
+            binding.phone.text = building.phone
             binding.imageIcon.setImageBitmap(readImageFromPath(itemView.context, building.image))
         }
     }
