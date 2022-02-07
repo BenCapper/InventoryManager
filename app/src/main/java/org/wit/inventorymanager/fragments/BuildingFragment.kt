@@ -37,8 +37,7 @@ private var building = BuildingModel()
 
 class BuildingFragment : Fragment() {
 
-    private var uri: android.net.Uri? =  null
-    private var img = "null"
+    private var uri: Uri? =  null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,11 +109,6 @@ class BuildingFragment : Fragment() {
         }
 
         return root
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
 
     }
 
