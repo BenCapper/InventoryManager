@@ -59,22 +59,22 @@ class BuildingFragment : Fragment() {
             building.zoom = bundle?.getFloat("loc")!!
             building.lng = bundle?.getDouble("lng")!!
             building.lat = bundle?.getDouble("lat")!!
-            if (arguments?.containsKey("name") == true){
-                building.name = bundle?.getString("name")!!
-                fragBinding.buildingName.setText(bundle?.getString("name"))
+            if (arguments?.containsKey("editName") == true){
+                building.name = bundle?.getString("editName")!!
+                fragBinding.buildingName.setText(bundle?.getString("editName"))
             }
-            if (arguments?.containsKey("address") == true){
-                building.address = bundle?.getString("address")!!
-                fragBinding.buildingAddress.setText(bundle?.getString("address"))
+            if (arguments?.containsKey("editAddress") == true){
+                building.address = bundle?.getString("editAddress")!!
+                fragBinding.buildingAddress.setText(bundle?.getString("editAddress"))
             }
-            if (arguments?.containsKey("phone") == true){
-                building.phone = bundle?.getString("phone")!!
-                fragBinding.editTextPhone.setText(bundle?.getString("phone"))
+            if (arguments?.containsKey("editPhone") == true){
+                building.phone = bundle?.getString("editPhone")!!
+                fragBinding.editTextPhone.setText(bundle?.getString("editPhone"))
             }
-            if (arguments?.containsKey("uri") == true){
-                building.image = bundle?.getString("uri")!!
+            if (arguments?.containsKey("editUri") == true){
+                building.image = bundle?.getString("editUri")!!
                 Picasso.get()
-                    .load(Uri.parse(bundle?.getString("uri")))
+                    .load(Uri.parse(bundle?.getString("editUri")))
                     .into(fragBinding.buildingImage)
             }
         }
@@ -108,15 +108,7 @@ class BuildingFragment : Fragment() {
             action.arguments.putString("uri", building.image)
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
-        if (building.name !== ""){
-            fragBinding.buildingName.setText(building.name)
-        }
-        if (building.address !== ""){
-            fragBinding.buildingAddress.setText(building.address)
-        }
-        if (building.phone !== ""){
-            fragBinding.editTextPhone.setText(building.phone)
-        }
+
         return root
     }
 

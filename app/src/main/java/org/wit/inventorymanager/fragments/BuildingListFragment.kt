@@ -99,10 +99,10 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     override fun onEditBuildingClick(building: BuildingModel) {
         val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment()
-        action.arguments.putString("name", building.name)
-        action.arguments.putString("address", building.address)
-        action.arguments.putString("phone", building.phone)
-        action.arguments.putString("uri", building.image)
+        action.arguments.putString("editName", building.name)
+        action.arguments.putString("editAddress", building.address)
+        action.arguments.putString("editPhone", building.phone)
+        action.arguments.putString("editUri", building.image)
         findNavController().navigate(action)
     }
 
