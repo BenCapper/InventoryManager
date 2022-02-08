@@ -62,11 +62,11 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         location.zoom = bundle?.getFloat("loc")!!
         location.lng = bundle.getDouble("lng")
         location.lat = bundle.getDouble("lat")
-        uri = bundle.getString("uri")!!
+        uri = bundle.getString("editUri")!!
         toast(location.lng.toString())
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            if (!action.arguments.containsKey("uri")){
-                action.arguments.putString("uri", uri)
+            if (!action.arguments.containsKey("editUri")){
+                action.arguments.putString("editUri", uri)
             }
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
@@ -90,7 +90,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         frag.arguments?.putFloat("loc", location.zoom)
         frag.arguments?.putDouble("lat", location.lat)
         frag.arguments?.putDouble("lng", location.lng)
-        frag.arguments?.putString("uri", uri)
+        frag.arguments?.putString("editUri", uri)
         requireActivity().supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit()
         return super.onOptionsItemSelected(item)
     }
@@ -103,7 +103,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         action.arguments.putFloat("loc", location.zoom)
         action.arguments.putDouble("lat", location.lat)
         action.arguments.putDouble("lng", location.lng)
-        action.arguments.putString("uri", uri)
+        action.arguments.putString("editUri", uri)
         Timber.i(arguments.toString())
         Timber.i(action.toString())
     }

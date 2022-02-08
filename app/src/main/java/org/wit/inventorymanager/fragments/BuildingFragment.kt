@@ -31,11 +31,10 @@ private val fragBinding get() = _fragBinding!!
 private var building = BuildingModel()
 private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
 
-
 class BuildingFragment : Fragment() {
 
     private var uri: Uri? =  null
-
+    private var id: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +58,10 @@ class BuildingFragment : Fragment() {
             building.zoom = bundle?.getFloat("loc")!!
             building.lng = bundle?.getDouble("lng")!!
             building.lat = bundle?.getDouble("lat")!!
+            if (arguments?.containsKey("editId") == true){
+                id = arguments?.getLong("editId")!!
+                fragBinding.btnAdd.setText(R.string.up_loc)
+            }
             if (arguments?.containsKey("editName") == true){
                 building.name = bundle?.getString("editName")!!
                 fragBinding.buildingName.setText(bundle?.getString("editName"))
@@ -76,6 +79,7 @@ class BuildingFragment : Fragment() {
                 Picasso.get()
                     .load(Uri.parse(bundle?.getString("editUri")))
                     .into(fragBinding.buildingImage)
+                fragBinding.chooseImage.setText(R.string.img_ch)
             }
         }
 
@@ -105,7 +109,7 @@ class BuildingFragment : Fragment() {
             action.arguments.putFloat("loc", location.zoom)
             action.arguments.putDouble("lat", location.lat)
             action.arguments.putDouble("lng", location.lng)
-            action.arguments.putString("uri", building.image)
+            action.arguments.putString("editUri", building.image)
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
 
@@ -141,7 +145,13 @@ class BuildingFragment : Fragment() {
             }  else if ( building.image == "null") {
                 toast(R.string.loc_img)
             }else {
-                app.builds.create(building)
+                if (arguments?.containsKey("editId") == true){
+                    building.id = id
+                    app.builds.update(building)
+                }
+                else {
+                    app.builds.create(building)
+                }
                 Timber.i(building.toString())
 
                 layout.buildingName.setText("")

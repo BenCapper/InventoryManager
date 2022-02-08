@@ -103,6 +103,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
         action.arguments.putString("editAddress", building.address)
         action.arguments.putString("editPhone", building.phone)
         action.arguments.putString("editUri", building.image)
+        action.arguments.putLong("editId", building.id)
         findNavController().navigate(action)
     }
 
