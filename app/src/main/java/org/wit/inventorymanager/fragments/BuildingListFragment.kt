@@ -1,20 +1,12 @@
 package org.wit.inventorymanager.fragments
 
-import android.annotation.SuppressLint
-import android.os.Build
+
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Adapter
-import android.widget.BaseAdapter
-import android.widget.Button
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
@@ -38,6 +30,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     private val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
         .getReference("Building")
     var builds = mutableListOf<BuildingModel>()
+    private var build = BuildingModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,10 +92,15 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     override fun onEditBuildingClick(building: BuildingModel) {
         val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment()
-        action.arguments.putString("editName", building.name)
-        action.arguments.putString("editAddress", building.address)
-        action.arguments.putString("editPhone", building.phone)
-        action.arguments.putString("editUri", building.image)
+        build.name = building.name
+        build.address = building.address
+        build.phone = building.phone
+        build.image = building.image
+        build.id = building.id
+        build.zoom = building.zoom
+        build.lat = building.lat
+        build.lng = building.lng
+        action.arguments.putParcelable("editBuild", build)
         findNavController().navigate(action)
     }
 

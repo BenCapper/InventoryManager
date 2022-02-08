@@ -23,6 +23,7 @@ import splitties.toast.toast
 import timber.log.Timber
 import java.util.*
 
+
 lateinit var app: InventoryApp
 
 
@@ -31,11 +32,10 @@ private val fragBinding get() = _fragBinding!!
 private var building = BuildingModel()
 private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
 
-
 class BuildingFragment : Fragment() {
 
-    private var uri: Uri? =  null
 
+    private var id: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,33 +56,36 @@ class BuildingFragment : Fragment() {
         registerImagePickerCallback()
         val bundle = arguments
         if (arguments?.isEmpty == false) {
-            building.zoom = bundle?.getFloat("loc")!!
-            building.lng = bundle?.getDouble("lng")!!
-            building.lat = bundle?.getDouble("lat")!!
-            if (arguments?.containsKey("editName") == true){
-                building.name = bundle?.getString("editName")!!
-                fragBinding.buildingName.setText(bundle?.getString("editName"))
+            building = bundle?.getParcelable("editBuild")!!
+
+
+            if (building.id.toString() !== "0" && building.id.toString() !== null ){
+                id = building.id
+                fragBinding.btnAdd.setText(R.string.up_loc)
             }
-            if (arguments?.containsKey("editAddress") == true){
-                building.address = bundle?.getString("editAddress")!!
-                fragBinding.buildingAddress.setText(bundle?.getString("editAddress"))
+            if (building.name !== ""){
+                fragBinding.buildingName.setText(building.name)
             }
-            if (arguments?.containsKey("editPhone") == true){
-                building.phone = bundle?.getString("editPhone")!!
-                fragBinding.editTextPhone.setText(bundle?.getString("editPhone"))
+            if (building.address !== ""){
+                fragBinding.buildingAddress.setText(building.address)
             }
-            if (arguments?.containsKey("editUri") == true){
-                building.image = bundle?.getString("editUri")!!
+            if (building.phone !== ""){
+                fragBinding.editTextPhone.setText(building.phone)
+            }
+            if (building.image !== ""){
                 Picasso.get()
-                    .load(Uri.parse(bundle?.getString("editUri")))
+                    .load(Uri.parse(building.image))
                     .into(fragBinding.buildingImage)
+                fragBinding.chooseImage.setText(R.string.img_ch)
             }
         }
 
-        if(building.image !== "null"){
+        if(building.image !== ""){
             Picasso.get()
                 .load(Uri.parse(building.image))
                 .into(fragBinding.buildingImage)
+            fragBinding.chooseImage.setText(R.string.img_ch)
+
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -95,20 +98,23 @@ class BuildingFragment : Fragment() {
 
         fragBinding.buildingLocation.setOnClickListener {
             val location = Location(52.245696, -7.139102, 15f)
-            if (building.zoom != 0f) {
-                location.lat = building.lat
-                location.lng = building.lng
-                location.zoom = building.zoom
-            }
-
             val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
-            action.arguments.putFloat("loc", location.zoom)
-            action.arguments.putDouble("lat", location.lat)
-            action.arguments.putDouble("lng", location.lng)
-            action.arguments.putString("uri", building.image)
-            requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+            if (building.zoom == 15f && building.lat == 52.245696 && building.lng == -7.139102 && building.id.toString().length > 1) {
+                action.arguments.putParcelable("build", building)
+                requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+            }
+            if (building.zoom != 0f && building.lat != 0.toDouble() && building.lng != 0.toDouble()) {
+                action.arguments.putParcelable("build", building)
+                requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+            }
+            else {
+                building.zoom = location.zoom
+                building.lat = location.lat
+                building.lng = location.lng
+                action.arguments.putParcelable("build", building)
+                requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+            }
         }
-
         return root
     }
 
@@ -127,7 +133,9 @@ class BuildingFragment : Fragment() {
     private fun setButtonListener(layout: FragmentBuildingBinding) {
         layout.btnAdd.setOnClickListener {
 
-            building.id = Random().nextLong()
+            if (building.id.toString().length == 1) {
+                building.id = Random().nextLong()
+            }
             building.name = layout.buildingName.text.toString()
             building.address = layout.buildingAddress.text.toString()
             building.phone = layout.editTextPhone.text.toString()
@@ -141,7 +149,12 @@ class BuildingFragment : Fragment() {
             }  else if ( building.image == "null") {
                 toast(R.string.loc_img)
             }else {
-                app.builds.create(building)
+                if (id.toString().length > 1){
+                    app.builds.update(building)
+                }
+                else {
+                    app.builds.create(building)
+                }
                 Timber.i(building.toString())
 
                 layout.buildingName.setText("")
@@ -177,7 +190,7 @@ class BuildingFragment : Fragment() {
                                 .load(building.image)
                                 .into(fragBinding.buildingImage)
                             fragBinding.chooseImage.setText(R.string.change_building_image)
-                        } // end of if
+                        }
                     }
                     AppCompatActivity.RESULT_CANCELED -> { } else -> { }
                 }
