@@ -3,9 +3,8 @@ package org.wit.inventorymanager.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.wit.inventorymanager.R
+import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.databinding.CardBuildingBinding
-import org.wit.inventorymanager.helpers.readImageFromPath
 import org.wit.inventorymanager.models.BuildingModel
 
 interface BuildingListener {
@@ -38,7 +37,7 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
             binding.buildingName.text = building.name
             binding.address.text= building.address
             binding.phone.text = building.phone
-            binding.imageIcon.setImageBitmap(readImageFromPath(itemView.context, building.image))
+            Picasso.get().load(building.image).resize(200,200).into(binding.imageIcon)
             binding.edit.setOnClickListener { listener.onEditBuildingClick(building)}
         }
     }

@@ -1,27 +1,27 @@
 package org.wit.inventorymanager.fragments
 
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
 import android.view.*
-import android.widget.EditText
 import androidx.activity.addCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.text.set
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
+import org.wit.inventorymanager.helpers.showImagePicker
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
 import splitties.toast.toast
 import timber.log.Timber
 import java.util.*
-import kotlin.collections.ArrayList
 
 lateinit var app: InventoryApp
 
@@ -29,10 +29,7 @@ lateinit var app: InventoryApp
 private var _fragBinding: FragmentBuildingBinding? = null
 private val fragBinding get() = _fragBinding!!
 private var building = BuildingModel()
-
-
-
-
+private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
 
 
 class BuildingFragment : Fragment() {
@@ -56,54 +53,59 @@ class BuildingFragment : Fragment() {
         val root = fragBinding.root
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
+        registerImagePickerCallback()
         val bundle = arguments
         if (arguments?.isEmpty == false) {
             building.zoom = bundle?.getFloat("loc")!!
             building.lng = bundle?.getDouble("lng")!!
             building.lat = bundle?.getDouble("lat")!!
-            building.name = bundle?.getString("name")!!
-            building.address = bundle?.getString("address")!!
-            building.phone = bundle?.getString("phone")!!
-            //building.image = bundle?.getString("uri")!!
-            fragBinding.buildingName.setText(bundle?.getString("name"))
-            fragBinding.buildingAddress.setText(bundle?.getString("address"))
-            fragBinding.editTextPhone.setText(bundle?.getString("phone"))
-            //fragBinding.buildingImage.setImageURI(Uri.parse(bundle?.getString("uri")))
-            //img = bundle?.getString("uri")!!
-
-
+            if (arguments?.containsKey("name") == true){
+                building.name = bundle?.getString("name")!!
+                fragBinding.buildingName.setText(bundle?.getString("name"))
+            }
+            if (arguments?.containsKey("address") == true){
+                building.address = bundle?.getString("address")!!
+                fragBinding.buildingAddress.setText(bundle?.getString("address"))
+            }
+            if (arguments?.containsKey("phone") == true){
+                building.phone = bundle?.getString("phone")!!
+                fragBinding.editTextPhone.setText(bundle?.getString("phone"))
+            }
+            if (arguments?.containsKey("uri") == true){
+                building.image = bundle?.getString("uri")!!
+                Picasso.get()
+                    .load(Uri.parse(bundle?.getString("uri")))
+                    .into(fragBinding.buildingImage)
+            }
         }
-        toast(building.lat.toString())
 
         if(building.image !== "null"){
-            fragBinding.buildingImage.setImageURI(Uri.parse(building.image))
+            Picasso.get()
+                .load(Uri.parse(building.image))
+                .into(fragBinding.buildingImage)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
         requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
         }
-        val selectPictureLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
-            fragBinding.buildingImage.setImageURI(it)
-            uri = it
+
+        fragBinding.chooseImage.setOnClickListener {
+            showImagePicker(imageIntentLauncher)
         }
-        fragBinding.chooseImage.setOnClickListener{
-            selectPictureLauncher.launch("image/*")
-        }
-        fragBinding.buildingLocation.setOnClickListener{
+
+        fragBinding.buildingLocation.setOnClickListener {
             val location = Location(52.245696, -7.139102, 15f)
             if (building.zoom != 0f) {
-                location.lat =  building.lat
+                location.lat = building.lat
                 location.lng = building.lng
                 location.zoom = building.zoom
             }
 
             val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
-
             action.arguments.putFloat("loc", location.zoom)
             action.arguments.putDouble("lat", location.lat)
             action.arguments.putDouble("lng", location.lng)
             action.arguments.putString("uri", building.image)
-            //it.findNavController().navigate(action)
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
         if (building.name !== ""){
@@ -115,16 +117,13 @@ class BuildingFragment : Fragment() {
         if (building.phone !== ""){
             fragBinding.editTextPhone.setText(building.phone)
         }
-
         return root
-
     }
 
     override fun onPause() {
         building.name = fragBinding.buildingName.text.toString()
         building.address = fragBinding.buildingAddress.text.toString()
         building.phone = fragBinding.editTextPhone.text.toString()
-        building.image = uri.toString()
         super.onPause()
     }
 
@@ -140,9 +139,7 @@ class BuildingFragment : Fragment() {
             building.name = layout.buildingName.text.toString()
             building.address = layout.buildingAddress.text.toString()
             building.phone = layout.editTextPhone.text.toString()
-            if(building.image == "null") {
-                building.image = uri.toString()
-            }
+
             if (building.name.isEmpty()) {
                 toast(R.string.loc_name)
             } else if (building.address.isEmpty()) {
@@ -154,15 +151,16 @@ class BuildingFragment : Fragment() {
             }else {
                 app.builds.create(building)
                 Timber.i(building.toString())
-                uri = null
-                building.name = ""
+
                 layout.buildingName.setText("")
                 layout.buildingAddress.setText("")
                 layout.editTextPhone.setText("")
                 layout.buildingImage.setImageURI(null)
+                building.name = ""
                 building.phone = ""
                 building.address = ""
                 building.image = "null"
+
                 it.findNavController()
                     .navigate(R.id.action_buildingFragment_to_buildingListFragment)
             }
@@ -174,6 +172,25 @@ class BuildingFragment : Fragment() {
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
+    private fun registerImagePickerCallback() {
+        imageIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when(result.resultCode){
+                    AppCompatActivity.RESULT_OK -> {
+                        if (result.data != null) {
+                            Timber.i("Got Result ${result.data!!.data}")
+                            building.image = result.data!!.data!!.toString()
+                            Picasso.get()
+                                .load(building.image)
+                                .into(fragBinding.buildingImage)
+                            fragBinding.chooseImage.setText(R.string.change_building_image)
+                        } // end of if
+                    }
+                    AppCompatActivity.RESULT_CANCELED -> { } else -> { }
+                }
+            }
+    }
 
     companion object {
         @JvmStatic
