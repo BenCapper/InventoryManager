@@ -91,7 +91,9 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         frag.arguments?.putDouble("lat", location.lat)
         frag.arguments?.putDouble("lng", location.lng)
         frag.arguments?.putString("editUri", uri)
-        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit()
+        requireActivity().supportFragmentManager.findFragmentById(R.id.buildingFragment)
+            ?.let { requireActivity().supportFragmentManager.beginTransaction().remove(it).replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit() }
+        //requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         return super.onOptionsItemSelected(item)
     }
 
