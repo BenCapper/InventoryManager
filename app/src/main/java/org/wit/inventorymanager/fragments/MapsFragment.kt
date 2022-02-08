@@ -3,12 +3,8 @@ package org.wit.inventorymanager.fragments
 import android.os.Bundle
 import android.view.*
 import androidx.activity.addCallback
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.onNavDestinationSelected
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -17,20 +13,20 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
+import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
-import splitties.toast.toast
-import timber.log.Timber
+
+
 
 class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
 
     private lateinit var map: GoogleMap
-    var location = Location()
+    var location = Location(52.245696, -7.139102, 15f)
     val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment()
-    var uri = ""
+    var build = BuildingModel()
 
 
     private val callback = OnMapReadyCallback { googleMap ->
-
         map = googleMap
         val loc = LatLng(location.lat, location.lng)
         val options = MarkerOptions()
@@ -59,21 +55,15 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
         val bundle = arguments
-        location.zoom = bundle?.getFloat("loc")!!
-        location.lng = bundle.getDouble("lng")
-        location.lat = bundle.getDouble("lat")
-        uri = bundle.getString("editUri")!!
-        toast(location.lng.toString())
+        build = bundle?.getParcelable("build")!!
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            if (!action.arguments.containsKey("editUri")){
-                action.arguments.putString("editUri", uri)
-            }
+            action.arguments.putParcelable("editBuild", build)
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
-        val loc = LatLng(location.lat, location.lng)
+        val loc = LatLng(build.lat, build.lng)
         marker.snippet = "GPS : $loc"
         return false
     }
@@ -87,27 +77,18 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val frag = BuildingFragment.newInstance()
-        frag.arguments?.putFloat("loc", location.zoom)
-        frag.arguments?.putDouble("lat", location.lat)
-        frag.arguments?.putDouble("lng", location.lng)
-        frag.arguments?.putString("editUri", uri)
+        frag.arguments?.putParcelable("build",build)
         requireActivity().supportFragmentManager.findFragmentById(R.id.buildingFragment)
-            ?.let { requireActivity().supportFragmentManager.beginTransaction().remove(it).replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit() }
-        //requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+            ?.let { requireActivity().supportFragmentManager.beginTransaction().remove(it)
+                .replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit() }
         return super.onOptionsItemSelected(item)
     }
 
 
     override fun onMarkerDragEnd(marker: Marker) {
-        location.lat = marker.position.latitude
-        location.lng = marker.position.longitude
-        location.zoom = map.cameraPosition.zoom
-        action.arguments.putFloat("loc", location.zoom)
-        action.arguments.putDouble("lat", location.lat)
-        action.arguments.putDouble("lng", location.lng)
-        action.arguments.putString("editUri", uri)
-        Timber.i(arguments.toString())
-        Timber.i(action.toString())
+        build.lat = marker.position.latitude
+        build.lng = marker.position.longitude
+        build.zoom = map.cameraPosition.zoom
     }
 
 
