@@ -4,6 +4,7 @@ package org.wit.inventorymanager.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -104,6 +105,13 @@ class BuildingListFragment : Fragment(), BuildingListener {
                 }
                 view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildings, this@BuildingListFragment)
                 view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+                if (buildings.isEmpty()) {
+                    view?.findViewById<Button>(R.id.noList)?.visibility = View.VISIBLE
+                    view?.findViewById<Button>(R.id.noList)?.setOnClickListener {
+                        it.findNavController()
+                            .navigate(R.id.action_buildingListFragment_to_buildingFragment)
+                    }
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -131,13 +139,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
                             builds.remove(builds[pos])
                             fragBinding.recyclerView.adapter?.notifyItemRemoved(pos)
                             Timber.i("DELETE BUILDS: $builds")
-                        }
-                        if (builds.isEmpty()) {
-                            fragBinding.noList.visibility = View.VISIBLE
-                            fragBinding.noList.setOnClickListener {
-                                it.findNavController()
-                                    .navigate(R.id.action_buildingListFragment_to_buildingFragment)
-                            }
                         }
                     }
                 }
