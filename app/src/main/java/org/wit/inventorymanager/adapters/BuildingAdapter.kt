@@ -25,11 +25,12 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
 
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
-        val building = buildings[holder.adapterPosition]
+        val building = buildings[holder.absoluteAdapterPosition]
         holder.bind(building, listener)
     }
 
     override fun getItemCount(): Int = buildings.size
+
 
     inner class MainHolder(val binding : CardBuildingBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -39,6 +40,7 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
             binding.phone.text = building.phone
             Picasso.get().load(building.image).resize(200,200).into(binding.imageIcon)
             binding.edit.setOnClickListener { listener.onEditBuildingClick(building)}
+
         }
     }
 }
