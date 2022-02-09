@@ -91,11 +91,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
         findNavController().navigate(action)
     }
 
-    override fun onResume(){
-        //getBuildingData()
-        //removeBuildingData()
-        super.onResume()
-    }
 
     private fun getBuildingData(){
         db.addValueEventListener(object: ValueEventListener {
@@ -137,19 +132,19 @@ class BuildingListFragment : Fragment(), BuildingListener {
                             fragBinding.recyclerView.adapter?.notifyItemRemoved(pos)
                             Timber.i("DELETE BUILDS: $builds")
                         }
-
+                        if (builds.isEmpty()) {
+                            fragBinding.noList.visibility = View.VISIBLE
+                            fragBinding.noList.setOnClickListener {
+                                it.findNavController()
+                                    .navigate(R.id.action_buildingListFragment_to_buildingFragment)
+                            }
+                        }
                     }
                 }
                 val itemTouchHelper = ItemTouchHelper(swipeCallback)
                 itemTouchHelper.attachToRecyclerView(view?.findViewById(R.id.recyclerView))
                 Timber.i("BUILDS AFTER ALL: $builds")
-                if (builds.isEmpty()) {
-                    fragBinding.noList.visibility = View.VISIBLE
-                    fragBinding.noList.setOnClickListener {
-                        it.findNavController()
-                            .navigate(R.id.action_buildingListFragment_to_buildingFragment)
-                    }
-                }
+
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.w("Failed", error.toException())
