@@ -59,34 +59,32 @@ class BuildingFragment : Fragment() {
             building = bundle?.getParcelable("editBuild")!!
 
 
-            if (building.id.toString() !== "0" && building.id.toString() !== null ){
+            if (building.id !== (0).toLong()){
                 id = building.id
                 fragBinding.btnAdd.setText(R.string.up_loc)
             }
-            if (building.name !== ""){
+            if (building.name != ""){
                 fragBinding.buildingName.setText(building.name)
             }
-            if (building.address !== ""){
+            if (building.address != ""){
                 fragBinding.buildingAddress.setText(building.address)
             }
-            if (building.phone !== ""){
+            if (building.phone != ""){
                 fragBinding.editTextPhone.setText(building.phone)
             }
-            if (building.image !== ""){
+            if (building.image != ""){
                 Picasso.get()
                     .load(Uri.parse(building.image))
                     .into(fragBinding.buildingImage)
                 fragBinding.chooseImage.setText(R.string.img_ch)
             }
-        }
-
-        if(building.image !== ""){
-            Picasso.get()
-                .load(Uri.parse(building.image))
-                .into(fragBinding.buildingImage)
-            fragBinding.chooseImage.setText(R.string.img_ch)
+            else{
+                fragBinding.buildingImage.setImageURI(null)
+            }
 
         }
+
+
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
         requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
@@ -133,27 +131,33 @@ class BuildingFragment : Fragment() {
     private fun setButtonListener(layout: FragmentBuildingBinding) {
         layout.btnAdd.setOnClickListener {
 
-            if (building.id.toString().length == 1) {
-                building.id = Random().nextLong()
-            }
+
             building.name = layout.buildingName.text.toString()
             building.address = layout.buildingAddress.text.toString()
             building.phone = layout.editTextPhone.text.toString()
 
             if (building.name.isEmpty()) {
                 toast(R.string.loc_name)
+            } else if (building.name.length > 15){
+                toast(R.string.b_name_chars)
             } else if (building.address.isEmpty()) {
                 toast(R.string.loc_address)
-            }  else if (building.phone.isEmpty()) {
+            } else if (building.address.length > 25){
+                toast(R.string.b_address_chars)
+            } else if (building.phone.isEmpty()) {
                 toast(R.string.loc_phone)
-            }  else if ( building.image == "null") {
+            }else if(building.phone.length > 15){
+                toast(R.string.b_phone_chars)
+            } else if ( building.image == "") {
                 toast(R.string.loc_img)
-            }else {
-                if (id.toString().length > 1){
-                    app.builds.update(building)
+            }
+                else {
+                if (building.id.toString().length == 1){
+                    building.id = Random().nextLong()
+                    app.builds.create(building)
                 }
                 else {
-                    app.builds.create(building)
+                    app.builds.update(building)
                 }
                 Timber.i(building.toString())
 
@@ -164,7 +168,12 @@ class BuildingFragment : Fragment() {
                 building.name = ""
                 building.phone = ""
                 building.address = ""
-                building.image = "null"
+                building.image = ""
+                building.id = 0
+                building.zoom = 0f
+                building.lat = (0).toDouble()
+                building.lng = (0).toDouble()
+
 
                 it.findNavController()
                     .navigate(R.id.action_buildingFragment_to_buildingListFragment)

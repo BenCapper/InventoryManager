@@ -60,4 +60,8 @@ class FirebaseBuildings : BuildingStore{
         )) }
     }
 
+    override fun filterById(buildId: Long): List<BuildingModel> {
+        return buildings.filter {b -> b.id == buildId }
+    }
+
 }

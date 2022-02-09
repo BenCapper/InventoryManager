@@ -6,4 +6,5 @@ interface BuildingStore {
     fun update(building: BuildingModel)
     fun delete(building: BuildingModel)
     fun filterBuildings(buildingName: String): List<BuildingModel>
+    fun filterById(id: Long): List <BuildingModel>
 }

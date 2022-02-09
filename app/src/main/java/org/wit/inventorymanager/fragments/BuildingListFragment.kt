@@ -4,9 +4,11 @@ package org.wit.inventorymanager.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
@@ -17,6 +19,7 @@ import org.wit.inventorymanager.R
 import org.wit.inventorymanager.adapters.BuildingAdapter
 import org.wit.inventorymanager.adapters.BuildingListener
 import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
+import org.wit.inventorymanager.helpers.TouchHelpers
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import timber.log.Timber
@@ -31,6 +34,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
         .getReference("Building")
     var builds = mutableListOf<BuildingModel>()
     private var build = BuildingModel()
+    private lateinit var swipeCallback: TouchHelpers
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,27 +54,11 @@ class BuildingListFragment : Fragment(), BuildingListener {
         activity?.title = getString(R.string.action_location)
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
         getBuildingData()
-        db.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    for(buildSnap in snapshot.children){
-                        val build = buildSnap.getValue(BuildingModel::class.java)
-                        builds.add(build!!)
-                    }
-                }
-                Timber.i("APP BUILDS: $builds")
-                if (builds.isEmpty()) {
-                    fragBinding.noList.visibility = View.VISIBLE
-                    fragBinding.noList.setOnClickListener {
-                        it.findNavController()
-                            .navigate(R.id.action_buildingListFragment_to_buildingFragment)
-                    }
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.w("Failed", error.toException())
-            }
-        })
+        removeBuildingData()
+
+
+
+
         return root
     }
 
@@ -104,10 +92,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
         findNavController().navigate(action)
     }
 
-    override fun onResume(){
-        getBuildingData()
-        super.onResume()
-    }
 
     private fun getBuildingData(){
         db.addValueEventListener(object: ValueEventListener {
@@ -121,8 +105,48 @@ class BuildingListFragment : Fragment(), BuildingListener {
                 }
                 view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildings, this@BuildingListFragment)
                 view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+                if (buildings.isEmpty()) {
+                    view?.findViewById<Button>(R.id.noList)?.visibility = View.VISIBLE
+                    view?.findViewById<Button>(R.id.noList)?.setOnClickListener {
+                        it.findNavController()
+                            .navigate(R.id.action_buildingListFragment_to_buildingFragment)
+                    }
+                }
             }
 
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("Failed", error.toException())
+            }
+        })
+    }
+
+    private fun removeBuildingData(){
+        db.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    for(buildSnap in snapshot.children){
+                        val build = buildSnap.getValue(BuildingModel::class.java)
+                        builds.add(build!!)
+                        Timber.i("ADDED BUILDS: $builds")
+
+                    }
+                }
+                swipeCallback = object: TouchHelpers(){
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                        val pos = viewHolder.absoluteAdapterPosition
+                        if (builds.isNotEmpty()) {
+                            app.builds.delete(builds[pos])
+                            builds.remove(builds[pos])
+                            fragBinding.recyclerView.adapter?.notifyItemRemoved(pos)
+                            Timber.i("DELETE BUILDS: $builds")
+                        }
+                    }
+                }
+                val itemTouchHelper = ItemTouchHelper(swipeCallback)
+                itemTouchHelper.attachToRecyclerView(view?.findViewById(R.id.recyclerView))
+                Timber.i("BUILDS AFTER ALL: $builds")
+
+            }
             override fun onCancelled(error: DatabaseError) {
                 Log.w("Failed", error.toException())
             }
