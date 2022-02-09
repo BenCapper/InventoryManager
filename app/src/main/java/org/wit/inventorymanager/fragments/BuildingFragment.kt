@@ -138,13 +138,20 @@ class BuildingFragment : Fragment() {
 
             if (building.name.isEmpty()) {
                 toast(R.string.loc_name)
+            } else if (building.name.length > 15){
+                toast(R.string.b_name_chars)
             } else if (building.address.isEmpty()) {
                 toast(R.string.loc_address)
-            }  else if (building.phone.isEmpty()) {
+            } else if (building.address.length > 25){
+                toast(R.string.b_address_chars)
+            } else if (building.phone.isEmpty()) {
                 toast(R.string.loc_phone)
-            }  else if ( building.image == "") {
+            }else if(building.phone.length > 15){
+                toast(R.string.b_phone_chars)
+            } else if ( building.image == "") {
                 toast(R.string.loc_img)
-            }else {
+            }
+                else {
                 if (building.id.toString().length == 1){
                     building.id = Random().nextLong()
                     app.builds.create(building)
