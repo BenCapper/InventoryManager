@@ -15,26 +15,26 @@ import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
-
+import splitties.snackbar.snack
+import timber.log.Timber
 
 
 class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
 
     private lateinit var map: GoogleMap
-    var location = Location(52.245696, -7.139102, 15f)
-    val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment()
-    var build = BuildingModel()
+    private val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment()
+    private var build = BuildingModel()
 
 
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
-        val loc = LatLng(location.lat, location.lng)
+        val loc = LatLng(build.lat, build.lng)
         val options = MarkerOptions()
             .title("Branch Location")
             .snippet("GPS : $loc")
             .draggable(true)
             .position(loc)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, location.zoom))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, build.zoom))
         map.setOnMarkerClickListener(this)
         map.addMarker(options)
         map.setOnMarkerDragListener(this)
@@ -77,7 +77,8 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val frag = BuildingFragment.newInstance()
-        frag.arguments?.putParcelable("build",build)
+        frag.arguments?.putParcelable("editBuild",build)
+        Timber.i("BUILDING "+build)
         requireActivity().supportFragmentManager.findFragmentById(R.id.buildingFragment)
             ?.let { requireActivity().supportFragmentManager.beginTransaction().remove(it)
                 .replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit() }
@@ -89,6 +90,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         build.lat = marker.position.latitude
         build.lng = marker.position.longitude
         build.zoom = map.cameraPosition.zoom
+        view?.snack(R.string.b_setloc)
     }
 
 

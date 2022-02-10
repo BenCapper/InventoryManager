@@ -23,6 +23,10 @@
         <item name="actionMenuTextColor">@color/orange</item>"
         <item name="colorAccent">@color/orange</item>
     </style>
-
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:editTextColor">@color/orange</item>
+        <item name="android:textColorHint">@color/orange</item>
+    </style>
     <style name="Theme.InventoryManager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

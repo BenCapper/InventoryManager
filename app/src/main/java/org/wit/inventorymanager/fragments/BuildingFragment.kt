@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import splitties.snackbar.snack
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
@@ -97,20 +98,25 @@ class BuildingFragment : Fragment() {
         fragBinding.buildingLocation.setOnClickListener {
             val location = Location(52.245696, -7.139102, 15f)
             val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
-            if (building.zoom == 15f && building.lat == 52.245696 && building.lng == -7.139102 && building.id.toString().length > 1) {
-                action.arguments.putParcelable("build", building)
-                requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-            }
-            if (building.zoom != 0f && building.lat != 0.toDouble() && building.lng != 0.toDouble()) {
-                action.arguments.putParcelable("build", building)
-                requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-            }
-            else {
+            if (building.zoom == 0f && building.lat == (0).toDouble() && building.lng == (0).toDouble()) {
                 building.zoom = location.zoom
                 building.lat = location.lat
                 building.lng = location.lng
                 action.arguments.putParcelable("build", building)
                 requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+            }
+            else {
+                if (arguments?.containsKey("editBuild") == true) {
+                    action.arguments.putParcelable("build", building)
+                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+                }else{
+                    building.id = (0).toLong()
+                    building.zoom = 15f
+                    building.lat = 52.245696
+                    building.lng = -7.139102
+                    action.arguments.putParcelable("build", building)
+                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+                }
             }
         }
         return root
@@ -125,6 +131,12 @@ class BuildingFragment : Fragment() {
 
     override fun onResume() {
         setButtonListener(fragBinding)
+        if (building.image != ""){
+            Picasso.get()
+                .load(Uri.parse(building.image))
+                .into(fragBinding.buildingImage)
+            fragBinding.chooseImage.setText(R.string.img_ch)
+        }
         super.onResume()
     }
 
@@ -137,27 +149,29 @@ class BuildingFragment : Fragment() {
             building.phone = layout.editTextPhone.text.toString()
 
             if (building.name.isEmpty()) {
-                toast(R.string.loc_name)
+               view?.snack(R.string.loc_name)
             } else if (building.name.length > 15){
-                toast(R.string.b_name_chars)
+                view?.snack(R.string.b_name_chars)
             } else if (building.address.isEmpty()) {
-                toast(R.string.loc_address)
+                view?.snack(R.string.loc_address)
             } else if (building.address.length > 25){
-                toast(R.string.b_address_chars)
+                view?.snack(R.string.b_address_chars)
             } else if (building.phone.isEmpty()) {
-                toast(R.string.loc_phone)
+                view?.snack(R.string.loc_phone)
             }else if(building.phone.length > 15){
-                toast(R.string.b_phone_chars)
+                view?.snack(R.string.b_phone_chars)
             } else if ( building.image == "") {
-                toast(R.string.loc_img)
+                view?.snack(R.string.loc_img)
             }
                 else {
                 if (building.id.toString().length == 1){
                     building.id = Random().nextLong()
                     app.builds.create(building)
+                    view?.snack(R.string.b_create)
                 }
                 else {
                     app.builds.update(building)
+                    view?.snack(R.string.b_update)
                 }
                 Timber.i(building.toString())
 
