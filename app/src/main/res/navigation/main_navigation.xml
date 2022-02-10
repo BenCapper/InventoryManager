@@ -30,6 +30,11 @@
             app:destination="@id/buildingFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_buildingListFragment_to_stockListFragment"
+            app:destination="@id/stockListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/mapsFragment"
@@ -38,6 +43,33 @@
         <action
             android:id="@+id/action_mapsFragment_to_buildingFragment"
             app:destination="@id/buildingFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/stockListFragment"
+        android:name="org.wit.inventorymanager.fragments.StockListFragment"
+        android:label="Stock"
+        tools:layout="@layout/fragment_stock_list" >
+        <action
+            android:id="@+id/action_stockListFragment_to_stockFragment"
+            app:destination="@id/stockFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_stockListFragment_to_buildingListFragment"
+            app:destination="@id/buildingListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/stockFragment"
+        android:name="org.wit.inventorymanager.fragments.StockFragment"
+        android:label="Stock"
+        tools:layout="@layout/fragment_stock" >
+        <action
+            android:id="@+id/action_stockFragment_to_stockListFragment"
+            app:destination="@id/stockListFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>

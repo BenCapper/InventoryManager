@@ -7,7 +7,7 @@ class FirebaseStock : StockStore {
 
     var stock = mutableListOf<StockModel>()
     val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
-        .getReference("Building")
+        .getReference("Stock")
 
 
     override fun findAll(): MutableList<StockModel> {

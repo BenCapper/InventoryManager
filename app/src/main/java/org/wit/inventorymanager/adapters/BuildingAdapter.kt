@@ -40,6 +40,10 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
             binding.phone.text = building.phone
             Picasso.get().load(building.image).resize(200,200).into(binding.imageIcon)
             binding.edit.setOnClickListener { listener.onEditBuildingClick(building)}
+            binding.buildingName.setOnClickListener { listener.onBuildingClick(building)}
+            binding.imageIcon.setOnClickListener { listener.onBuildingClick(building)}
+            binding.address.setOnClickListener { listener.onBuildingClick(building)}
+            binding.phone.setOnClickListener { listener.onBuildingClick(building)}
 
         }
     }

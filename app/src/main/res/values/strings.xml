@@ -91,6 +91,11 @@
     <string name="b_update">Location Updated</string>
     <string name="b_create">Location Created</string>
     <string name="b_setloc">Location Set</string>
+    <string name="s_noList">Create Item</string>
+
+
+    <string name="stock_add_img">Image</string>
+    <string name="stock_add_item">Add Item</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -23,7 +23,7 @@ import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.helpers.TouchHelpers
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
-import timber.log.Timber
+import splitties.snackbar.snack
 
 class BuildingListFragment : Fragment(), BuildingListener {
 
@@ -97,7 +97,11 @@ class BuildingListFragment : Fragment(), BuildingListener {
 }
 
     override fun onBuildingClick(building: BuildingModel) {
-        TODO("Not yet implemented")
+        val action = BuildingListFragmentDirections.actionBuildingListFragmentToStockListFragment()
+        build.id = building.id
+        action.arguments.putParcelable("build", build)
+        findNavController().navigate(action)
+        view?.snack(building.id.toString())
     }
 
     override fun onEditBuildingClick(building: BuildingModel) {
