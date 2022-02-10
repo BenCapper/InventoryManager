@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import splitties.snackbar.snack
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
@@ -20,7 +21,6 @@ import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
 import splitties.toast.toast
-import splitties.views.imageResource
 import timber.log.Timber
 import java.util.*
 
@@ -149,27 +149,29 @@ class BuildingFragment : Fragment() {
             building.phone = layout.editTextPhone.text.toString()
 
             if (building.name.isEmpty()) {
-                toast(R.string.loc_name)
+               view?.snack(R.string.loc_name)
             } else if (building.name.length > 15){
-                toast(R.string.b_name_chars)
+                view?.snack(R.string.b_name_chars)
             } else if (building.address.isEmpty()) {
-                toast(R.string.loc_address)
+                view?.snack(R.string.loc_address)
             } else if (building.address.length > 25){
-                toast(R.string.b_address_chars)
+                view?.snack(R.string.b_address_chars)
             } else if (building.phone.isEmpty()) {
-                toast(R.string.loc_phone)
+                view?.snack(R.string.loc_phone)
             }else if(building.phone.length > 15){
-                toast(R.string.b_phone_chars)
+                view?.snack(R.string.b_phone_chars)
             } else if ( building.image == "") {
-                toast(R.string.loc_img)
+                view?.snack(R.string.loc_img)
             }
                 else {
                 if (building.id.toString().length == 1){
                     building.id = Random().nextLong()
                     app.builds.create(building)
+                    view?.snack(R.string.b_create)
                 }
                 else {
                     app.builds.update(building)
+                    view?.snack(R.string.b_update)
                 }
                 Timber.i(building.toString())
 

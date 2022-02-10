@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
+import splitties.snackbar.snack
 import timber.log.Timber
 
 
@@ -89,6 +90,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         build.lat = marker.position.latitude
         build.lng = marker.position.longitude
         build.zoom = map.cameraPosition.zoom
+        view?.snack(R.string.b_setloc)
     }
 
 
