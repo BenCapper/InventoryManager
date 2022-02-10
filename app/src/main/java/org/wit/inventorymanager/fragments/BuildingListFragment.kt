@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Button
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -35,6 +36,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     var builds = mutableListOf<BuildingModel>()
     private var build = BuildingModel()
     private lateinit var swipeCallback: TouchHelpers
+    private lateinit var foundList: MutableList<BuildingModel>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +57,22 @@ class BuildingListFragment : Fragment(), BuildingListener {
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
         getBuildingData()
         removeBuildingData()
+        //https://stackoverflow.com/questions/55949305/how-to-properly-retrieve-data-from-searchview-in-kotlin
+        fragBinding.buildingSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    search(newText)
+                } else {
+                    view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(builds, this@BuildingListFragment)
+                    view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+                }
+                return true
+            }
+        })
 
 
 
@@ -118,6 +136,17 @@ class BuildingListFragment : Fragment(), BuildingListener {
                 Log.w("Failed", error.toException())
             }
         })
+    }
+
+    private fun search(newText: String){
+        foundList = mutableListOf()
+        for(item in builds){
+            if(item.name.lowercase().contains(newText.lowercase())){
+                foundList.add(item)
+            }
+        }
+        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(foundList, this@BuildingListFragment)
+        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
     }
 
     private fun removeBuildingData(){
