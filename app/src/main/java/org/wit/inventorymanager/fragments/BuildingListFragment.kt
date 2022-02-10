@@ -57,6 +57,15 @@ class BuildingListFragment : Fragment(), BuildingListener {
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
         getBuildingData()
         removeBuildingData()
+        getSearchData()
+
+
+
+
+        return root
+    }
+
+    private fun getSearchData(){
         //https://stackoverflow.com/questions/55949305/how-to-properly-retrieve-data-from-searchview-in-kotlin
         fragBinding.buildingSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -66,18 +75,13 @@ class BuildingListFragment : Fragment(), BuildingListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     search(newText)
-                } else {
-                    view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(builds, this@BuildingListFragment)
-                    view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+                }
+                else {
+                    showBuildings(foundList)
                 }
                 return true
             }
         })
-
-
-
-
-        return root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -121,8 +125,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
                         buildings.add(build!!)
                     }
                 }
-                view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildings, this@BuildingListFragment)
-                view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+                showBuildings(buildings)
                 if (buildings.isEmpty()) {
                     view?.findViewById<Button>(R.id.noList)?.visibility = View.VISIBLE
                     view?.findViewById<Button>(R.id.noList)?.setOnClickListener {
@@ -140,13 +143,12 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     private fun search(newText: String){
         foundList = mutableListOf()
-        for(item in builds){
+        for(item in buildings){
             if(item.name.lowercase().contains(newText.lowercase())){
                 foundList.add(item)
             }
         }
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(foundList, this@BuildingListFragment)
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+        showBuildings(foundList)
     }
 
     private fun removeBuildingData(){
@@ -178,6 +180,10 @@ class BuildingListFragment : Fragment(), BuildingListener {
         })
     }
 
+    private fun showBuildings (buildingList: List<BuildingModel>) {
+        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildingList, this@BuildingListFragment)
+        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+    }
 
     companion object {
         @JvmStatic
