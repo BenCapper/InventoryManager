@@ -21,20 +21,19 @@ import org.wit.inventorymanager.models.Location
 class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
 
     private lateinit var map: GoogleMap
-    var location = Location(52.245696, -7.139102, 15f)
-    val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment()
-    var build = BuildingModel()
+    private val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment()
+    private var build = BuildingModel()
 
 
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
-        val loc = LatLng(location.lat, location.lng)
+        val loc = LatLng(build.lat, build.lng)
         val options = MarkerOptions()
             .title("Branch Location")
             .snippet("GPS : $loc")
             .draggable(true)
             .position(loc)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, location.zoom))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, build.zoom))
         map.setOnMarkerClickListener(this)
         map.addMarker(options)
         map.setOnMarkerDragListener(this)

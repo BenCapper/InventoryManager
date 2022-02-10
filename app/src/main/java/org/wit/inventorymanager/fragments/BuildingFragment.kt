@@ -97,20 +97,25 @@ class BuildingFragment : Fragment() {
         fragBinding.buildingLocation.setOnClickListener {
             val location = Location(52.245696, -7.139102, 15f)
             val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
-            if (building.zoom == 15f && building.lat == 52.245696 && building.lng == -7.139102 && building.id.toString().length > 1) {
-                action.arguments.putParcelable("build", building)
-                requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-            }
-            if (building.zoom != 0f && building.lat != 0.toDouble() && building.lng != 0.toDouble()) {
-                action.arguments.putParcelable("build", building)
-                requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-            }
-            else {
+            if (building.zoom == 0f && building.lat == (0).toDouble() && building.lng == (0).toDouble()) {
                 building.zoom = location.zoom
                 building.lat = location.lat
                 building.lng = location.lng
                 action.arguments.putParcelable("build", building)
                 requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+            }
+            else {
+                if (arguments?.containsKey("editBuild") == true) {
+                    action.arguments.putParcelable("build", building)
+                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+                }else{
+                    building.id = (0).toLong()
+                    building.zoom = 15f
+                    building.lat = 52.245696
+                    building.lng = -7.139102
+                    action.arguments.putParcelable("build", building)
+                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+                }
             }
         }
         return root
