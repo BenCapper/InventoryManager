@@ -25,7 +25,7 @@
             android:id="@+id/stockListName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_primary"
+            android:textColor="@color/orange"
             android:textStyle="bold"
             android:layout_toEndOf="@+id/stockImageIcon"
             android:textSize="20sp"
@@ -35,7 +35,7 @@
             android:id="@+id/stockListWeight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_secondary"
+            android:textColor="@color/orange"
             android:layout_below="@id/stockListPrice"
             android:textStyle="bold"
             android:layout_toEndOf="@+id/textViewWeight" />
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/stockListPrice"
             android:layout_toEndOf="@+id/stockImageIcon"
-            android:textColor="@color/color_primary"
+            android:textColor="@color/dark"
             android:textStyle="bold"
             android:text="@string/weight_colon" />
 
@@ -54,7 +54,7 @@
             android:id="@+id/stockListPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_secondary"
+            android:textColor="@color/orange"
             android:layout_below="@id/stockListName"
             android:textStyle="bold"
             android:layout_toEndOf="@+id/textViewPrice" />
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/stockListName"
             android:layout_toEndOf="@+id/stockImageIcon"
-            android:textColor="@color/color_primary"
+            android:textColor="@color/dark"
             android:textStyle="bold"
             android:text="@string/price_icon" />
 
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/stockListWeight"
             android:layout_toEndOf="@+id/stockImageIcon"
-            android:textColor="@color/color_primary"
+            android:textColor="@color/dark"
             android:textStyle="bold"
             android:text="@string/dept_colon" />
 
@@ -87,7 +87,7 @@
             android:layout_below="@id/textViewWeight"
             android:layout_toEndOf="@+id/textViewDept"
             android:textStyle="bold"
-            android:textColor="@color/color_secondary" />
+            android:textColor="@color/dark" />
 
         <TextView
             android:id="@+id/inStockNum"
@@ -110,7 +110,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="8dp"
             android:layout_alignParentEnd="true"
-            android:textColor="@color/color_primary"
+            android:textColor="@color/orange"
             android:textStyle="bold"
             android:textSize="11sp"
             android:text="@string/in_stock" />

@@ -98,10 +98,12 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     override fun onBuildingClick(building: BuildingModel) {
         val action = BuildingListFragmentDirections.actionBuildingListFragmentToStockListFragment()
-        build.id = building.id
-        action.arguments.putParcelable("build", build)
-        findNavController().navigate(action)
-        view?.snack(building.id.toString())
+        //build.id = building.id
+        var bundle = Bundle()
+        bundle.putParcelable("id", building)
+        //action.arguments.putString("id", build.id.toString())
+        findNavController().navigate(R.id.action_buildingListFragment_to_stockListFragment, bundle)
+
     }
 
     override fun onEditBuildingClick(building: BuildingModel) {

@@ -9,7 +9,7 @@
     tools:context=".fragments.StockListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/s_recyclerView"
+        android:id="@+id/sRecyclerView"
         android:layout_width="406dp"
         android:layout_height="632dp"
         android:background="@color/dark"
@@ -41,7 +41,7 @@
         android:searchHintIcon="@drawable/ic_search_or"
         android:searchIcon="@drawable/ic_search_or"
         android:theme="@style/SearchViewStyle"
-        app:layout_constraintBottom_toTopOf="@+id/s_recyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/sRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

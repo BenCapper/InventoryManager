@@ -16,13 +16,16 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import org.wit.inventory.activities.StockAdapter
-import org.wit.inventory.activities.StockListener
+import org.wit.inventorymanager.adapters.StockAdapter
+import org.wit.inventorymanager.adapters.StockListener
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentStockListBinding
 import org.wit.inventorymanager.helpers.TouchHelpers
 import org.wit.inventorymanager.main.InventoryApp
+import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.StockModel
+import splitties.snackbar.snack
+import timber.log.Timber
 
 
 class StockListFragment : Fragment(), StockListener {
@@ -38,7 +41,8 @@ class StockListFragment : Fragment(), StockListener {
     private var stock = StockModel()
     private lateinit var swipeCallback: TouchHelpers
     private lateinit var foundList: MutableList<StockModel>
-
+    private var id = (0).toLong()
+    private var build = BuildingModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,9 +57,16 @@ class StockListFragment : Fragment(), StockListener {
     ): View {
         _fragBinding = FragmentStockListBinding.inflate(inflater, container, false)
         val root = fragBinding.root
-        activity?.title = getString(R.string.action_location)
         fragBinding.sRecyclerView.layoutManager = LinearLayoutManager(activity)
+        val bundle = arguments
+        if (arguments?.containsKey("id") == true) {
+            build = bundle?.getParcelable<BuildingModel>("id")!!
+            id = build.id
+            Timber.i("Build = " + id)
+            view?.snack(id.toString())
+        }
         getStockData()
+        loadBranchStock()
         removeStockData()
         getSearchStockData()
 
@@ -91,7 +102,9 @@ class StockListFragment : Fragment(), StockListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item!!.itemId
         if (id == R.id.item_building_new) {
-            findNavController().navigate(R.id.action_buildingListFragment_to_buildingFragment)
+            var bundle = Bundle()
+            bundle.putParcelable("build", build)
+            findNavController().navigate(R.id.action_stockListFragment_to_stockFragment, bundle)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -112,30 +125,39 @@ class StockListFragment : Fragment(), StockListener {
     }
 
 
-    private fun getStockData() {
-        db.addValueEventListener(object : ValueEventListener {
+
+    private fun getStockData(){
+        db.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 stockList = mutableListOf()
                 if (snapshot.exists()) {
                     for (stockSnap in snapshot.children) {
                         val stock = stockSnap.getValue(StockModel::class.java)
-                        stockList.add(stock!!)
+                        if(stock?.branch == build.id){
+                            stockList.add(stock!!)
+                        }
                     }
                 }
                 showStock(stockList)
                 if (stockList.isEmpty()) {
                     view?.findViewById<Button>(R.id.stockNoList)?.visibility = View.VISIBLE
                     view?.findViewById<Button>(R.id.stockNoList)?.setOnClickListener {
+                        var bundle = Bundle()
+                        bundle.putParcelable("build", build)
                         it.findNavController()
-                            .navigate(R.id.action_stockListFragment_to_stockFragment)
+                            .navigate(R.id.action_stockListFragment_to_stockFragment, bundle)
                     }
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Log.w("Failed", error.toException())
             }
         })
+    }
+
+    private fun loadBranchStock(){
+        var filteredStock = app.stocks.filterStock(id)
+        showStock(filteredStock)
     }
 
     private fun search(newText: String) {
@@ -168,7 +190,7 @@ class StockListFragment : Fragment(), StockListener {
                     }
                 }
                 val itemTouchHelper = ItemTouchHelper(swipeCallback)
-                itemTouchHelper.attachToRecyclerView(view?.findViewById(R.id.s_recyclerView))
+                itemTouchHelper.attachToRecyclerView(view?.findViewById(R.id.sRecyclerView))
 
             }
 
@@ -179,9 +201,9 @@ class StockListFragment : Fragment(), StockListener {
     }
 
     private fun showStock(stockList: List<StockModel>) {
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter =
+        view?.findViewById<RecyclerView>(R.id.sRecyclerView)?.adapter =
             StockAdapter(stockList, this@StockListFragment)
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+        view?.findViewById<RecyclerView>(R.id.sRecyclerView)?.adapter?.notifyDataSetChanged()
     }
 
     companion object {

@@ -17,6 +17,7 @@ import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentStockBinding
 import org.wit.inventorymanager.helpers.showImagePicker
 import org.wit.inventorymanager.main.InventoryApp
+import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.StockModel
 import timber.log.Timber
 import java.util.*
@@ -25,12 +26,14 @@ import java.util.*
 private var _fragBinding: FragmentStockBinding? = null
 private val fragBinding get() = _fragBinding!!
 private var stock = StockModel()
+private var build = BuildingModel()
 private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
 
 class StockFragment : Fragment() {
 
     lateinit var app: InventoryApp
     private var id: Long = 0
+    private var buildId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +53,9 @@ class StockFragment : Fragment() {
         activity?.title = getString(R.string.action_location)
         registerImagePickerCallback()
         val bundle = arguments
-        if (arguments?.isEmpty == false) {
-            stock = bundle?.getParcelable("stock")!!
+        //stock = bundle?.getParcelable("stock")!!
+        build = bundle?.getParcelable("build")!!
+        Timber.i("ID " + build)
 
 
             if (stock.id !== (0).toLong()){
@@ -77,10 +81,8 @@ class StockFragment : Fragment() {
                 fragBinding.stockImage.setImageURI(null)
             }
 
-        }
 
-
-        fragBinding.stockImage.setOnClickListener {
+        fragBinding.chooseImage.setOnClickListener {
             showImagePicker(imageIntentLauncher)
         }
 
@@ -88,10 +90,6 @@ class StockFragment : Fragment() {
         return root
     }
 
-    override fun onPause() {
-
-        super.onPause()
-    }
 
     override fun onResume() {
         setButtonListener(fragBinding)
@@ -111,6 +109,7 @@ class StockFragment : Fragment() {
             stock.price = layout.stockPrice.text.toString().toDouble()
             stock.weight = layout.stockWeight.text.toString()
             stock.inStock = layout.quantity.value.toLong()
+            stock.branch = build.id
 
             if (stock.name.isEmpty()) {
                 view?.snack(R.string.s_name)
@@ -124,6 +123,7 @@ class StockFragment : Fragment() {
                 view?.snack(R.string.loc_img)
             }
             else {
+
                 if (stock.id.toString().length == 1){
                     stock.id = Random().nextLong()
                     app.stocks.create(stock)
@@ -134,7 +134,8 @@ class StockFragment : Fragment() {
                     view?.snack(R.string.s_update)
                 }
                 Timber.i(stock.toString())
-
+                val bundle = Bundle()
+                bundle.putParcelable("id", build)
                 layout.stockName.setText("")
                 layout.stockPrice.setText("")
                 layout.stockWeight.setText("")
@@ -145,10 +146,11 @@ class StockFragment : Fragment() {
                 stock.image = ""
                 stock.inStock = 0
                 stock.id = 0
+                stock.branch = 0
 
 
                 it.findNavController()
-                    .navigate(R.id.action_stockFragment_to_stockListFragment)
+                    .navigate(R.id.action_stockFragment_to_stockListFragment, bundle)
             }
         }
     }
