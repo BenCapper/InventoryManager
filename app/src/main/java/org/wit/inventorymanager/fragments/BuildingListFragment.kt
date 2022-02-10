@@ -127,8 +127,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
                     for(buildSnap in snapshot.children){
                         val build = buildSnap.getValue(BuildingModel::class.java)
                         builds.add(build!!)
-                        Timber.i("ADDED BUILDS: $builds")
-
                     }
                 }
                 swipeCallback = object: TouchHelpers(){
@@ -138,13 +136,11 @@ class BuildingListFragment : Fragment(), BuildingListener {
                             app.builds.delete(builds[pos])
                             builds.remove(builds[pos])
                             fragBinding.recyclerView.adapter?.notifyItemRemoved(pos)
-                            Timber.i("DELETE BUILDS: $builds")
                         }
                     }
                 }
                 val itemTouchHelper = ItemTouchHelper(swipeCallback)
                 itemTouchHelper.attachToRecyclerView(view?.findViewById(R.id.recyclerView))
-                Timber.i("BUILDS AFTER ALL: $builds")
 
             }
             override fun onCancelled(error: DatabaseError) {

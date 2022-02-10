@@ -20,6 +20,7 @@ import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
 import splitties.toast.toast
+import splitties.views.imageResource
 import timber.log.Timber
 import java.util.*
 
@@ -130,6 +131,12 @@ class BuildingFragment : Fragment() {
 
     override fun onResume() {
         setButtonListener(fragBinding)
+        if (building.image != ""){
+            Picasso.get()
+                .load(Uri.parse(building.image))
+                .into(fragBinding.buildingImage)
+            fragBinding.chooseImage.setText(R.string.img_ch)
+        }
         super.onResume()
     }
 
