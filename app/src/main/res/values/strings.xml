@@ -84,6 +84,7 @@
     <string name="loc_address">Enter the Location Address</string>
     <string name="loc_phone">Enter the Location Phone Number</string>
     <string name="loc_img">Select a Location Image</string>
+    <string name="stock_img">Select a Stock Image</string>
     <string name="img_ch">Change Image</string>
     <string name="loc_ch">Change Location</string>
     <string name="up_loc">Update Location</string>

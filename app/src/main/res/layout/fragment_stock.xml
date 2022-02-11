@@ -126,7 +126,7 @@
         android:backgroundTint="@color/orange"
         android:ems="10"
         android:hint="@string/hint_stockWeight"
-        android:inputType="numberDecimal"
+        android:inputType="textNoSuggestions"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -52,6 +52,13 @@ class StockFragment : Fragment() {
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
         registerImagePickerCallback()
+        fragBinding.quantity.minValue = 1
+        fragBinding.quantity.maxValue = 100000
+
+        fragBinding.quantity.setOnValueChangedListener { _, _, newVal ->
+            //Display the newly selected number to paymentAmount
+            stock.inStock = newVal.toLong()
+        }
         val bundle = arguments
         if (arguments?.containsKey("stock") == true){
             stock = bundle?.getParcelable("stock")!!
@@ -68,7 +75,7 @@ class StockFragment : Fragment() {
             if (stock.name != ""){
                 fragBinding.stockName.setText(stock.name)
             }
-            if (stock.price.toString() != ""){
+            if (stock.price.toString() != "0.0"){
                 fragBinding.stockPrice.setText(stock.price.toString())
             }
             if (stock.weight != ""){
@@ -109,7 +116,9 @@ class StockFragment : Fragment() {
         layout.btnAddItem.setOnClickListener {
 
             stock.name = layout.stockName.text.toString()
-            stock.price = layout.stockPrice.text.toString().toDouble()
+            if(!layout.stockPrice.text.isNullOrEmpty()) {
+                stock.price = layout.stockPrice.text.toString().toDouble()
+            }
             stock.weight = layout.stockWeight.text.toString()
             stock.inStock = layout.quantity.value.toLong()
             stock.branch = build.id
@@ -123,7 +132,7 @@ class StockFragment : Fragment() {
             } else if (stock.weight.isEmpty()) {
                 view?.snack(R.string.s_weight)
             } else if (stock.image == "") {
-                view?.snack(R.string.loc_img)
+                view?.snack(R.string.stock_img)
             }
             else {
 
