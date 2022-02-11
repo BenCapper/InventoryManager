@@ -114,14 +114,12 @@ class StockListFragment : Fragment(), StockListener {
             bundle.putParcelable("stock", stock)
             findNavController().navigate(R.id.action_stockListFragment_to_stockFragment, bundle)
         }
-
-        val frag = BuildingListFragment.newInstance()
-
-        requireActivity().supportFragmentManager.findFragmentById(R.id.buildingListFragment)
-            ?.let { requireActivity().supportFragmentManager.beginTransaction().remove(it)
-                .replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit() }
-
-        return super.onOptionsItemSelected(item)
+        else {
+            bundle.putParcelable("stock", stock)
+            view?.findNavController()
+                ?.navigate(R.id.action_stockListFragment_to_buildingListFragment, bundle)
+        }
+        return true
     }
 
     override fun onStockClick(stock: StockModel) {

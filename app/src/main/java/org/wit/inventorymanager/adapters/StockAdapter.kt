@@ -58,6 +58,10 @@ class StockAdapter constructor(private var stocks: List<StockModel>, private val
                 binding.stockListPrice.setTextColor(Color.RED)
                 binding.stockListName.setTextColor(Color.RED)
             }
+            binding.stockListName.setOnClickListener { listener.onStockClick(stock) }
+            binding.stockListPrice.setOnClickListener { listener.onStockClick(stock) }
+            binding.stockListWeight.setOnClickListener { listener.onStockClick(stock) }
+            binding.stockListQuantity.setOnClickListener { listener.onStockClick(stock) }
             binding.plus.setOnClickListener { listener.onAddStockClick(stock) }
             binding.minus.setOnClickListener {listener.onMinusStockClick(stock)}
 
