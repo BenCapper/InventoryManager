@@ -60,10 +60,11 @@
     <string name="search_stock">Search Stock</string>
     <string name="in_stock">In Stock</string>
     <string name="dept_colon">Department: </string>
+    <string name="quantity_colon">Quantity: </string>
     <string name="price_icon">Price: €</string>
     <string name="weight_colon">Weight: </string>
-
-
+    <string name="minus_desc">Remove from quantity</string>
+    <string name="plus_desc">Add to quantity</string>
     <string name="nav_header_title">Donation</string>
     <string name="nav_header_subtitle">voteforhomer@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -83,14 +84,25 @@
     <string name="loc_address">Enter the Location Address</string>
     <string name="loc_phone">Enter the Location Phone Number</string>
     <string name="loc_img">Select a Location Image</string>
+    <string name="stock_img">Select a Stock Image</string>
     <string name="img_ch">Change Image</string>
     <string name="loc_ch">Change Location</string>
     <string name="up_loc">Update Location</string>
     <string name="no_list">Create Location</string>
-
+    <string name="s_update">Item Updated</string>
+    <string name="s_create">Item Created</string>
     <string name="b_update">Location Updated</string>
     <string name="b_create">Location Created</string>
     <string name="b_setloc">Location Set</string>
+    <string name="s_noList">Create Item</string>
+    <string name="s_price">Enter the Item Value</string>
+    <string name="s_weight">Enter the Item Weight</string>
+    <string name="s_name">Enter the Item Name</string>
+    <string name="s_name_chars">15 Chars Maximum</string>
+    <string name="s_quantity">Enter the Item Quantity</string>
+
+    <string name="stock_add_img">Image</string>
+    <string name="stock_add_item">Add Item</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
