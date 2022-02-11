@@ -53,9 +53,12 @@ class StockFragment : Fragment() {
         activity?.title = getString(R.string.action_location)
         registerImagePickerCallback()
         val bundle = arguments
-        //stock = bundle?.getParcelable("stock")!!
+        if (arguments?.containsKey("stock") == true){
+            stock = bundle?.getParcelable("stock")!!
+        }
+
         build = bundle?.getParcelable("build")!!
-        Timber.i("ID " + build)
+        Timber.i("ID " + stock)
 
 
             if (stock.id !== (0).toLong()){
@@ -136,6 +139,7 @@ class StockFragment : Fragment() {
                 Timber.i(stock.toString())
                 val bundle = Bundle()
                 bundle.putParcelable("id", build)
+                bundle.putParcelable("stock", stock)
                 layout.stockName.setText("")
                 layout.stockPrice.setText("")
                 layout.stockWeight.setText("")

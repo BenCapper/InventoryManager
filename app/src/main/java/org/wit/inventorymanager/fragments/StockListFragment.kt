@@ -65,6 +65,9 @@ class StockListFragment : Fragment(), StockListener {
             Timber.i("Build = $id")
             view?.snack(id.toString())
         }
+        if (arguments?.containsKey("stock") == true){
+            stock = bundle?.getParcelable<StockModel>("stock")!!
+        }
         getStockData()
         loadBranchStock()
         removeStockData()
@@ -100,18 +103,25 @@ class StockListFragment : Fragment(), StockListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        var bundle = Bundle()
         val id = item!!.itemId
         if (id == R.id.item_building_new) {
-            var bundle = Bundle()
             bundle.putParcelable("build", build)
+            bundle.putParcelable("stock", stock)
             findNavController().navigate(R.id.action_stockListFragment_to_stockFragment, bundle)
         }
+
+        val frag = BuildingListFragment.newInstance()
+
+        requireActivity().supportFragmentManager.findFragmentById(R.id.buildingListFragment)
+            ?.let { requireActivity().supportFragmentManager.beginTransaction().remove(it)
+                .replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit() }
+        
         return super.onOptionsItemSelected(item)
     }
 
     override fun onStockClick(stock: StockModel) {
         val action = StockListFragmentDirections.actionStockListFragmentToStockFragment()
-        stock.id = stock.id
         action.arguments.putParcelable("stock", stock)
         findNavController().navigate(action)
     }
