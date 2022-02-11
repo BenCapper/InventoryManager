@@ -60,10 +60,11 @@
     <string name="search_stock">Search Stock</string>
     <string name="in_stock">In Stock</string>
     <string name="dept_colon">Department: </string>
+    <string name="quantity_colon">Quantity: </string>
     <string name="price_icon">Price: €</string>
     <string name="weight_colon">Weight: </string>
-
-
+    <string name="minus_desc">Remove from quantity</string>
+    <string name="plus_desc">Add to quantity</string>
     <string name="nav_header_title">Donation</string>
     <string name="nav_header_subtitle">voteforhomer@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
