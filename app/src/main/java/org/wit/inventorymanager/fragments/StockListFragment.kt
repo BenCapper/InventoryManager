@@ -62,7 +62,7 @@ class StockListFragment : Fragment(), StockListener {
         if (arguments?.containsKey("id") == true) {
             build = bundle?.getParcelable<BuildingModel>("id")!!
             id = build.id
-            Timber.i("Build = " + id)
+            Timber.i("Build = $id")
             view?.snack(id.toString())
         }
         getStockData()

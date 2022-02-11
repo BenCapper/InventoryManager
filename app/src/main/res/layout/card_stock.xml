@@ -10,35 +10,38 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#E1E3E1E1"
         android:padding="16dp">
 
         <ImageView
             android:id="@+id/stockImageIcon"
-            android:contentDescription="@string/building_image"
             android:layout_width="64dp"
-            android:layout_height="84dp"
+            android:layout_height="64dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/building_image" />
 
         <TextView
             android:id="@+id/stockListName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/orange"
-            android:textStyle="bold"
             android:layout_toEndOf="@+id/stockImageIcon"
+            android:textColor="@color/orange"
             android:textSize="20sp"
+            android:textStyle="bold"
             tools:ignore="RelativeOverlap" />
 
         <TextView
             android:id="@+id/stockListWeight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/orange"
             android:layout_below="@id/stockListPrice"
-            android:textStyle="bold"
-            android:layout_toEndOf="@+id/textViewWeight" />
+            android:layout_toEndOf="@+id/textViewWeight"
+            android:textColor="@color/orange"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textViewWeight"
@@ -46,18 +49,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/stockListPrice"
             android:layout_toEndOf="@+id/stockImageIcon"
+            android:text="@string/weight_colon"
             android:textColor="@color/dark"
-            android:textStyle="bold"
-            android:text="@string/weight_colon" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/stockListPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/orange"
             android:layout_below="@id/stockListName"
-            android:textStyle="bold"
-            android:layout_toEndOf="@+id/textViewPrice" />
+            android:layout_toEndOf="@+id/textViewPrice"
+            android:textColor="@color/orange"
+            android:textStyle="bold" />
 
 
         <TextView
@@ -66,54 +69,35 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/stockListName"
             android:layout_toEndOf="@+id/stockImageIcon"
+            android:text="@string/price_icon"
             android:textColor="@color/dark"
-            android:textStyle="bold"
-            android:text="@string/price_icon" />
-
-        <TextView
-            android:id="@+id/textViewDept"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/stockListWeight"
-            android:layout_toEndOf="@+id/stockImageIcon"
-            android:textColor="@color/dark"
-            android:textStyle="bold"
-            android:text="@string/dept_colon" />
-
-        <TextView
-            android:id="@+id/stockListDept"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textViewWeight"
-            android:layout_toEndOf="@+id/textViewDept"
-            android:textStyle="bold"
-            android:textColor="@color/dark" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/inStockNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/add"
-            android:layout_marginTop="2dp"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="23dp"
-            android:textColor="@color/color_secondary"
-            android:textStyle="bold"
             android:inputType="number"
-            android:textSize="12sp" />
+            android:textColor="@color/color_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textViewInStock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/add"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="8dp"
-            android:layout_alignParentEnd="true"
+            android:text="@string/in_stock"
             android:textColor="@color/orange"
-            android:textStyle="bold"
             android:textSize="11sp"
-            android:text="@string/in_stock" />
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/add"
@@ -134,8 +118,6 @@
             android:layout_marginTop="70dp"
             android:layout_marginEnd="15dp"
             android:background="@mipmap/minus_icon" />
-
-
 
 
     </RelativeLayout>
