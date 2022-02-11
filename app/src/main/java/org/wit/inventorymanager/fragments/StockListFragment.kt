@@ -116,7 +116,7 @@ class StockListFragment : Fragment(), StockListener {
         requireActivity().supportFragmentManager.findFragmentById(R.id.buildingListFragment)
             ?.let { requireActivity().supportFragmentManager.beginTransaction().remove(it)
                 .replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit() }
-        
+
         return super.onOptionsItemSelected(item)
     }
 
