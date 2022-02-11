@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.databinding.CardBuildingBinding
 import org.wit.inventorymanager.models.BuildingModel
+import java.util.*
 
 interface BuildingListener {
     fun onBuildingClick(building: BuildingModel)
@@ -35,8 +36,16 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
     inner class MainHolder(val binding : CardBuildingBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(building: BuildingModel, listener : BuildingListener) {
-            binding.buildingName.text = building.name
-            binding.address.text= building.address
+            binding.buildingName.text = building.name.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.ROOT
+                ) else it.toString()
+            }
+            binding.address.text= building.address.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.ROOT
+                ) else it.toString()
+            }
             binding.phone.text = building.phone
             Picasso.get().load(building.image).resize(200,200).into(binding.imageIcon)
             binding.edit.setOnClickListener { listener.onEditBuildingClick(building)}

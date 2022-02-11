@@ -11,6 +11,7 @@ import org.wit.inventorymanager.databinding.CardBuildingBinding
 import org.wit.inventorymanager.databinding.CardStockBinding
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.StockModel
+import java.util.*
 
 
 interface StockListener {
@@ -41,7 +42,11 @@ class StockAdapter constructor(private var stocks: List<StockModel>, private val
     inner class MainHolder(val binding : CardStockBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(stock: StockModel, listener : StockListener) {
-            binding.stockListName.text = stock.name
+            binding.stockListName.text = stock.name.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.ROOT
+                ) else it.toString()
+            }
             binding.stockListPrice.text = stock.price.toString()
             binding.stockListWeight.text = stock.weight
             Picasso.get().load(stock.image).resize(200,200).into(binding.stockImageIcon)
