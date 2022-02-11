@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.SearchView
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -67,6 +68,9 @@ class StockListFragment : Fragment(), StockListener {
         }
         if (arguments?.containsKey("stock") == true){
             stock = bundle?.getParcelable<StockModel>("stock")!!
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_stockListFragment_to_buildingListFragment)
         }
         getStockData()
         loadBranchStock()

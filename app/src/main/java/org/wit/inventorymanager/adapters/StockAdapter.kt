@@ -1,6 +1,7 @@
 package org.wit.inventorymanager.adapters
 
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -51,6 +52,12 @@ class StockAdapter constructor(private var stocks: List<StockModel>, private val
             binding.stockListWeight.text = stock.weight
             Picasso.get().load(stock.image).resize(200,200).into(binding.stockImageIcon)
             binding.stockListQuantity.text = stock.inStock.toString()
+            if (stock.inStock == 0L){
+                binding.stockListQuantity.setTextColor(Color.RED)
+                binding.stockListWeight.setTextColor(Color.RED)
+                binding.stockListPrice.setTextColor(Color.RED)
+                binding.stockListName.setTextColor(Color.RED)
+            }
             binding.plus.setOnClickListener { listener.onAddStockClick(stock) }
             binding.minus.setOnClickListener {listener.onMinusStockClick(stock)}
 
