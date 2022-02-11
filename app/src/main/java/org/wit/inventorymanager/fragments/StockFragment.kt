@@ -63,14 +63,14 @@ class StockFragment : Fragment() {
         if (arguments?.containsKey("stock") == true){
             stock = bundle?.getParcelable("stock")!!
         }
-
-        build = bundle?.getParcelable("build")!!
-        Timber.i("ID " + stock)
-
+        if(arguments?.containsKey("build") == true) {
+            build = bundle?.getParcelable("build")!!
+            Timber.i("ID " + stock)
+        }
 
             if (stock.id !== (0).toLong()){
                 id = stock.id
-                fragBinding.btnAddItem.setText(R.string.up_loc)
+                fragBinding.btnAddItem.setText(R.string.up_stock)
             }
             if (stock.name != ""){
                 fragBinding.stockName.setText(stock.name)
