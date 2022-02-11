@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/stockListPrice"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="21dp"
             android:layout_toEndOf="@+id/textViewWeight"
             android:textColor="@color/orange"
             android:textStyle="bold" />

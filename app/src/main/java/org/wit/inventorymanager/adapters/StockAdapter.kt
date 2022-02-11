@@ -45,6 +45,9 @@ class StockAdapter constructor(private var stocks: List<StockModel>, private val
             binding.stockListPrice.text = stock.price.toString()
             binding.stockListWeight.text = stock.weight
             Picasso.get().load(stock.image).resize(200,200).into(binding.stockImageIcon)
+            binding.stockListQuantity.text = stock.inStock.toString()
+            binding.plus.setOnClickListener { listener.onAddStockClick(stock) }
+            binding.minus.setOnClickListener {listener.onMinusStockClick(stock)}
 
 
         }

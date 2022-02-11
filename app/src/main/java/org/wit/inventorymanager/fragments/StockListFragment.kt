@@ -117,11 +117,13 @@ class StockListFragment : Fragment(), StockListener {
     }
 
     override fun onAddStockClick(stock: StockModel) {
-        TODO("Not yet implemented")
+        stock.inStock++
+        app.stocks.update(stock)
     }
 
     override fun onMinusStockClick(stock: StockModel) {
-        TODO("Not yet implemented")
+        stock.inStock--
+        app.stocks.update(stock)
     }
 
 
