@@ -51,12 +51,14 @@ class StockFragment : Fragment() {
         activity?.title = getString(R.string.action_location)
         registerImagePickerCallback()
         fragBinding.quantity.minValue = 1
-        fragBinding.quantity.maxValue = 100000
+        fragBinding.quantity.maxValue = 2000
 
+        // Number picker listener
         fragBinding.quantity.setOnValueChangedListener { _, _, newVal ->
-            //Display the newly selected number to paymentAmount
             stock.inStock = newVal.toLong()
         }
+
+        // Check for arguments and save / set fields and text views
         val bundle = arguments
         if (arguments?.containsKey("stock") == true){
             stock = bundle?.getParcelable("stock")!!
@@ -120,6 +122,7 @@ class StockFragment : Fragment() {
             stock.inStock = layout.quantity.value.toLong()
             stock.branch = build.id
 
+            // Input validation
             when {
                 stock.name.isEmpty() -> {
                     view?.snack(R.string.s_name)

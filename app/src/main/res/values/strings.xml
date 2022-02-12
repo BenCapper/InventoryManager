@@ -74,6 +74,7 @@
     <string name="menu_addStock">Add Item</string>
     <string name="menu_cancelStock">Cancel</string>
     <string name="enter_stock_name">Enter the Item Name</string>
+    <string name="quantity_warn">Quantity already at the minimum level</string>
     <string name="save_stock">Save</string>
     <string name="button_addStockImage">Add Image</string>
 

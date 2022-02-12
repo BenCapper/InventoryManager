@@ -66,7 +66,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     }
 
     private fun getSearchData(){
-        //https://stackoverflow.com/questions/55949305/how-to-properly-retrieve-data-from-searchview-in-kotlin
+        // https://stackoverflow.com/questions/55949305/how-to-properly-retrieve-data-from-searchview-in-kotlin
         fragBinding.buildingSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -97,6 +97,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
 }
 
     override fun onBuildingClick(building: BuildingModel) {
+        // Open this buildings stock list
         val bundle = Bundle()
         bundle.putParcelable("id", building)
         findNavController().navigate(R.id.action_buildingListFragment_to_stockListFragment, bundle)
@@ -104,6 +105,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     }
 
     override fun onEditBuildingClick(building: BuildingModel) {
+        // Send building info to the create building fragment
         val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment()
         build.name = building.name
         build.address = building.address
@@ -119,6 +121,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
 
     private fun getBuildingData(){
+        // Get list of buildings saved to the database
         db.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 buildings = mutableListOf()
@@ -156,6 +159,9 @@ class BuildingListFragment : Fragment(), BuildingListener {
     }
 
     private fun removeBuildingData(){
+        /* Get list of buildings saved to the database
+         * delete the one at the swiped position
+         */
         db.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){

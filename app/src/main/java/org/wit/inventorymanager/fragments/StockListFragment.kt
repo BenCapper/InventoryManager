@@ -115,6 +115,7 @@ class StockListFragment : Fragment(), StockListener {
             findNavController().navigate(R.id.action_stockListFragment_to_stockFragment, bundle)
         }
         else {
+            // Nav drawer option selected, never want to return to the edit screen, go to building list
             bundle.putParcelable("stock", stock)
             view?.findNavController()
                 ?.navigate(R.id.action_stockListFragment_to_buildingListFragment, bundle)
@@ -123,19 +124,26 @@ class StockListFragment : Fragment(), StockListener {
     }
 
     override fun onStockClick(stock: StockModel) {
+        // Send stock info to create stock fragment for editing
         val action = StockListFragmentDirections.actionStockListFragmentToStockFragment()
         action.arguments.putParcelable("stock", stock)
         findNavController().navigate(action)
     }
 
     override fun onAddStockClick(stock: StockModel) {
+        // Add one to stock item quantity
         stock.inStock++
         app.stocks.update(stock)
     }
 
     override fun onMinusStockClick(stock: StockModel) {
-        stock.inStock--
-        app.stocks.update(stock)
+        // Remove 1 from stock item quantity unless already 0
+        if (stock.inStock >= 1) {
+            stock.inStock--
+            app.stocks.update(stock)
+        } else {
+            view?.snack(R.string.quantity_warn)
+        }
     }
 
 
