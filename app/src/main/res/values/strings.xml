@@ -1,109 +1,80 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="fragment_building" translatable="false">Locations</string>
-    <string name="fragment_stock" translatable="false">Stock</string>
-<string name="build" translatable="false" />
-    <string name="action_location" translatable="false">Locations</string>
-    <string name="action_stock" translatable="false">Stock</string>
+<resources>
 
-    <string name="action_share" translatable="false">Share</string>
-    <string name="action_send" translatable="false">Send</string>
-    <string name="group_communicate" translatable="false">Communicate</string>
-    <string name="b_name_chars" translatable="false">Name: 15 characters maximum</string>
-    <string name="b_address_chars" translatable="false">Address: 25 characters maximum</string>
-    <string name="b_phone_chars" translatable="false">Phone: 15 characters maximum</string>
+
     <string name="app_name">Inventory Manager</string>
-    <string name="button_addBuilding">Add Location</string>
-    <string name="hint_buildingName">Branch Name</string>
-    <string name="hint_buildingAddress">Branch Address</string>
-    <string name="hint_buildingPhone">Branch Phone Number</string>
-    <string name="menu_addBuilding">Add</string>
-    <string name="menu_building_new">New</string>
-    <string name="enter_building_name">Enter the Branch Name</string>
-    <string name="save_building">Save Branch</string>
-    <string name="button_addImage">Add Image</string>
-    <string name="select_building_image">Select Branch Image</string>
-    <string name="change_building_image">Change Image</string>
-    <string name="building_image">Branch Image</string>
-    <string name="button_location">Location</string>
     <string name="title_activity_maps">Map</string>
-    <string name="menu_deleteBuilding">Delete</string>
-    <string name="edit">Edit</string>
-    <string name="select">Select</string>
-    <string name="img_choose">Choose Image</string>
-
-    <string name="button_addStock">Add Item</string>
-    <string name="hint_stockName">Item Name</string>
-    <string name="hint_stockBranch">Branch Name</string>
-    <string name="hint_stockDept">Department</string>
-    <string name="hint_stockWeight">Item Weight</string>
-    <string name="hint_stockQuantity">Item Quantity</string>
-    <string name="hint_stockPrice">Item Price</string>
-    <string name="menu_addStock">Add Item</string>
-    <string name="menu_cancelStock">Cancel</string>
-    <string name="enter_stock_name">Enter the Item Name</string>
-    <string name="save_stock">Save</string>
-    <string name="button_addStockImage">Add Image</string>
-    <string name="select_stock_image">Select Image</string>
-    <string name="change_stock_image">Change Image</string>
-    <string name="stock_image">Item Image</string>
-    <string name="menu_deleteStock">Delete</string>
-    <string name="editStock">Edit</string>
-    <string name="selectStock">Select</string>
-    <string name="branchName">Stock</string>
-    <string name="departmentToast">Enter Department Name</string>
-    <string name="nameToast">Enter Item Name</string>
-    <string name="weightToast">Enter Item Weight</string>
-    <string name="priceToast">Enter Item Price</string>
-    <string name="quantityToast">Enter Item Quantity</string>
-    <string name="imageToast">Select an Image</string>
-    <string name="search_branch">Search Branches</string>
-    <string name="search_stock">Search Stock</string>
-    <string name="in_stock">In Stock</string>
-    <string name="dept_colon">Department: </string>
-    <string name="quantity_colon">Quantity: </string>
-    <string name="price_icon">Price: €</string>
-    <string name="weight_colon">Weight: </string>
-    <string name="minus_desc">Remove from quantity</string>
-    <string name="plus_desc">Add to quantity</string>
-    <string name="nav_header_title">Donation</string>
-    <string name="nav_header_subtitle">voteforhomer@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
+
     <string name="buildingTitle">Locations</string>
-    <string name="buildingButton">Build</string>
-    <string name="paypal">PayPal</string>
-    <string name="direct">Direct</string>
-    <string name="amount">Amount</string>
-    <string name="total">Total so Far</string>
-    <string name="totalSoFar">$ Total</string>
-    <string name="stockTitle">Stock Report</string>
-    <string name="defaultAmount">00</string>
-    <string name="defaultMethod">N/A</string>
-    <string name="enter_amount">Enter Amount</string>
-    <string name="loc_name">Enter the Location Name</string>
-    <string name="loc_address">Enter the Location Address</string>
-    <string name="loc_phone">Enter the Location Phone Number</string>
-    <string name="loc_img">Select a Location Image</string>
-    <string name="stock_img">Select a Stock Image</string>
     <string name="up_stock">Update Item</string>
     <string name="img_ch">Change Image</string>
     <string name="loc_ch">Change Location</string>
     <string name="up_loc">Update Location</string>
     <string name="no_list">Create Location</string>
-    <string name="s_update">Item Updated</string>
-    <string name="s_create">Item Created</string>
+    <string name="loc_name">Enter the Location Name</string>
+    <string name="loc_address">Enter the Location Address</string>
+    <string name="loc_phone">Enter the Location Phone Number</string>
+    <string name="loc_img">Select a Location Image</string>
     <string name="b_update">Location Updated</string>
     <string name="b_create">Location Created</string>
-    <string name="b_setloc">Location Set</string>
+    <string name="b_setLoc">Location Set</string>
+    <string name="button_addBuilding">Add Location</string>
+    <string name="hint_buildingName">Location Name</string>
+    <string name="hint_buildingAddress">Location Address</string>
+    <string name="hint_buildingPhone">Location Phone Number</string>
+    <string name="menu_addBuilding">Add</string>
+    <string name="menu_building_new">New</string>
+    <string name="enter_building_name">Enter the Location Name</string>
+    <string name="save_building">Save Branch</string>
+    <string name="button_addImage">Add Image</string>
+    <string name="select_building_image">Select Branch Image</string>
+    <string name="change_building_image">Change Image</string>
+    <string name="b_name_chars">Name: 15 characters maximum</string>
+    <string name="b_address_chars">Address: 25 characters maximum</string>
+    <string name="b_phone_chars" >Phone: 15 characters maximum</string>
+    <string name="fragment_building">Locations</string>
+    <string name="building_image">Branch Image</string>
+    <string name="button_location">Location</string>
+    <string name="action_location">Locations</string>
+    <string name="menu_deleteBuilding">Delete</string>
+    <string name="img_choose">Choose Image</string>
+
+
     <string name="s_noList">Create Item</string>
+    <string name="stock_add_img">Image</string>
+    <string name="stock_add_item">Add Item</string>
+    <string name="s_update">Item Updated</string>
+    <string name="s_create">Item Created</string>
     <string name="s_price">Enter the Item Value</string>
     <string name="s_weight">Enter the Item Weight</string>
     <string name="s_name">Enter the Item Name</string>
     <string name="s_name_chars">15 Chars Maximum</string>
     <string name="s_quantity">Enter the Item Quantity</string>
+    <string name="stock_img">Select a Stock Image</string>
+    <string name="fragment_stock">Stock</string>
+    <string name="search_stock">Search Stock</string>
+    <string name="in_stock">In Stock</string>
+    <string name="quantity_colon">Quantity: </string>
+    <string name="price_icon">Price: €</string>
+    <string name="weight_colon">Weight: </string>
+    <string name="minus_desc">Remove from quantity</string>
+    <string name="plus_desc">Add to quantity</string>
+    <string name="button_addStock">Add Item</string>
+    <string name="hint_stockName">Item Name</string>
+    <string name="hint_stockBranch">Branch Name</string>
+    <string name="hint_stockDept">Department</string>
+    <string name="action_stock">Stock</string>
+    <string name="hint_stockWeight">Item Weight</string>
+    <string name="hint_stockQuantity">Item Quantity</string>
+    <string name="hint_stockPrice">Item Price</string>
+    <string name="select_stock_image">Select Image</string>
+    <string name="change_stock_image">Change Image</string>
+    <string name="stock_image">Item Image</string>
+    <string name="menu_addStock">Add Item</string>
+    <string name="menu_cancelStock">Cancel</string>
+    <string name="enter_stock_name">Enter the Item Name</string>
+    <string name="save_stock">Save</string>
+    <string name="button_addStockImage">Add Image</string>
 
-    <string name="stock_add_img">Image</string>
-    <string name="stock_add_item">Add Item</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

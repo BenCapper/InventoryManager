@@ -87,7 +87,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         build.lat = marker.position.latitude
         build.lng = marker.position.longitude
         build.zoom = map.cameraPosition.zoom
-        view?.snack(R.string.b_setloc)
+        view?.snack(R.string.b_setLoc)
     }
 
 
