@@ -1,12 +1,12 @@
 package org.wit.inventorymanager.models
 
 import com.google.firebase.database.FirebaseDatabase
-import java.util.*
+
 
 class FirebaseStock : StockStore {
 
-    var stock = mutableListOf<StockModel>()
-    val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
+    private var stock = mutableListOf<StockModel>()
+    private val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
         .getReference("Stock")
 
 
@@ -14,10 +14,6 @@ class FirebaseStock : StockStore {
         return stock
     }
 
-
-    fun generateRandomStockId(): Long {
-        return Random().nextLong()
-    }
 
     override fun create(stock: StockModel) {
         db.child(stock.id.toString()).setValue(stock)

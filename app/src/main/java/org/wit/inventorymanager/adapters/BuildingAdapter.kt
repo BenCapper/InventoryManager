@@ -33,7 +33,7 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
     override fun getItemCount(): Int = buildings.size
 
 
-    inner class MainHolder(val binding : CardBuildingBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class MainHolder(private val binding : CardBuildingBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(building: BuildingModel, listener : BuildingListener) {
             binding.buildingName.text = building.name.replaceFirstChar {

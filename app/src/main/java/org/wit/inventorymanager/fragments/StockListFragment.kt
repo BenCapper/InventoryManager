@@ -1,8 +1,8 @@
 package org.wit.inventorymanager.fragments
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.SearchView
@@ -61,13 +61,13 @@ class StockListFragment : Fragment(), StockListener {
         fragBinding.sRecyclerView.layoutManager = LinearLayoutManager(activity)
         val bundle = arguments
         if (arguments?.containsKey("id") == true) {
-            build = bundle?.getParcelable<BuildingModel>("id")!!
+            build = bundle?.getParcelable("id")!!
             id = build.id
             Timber.i("Build = $id")
             view?.snack(id.toString())
         }
         if (arguments?.containsKey("stock") == true){
-            stock = bundle?.getParcelable<StockModel>("stock")!!
+            stock = bundle?.getParcelable("stock")!!
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_stockListFragment_to_buildingListFragment)
@@ -107,8 +107,8 @@ class StockListFragment : Fragment(), StockListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var bundle = Bundle()
-        val id = item!!.itemId
+        val bundle = Bundle()
+        val id = item.itemId
         if (id == R.id.item_building_new) {
             bundle.putParcelable("build", build)
             bundle.putParcelable("stock", stock)
@@ -148,7 +148,7 @@ class StockListFragment : Fragment(), StockListener {
                     for (stockSnap in snapshot.children) {
                         val stock = stockSnap.getValue(StockModel::class.java)
                         if(stock?.branch == build.id){
-                            stockList.add(stock!!)
+                            stockList.add(stock)
                         }
                     }
                 }
@@ -156,7 +156,7 @@ class StockListFragment : Fragment(), StockListener {
                 if (stockList.isEmpty()) {
                     view?.findViewById<Button>(R.id.stockNoList)?.visibility = View.VISIBLE
                     view?.findViewById<Button>(R.id.stockNoList)?.setOnClickListener {
-                        var bundle = Bundle()
+                        val bundle = Bundle()
                         bundle.putParcelable("build", build)
                         it.findNavController()
                             .navigate(R.id.action_stockListFragment_to_stockFragment, bundle)
@@ -164,13 +164,13 @@ class StockListFragment : Fragment(), StockListener {
                 }
             }
             override fun onCancelled(error: DatabaseError) {
-                Log.w("Failed", error.toException())
+                Timber.i("Failed: ${error.message}")
             }
         })
     }
 
     private fun loadBranchStock(){
-        var filteredStock = app.stocks.filterStock(id)
+        val filteredStock = app.stocks.filterStock(id)
         showStock(filteredStock)
     }
 
@@ -209,24 +209,18 @@ class StockListFragment : Fragment(), StockListener {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.w("Failed", error.toException())
+                Timber.i("Failed: ${error.message}")
             }
         })
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun showStock(stockList: List<StockModel>) {
         view?.findViewById<RecyclerView>(R.id.sRecyclerView)?.adapter =
             StockAdapter(stockList, this@StockListFragment)
         view?.findViewById<RecyclerView>(R.id.sRecyclerView)?.adapter?.notifyDataSetChanged()
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            StockListFragment().apply {
-                arguments = Bundle().apply { }
-            }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

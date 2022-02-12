@@ -6,11 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-
-import org.wit.inventorymanager.R
-import org.wit.inventorymanager.databinding.CardBuildingBinding
 import org.wit.inventorymanager.databinding.CardStockBinding
-import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.StockModel
 import java.util.*
 
@@ -40,7 +36,7 @@ class StockAdapter constructor(private var stocks: List<StockModel>, private val
 
     override fun getItemCount(): Int = stocks.size
 
-    inner class MainHolder(val binding : CardStockBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class MainHolder(private val binding : CardStockBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(stock: StockModel, listener : StockListener) {
             binding.stockListName.text = stock.name.replaceFirstChar {

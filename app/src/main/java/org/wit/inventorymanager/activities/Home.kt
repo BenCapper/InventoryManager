@@ -2,17 +2,14 @@ package org.wit.inventorymanager.activities
 
 
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
-import com.google.firebase.database.FirebaseDatabase
 import org.wit.inventorymanager.databinding.HomeBinding
 import org.wit.inventorymanager.R
-import org.wit.inventorymanager.fragments.app
+
 
 class Home : AppCompatActivity() {
 

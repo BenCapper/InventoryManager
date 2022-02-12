@@ -16,11 +16,9 @@ import splitties.snackbar.snack
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
-import org.wit.inventorymanager.helpers.showImagePicker
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
-import splitties.toast.toast
 import timber.log.Timber
 import java.util.*
 
@@ -28,8 +26,8 @@ import java.util.*
 lateinit var app: InventoryApp
 
 
-private var _fragBinding: FragmentBuildingBinding? = null
-private val fragBinding get() = _fragBinding!!
+private var nFragBinding: FragmentBuildingBinding? = null
+private val fragBinding get() = nFragBinding!!
 private var building = BuildingModel()
 private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
 
@@ -48,9 +46,9 @@ class BuildingFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
-        _fragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
+        nFragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
         val root = fragBinding.root
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
@@ -60,7 +58,7 @@ class BuildingFragment : Fragment() {
             building = bundle?.getParcelable("editBuild")!!
 
 
-            if (building.id !== (0).toLong()){
+            if (building.id.toString() !== (0).toLong().toString()){
                 id = building.id
                 fragBinding.btnAdd.setText(R.string.up_loc)
             }
@@ -148,49 +146,56 @@ class BuildingFragment : Fragment() {
             building.address = layout.buildingAddress.text.toString()
             building.phone = layout.editTextPhone.text.toString()
 
-            if (building.name.isEmpty()) {
-               view?.snack(R.string.loc_name)
-            } else if (building.name.length > 15){
-                view?.snack(R.string.b_name_chars)
-            } else if (building.address.isEmpty()) {
-                view?.snack(R.string.loc_address)
-            } else if (building.address.length > 25){
-                view?.snack(R.string.b_address_chars)
-            } else if (building.phone.isEmpty()) {
-                view?.snack(R.string.loc_phone)
-            }else if(building.phone.length > 15){
-                view?.snack(R.string.b_phone_chars)
-            } else if ( building.image == "") {
-                view?.snack(R.string.loc_img)
-            }
-                else {
-                if (building.id.toString().length == 1){
-                    building.id = Random().nextLong()
-                    app.builds.create(building)
-                    view?.snack(R.string.b_create)
+            when {
+                building.name.isEmpty() -> {
+                    view?.snack(R.string.loc_name)
                 }
-                else {
-                    app.builds.update(building)
-                    view?.snack(R.string.b_update)
+                building.name.length > 15 -> {
+                    view?.snack(R.string.b_name_chars)
                 }
-                Timber.i(building.toString())
+                building.address.isEmpty() -> {
+                    view?.snack(R.string.loc_address)
+                }
+                building.address.length > 25 -> {
+                    view?.snack(R.string.b_address_chars)
+                }
+                building.phone.isEmpty() -> {
+                    view?.snack(R.string.loc_phone)
+                }
+                building.phone.length > 15 -> {
+                    view?.snack(R.string.b_phone_chars)
+                }
+                building.image == "" -> {
+                    view?.snack(R.string.loc_img)
+                }
+                else -> {
+                    if (building.id.toString().length == 1){
+                        building.id = Random().nextLong()
+                        app.builds.create(building)
+                        view?.snack(R.string.b_create)
+                    } else {
+                        app.builds.update(building)
+                        view?.snack(R.string.b_update)
+                    }
+                    Timber.i(building.toString())
 
-                layout.buildingName.setText("")
-                layout.buildingAddress.setText("")
-                layout.editTextPhone.setText("")
-                layout.buildingImage.setImageURI(null)
-                building.name = ""
-                building.phone = ""
-                building.address = ""
-                building.image = ""
-                building.id = 0
-                building.zoom = 0f
-                building.lat = (0).toDouble()
-                building.lng = (0).toDouble()
+                    layout.buildingName.setText("")
+                    layout.buildingAddress.setText("")
+                    layout.editTextPhone.setText("")
+                    layout.buildingImage.setImageURI(null)
+                    building.name = ""
+                    building.phone = ""
+                    building.address = ""
+                    building.image = ""
+                    building.id = 0
+                    building.zoom = 0f
+                    building.lat = (0).toDouble()
+                    building.lng = (0).toDouble()
 
 
-                it.findNavController()
-                    .navigate(R.id.action_buildingFragment_to_buildingListFragment)
+                    it.findNavController()
+                        .navigate(R.id.action_buildingFragment_to_buildingListFragment)
+                }
             }
         }
     }
@@ -226,6 +231,14 @@ class BuildingFragment : Fragment() {
             BuildingFragment().apply {
                 arguments = Bundle().apply {}
             }
+    }
+
+    private fun showImagePicker(intentLauncher: ActivityResultLauncher<Intent>) {
+
+        var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        chooseFile.type = "image/*"
+        chooseFile = Intent.createChooser(chooseFile, R.string.button_addImage.toString())
+        intentLauncher.launch(chooseFile)
     }
 
 }

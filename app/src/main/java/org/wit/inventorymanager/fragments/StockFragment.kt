@@ -15,7 +15,6 @@ import splitties.snackbar.snack
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentStockBinding
-import org.wit.inventorymanager.helpers.showImagePicker
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.StockModel
@@ -23,8 +22,8 @@ import timber.log.Timber
 import java.util.*
 
 
-private var _fragBinding: FragmentStockBinding? = null
-private val fragBinding get() = _fragBinding!!
+private var nFragBinding: FragmentStockBinding? = null
+private val fragBinding get() = nFragBinding!!
 private var stock = StockModel()
 private var build = BuildingModel()
 private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
@@ -33,7 +32,6 @@ class StockFragment : Fragment() {
 
     lateinit var app: InventoryApp
     private var id: Long = 0
-    private var buildId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +43,9 @@ class StockFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
-        _fragBinding = FragmentStockBinding.inflate(inflater, container, false)
+        nFragBinding = FragmentStockBinding.inflate(inflater, container, false)
         val root = fragBinding.root
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
@@ -65,10 +63,9 @@ class StockFragment : Fragment() {
         }
         if(arguments?.containsKey("build") == true) {
             build = bundle?.getParcelable("build")!!
-            Timber.i("ID " + stock)
         }
 
-            if (stock.id !== (0).toLong()){
+            if (stock.id.toString() !== (0).toLong().toString()){
                 id = stock.id
                 fragBinding.btnAddItem.setText(R.string.up_stock)
             }
@@ -123,47 +120,52 @@ class StockFragment : Fragment() {
             stock.inStock = layout.quantity.value.toLong()
             stock.branch = build.id
 
-            if (stock.name.isEmpty()) {
-                view?.snack(R.string.s_name)
-            } else if (stock.name.length > 15){
-                view?.snack(R.string.s_name_chars)
-            } else if (stock.price == 0.0) {
-                view?.snack(R.string.s_price)
-            } else if (stock.weight.isEmpty()) {
-                view?.snack(R.string.s_weight)
-            } else if (stock.image == "") {
-                view?.snack(R.string.stock_img)
-            }
-            else {
-
-                if (stock.id.toString().length == 1){
-                    stock.id = Random().nextLong()
-                    app.stocks.create(stock)
-                    view?.snack(R.string.s_create)
+            when {
+                stock.name.isEmpty() -> {
+                    view?.snack(R.string.s_name)
                 }
-                else {
-                    app.stocks.update(stock)
-                    view?.snack(R.string.s_update)
+                stock.name.length > 15 -> {
+                    view?.snack(R.string.s_name_chars)
                 }
-                Timber.i(stock.toString())
-                val bundle = Bundle()
-                bundle.putParcelable("id", build)
-                bundle.putParcelable("stock", stock)
-                layout.stockName.setText("")
-                layout.stockPrice.setText("")
-                layout.stockWeight.setText("")
-                layout.stockImage.setImageURI(null)
-                stock.name = ""
-                stock.price = 0.0
-                stock.weight = ""
-                stock.image = ""
-                stock.inStock = 0
-                stock.id = 0
-                stock.branch = 0
+                stock.price == 0.0 -> {
+                    view?.snack(R.string.s_price)
+                }
+                stock.weight.isEmpty() -> {
+                    view?.snack(R.string.s_weight)
+                }
+                stock.image == "" -> {
+                    view?.snack(R.string.stock_img)
+                }
+                else -> {
+
+                    if (stock.id.toString().length == 1){
+                        stock.id = Random().nextLong()
+                        app.stocks.create(stock)
+                        view?.snack(R.string.s_create)
+                    } else {
+                        app.stocks.update(stock)
+                        view?.snack(R.string.s_update)
+                    }
+                    Timber.i(stock.toString())
+                    val bundle = Bundle()
+                    bundle.putParcelable("id", build)
+                    bundle.putParcelable("stock", stock)
+                    layout.stockName.setText("")
+                    layout.stockPrice.setText("")
+                    layout.stockWeight.setText("")
+                    layout.stockImage.setImageURI(null)
+                    stock.name = ""
+                    stock.price = 0.0
+                    stock.weight = ""
+                    stock.image = ""
+                    stock.inStock = 0
+                    stock.id = 0
+                    stock.branch = 0
 
 
-                it.findNavController()
-                    .navigate(R.id.action_stockFragment_to_stockListFragment, bundle)
+                    it.findNavController()
+                        .navigate(R.id.action_stockFragment_to_stockListFragment, bundle)
+                }
             }
         }
     }
@@ -192,13 +194,13 @@ class StockFragment : Fragment() {
                 }
             }
     }
+    private fun showImagePicker(intentLauncher: ActivityResultLauncher<Intent>) {
 
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            StockFragment().apply {
-                arguments = Bundle().apply {}
-            }
+        var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        chooseFile.type = "image/*"
+        chooseFile = Intent.createChooser(chooseFile, R.string.button_addImage.toString())
+        intentLauncher.launch(chooseFile)
+    }
     }
 
-}
+
