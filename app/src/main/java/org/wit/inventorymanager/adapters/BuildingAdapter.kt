@@ -33,9 +33,14 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
     override fun getItemCount(): Int = buildings.size
 
 
-    inner class MainHolder(val binding : CardBuildingBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class MainHolder(private val binding : CardBuildingBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(building: BuildingModel, listener : BuildingListener) {
+            /*Bind building information to the recyclerview card
+            * Capitalise the first letter of the name and address
+            * Load the image into the imageView
+            * Building details act as links to that buildings stock */
+
             binding.buildingName.text = building.name.replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(
                     Locale.ROOT
@@ -46,6 +51,7 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
                     Locale.ROOT
                 ) else it.toString()
             }
+
             binding.phone.text = building.phone
             Picasso.get().load(building.image).resize(200,200).into(binding.imageIcon)
             binding.edit.setOnClickListener { listener.onEditBuildingClick(building)}

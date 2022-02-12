@@ -16,11 +16,9 @@ import splitties.snackbar.snack
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
-import org.wit.inventorymanager.helpers.showImagePicker
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
-import splitties.toast.toast
 import timber.log.Timber
 import java.util.*
 
@@ -28,8 +26,8 @@ import java.util.*
 lateinit var app: InventoryApp
 
 
-private var _fragBinding: FragmentBuildingBinding? = null
-private val fragBinding get() = _fragBinding!!
+private var nFragBinding: FragmentBuildingBinding? = null
+private val fragBinding get() = nFragBinding!!
 private var building = BuildingModel()
 private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
 
@@ -48,19 +46,21 @@ class BuildingFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
-        _fragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
+        nFragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
         val root = fragBinding.root
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
         registerImagePickerCallback()
+
         val bundle = arguments
-        if (arguments?.isEmpty == false) {
+        if (arguments?.isEmpty == false) { // There is a building object passed to the fragment
+
             building = bundle?.getParcelable("editBuild")!!
 
-
-            if (building.id !== (0).toLong()){
+            // Set the text fields to the building values passed by the list/map fragment
+            if (building.id.toString() !== (0).toLong().toString()){ // Long equality comparison has been deprecated
                 id = building.id
                 fragBinding.btnAdd.setText(R.string.up_loc)
             }
@@ -80,13 +80,13 @@ class BuildingFragment : Fragment() {
                 fragBinding.chooseImage.setText(R.string.img_ch)
             }
             else{
-                fragBinding.buildingImage.setImageURI(null)
+                fragBinding.buildingImage.setImageURI(null) // Make sure the imageView is empty if not an edit screen
             }
 
         }
 
 
-
+        // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
         requireActivity().onBackPressedDispatcher.addCallback(this) {
         requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
         }
@@ -98,7 +98,9 @@ class BuildingFragment : Fragment() {
         fragBinding.buildingLocation.setOnClickListener {
             val location = Location(52.245696, -7.139102, 15f)
             val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
+
             if (building.zoom == 0f && building.lat == (0).toDouble() && building.lng == (0).toDouble()) {
+                // Fresh location, set default values
                 building.zoom = location.zoom
                 building.lat = location.lat
                 building.lng = location.lng
@@ -107,9 +109,11 @@ class BuildingFragment : Fragment() {
             }
             else {
                 if (arguments?.containsKey("editBuild") == true) {
+                    // Already have building info to send to maps
                     action.arguments.putParcelable("build", building)
                     requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
                 }else{
+                    // Set default values
                     building.id = (0).toLong()
                     building.zoom = 15f
                     building.lat = 52.245696
@@ -148,49 +152,58 @@ class BuildingFragment : Fragment() {
             building.address = layout.buildingAddress.text.toString()
             building.phone = layout.editTextPhone.text.toString()
 
-            if (building.name.isEmpty()) {
-               view?.snack(R.string.loc_name)
-            } else if (building.name.length > 15){
-                view?.snack(R.string.b_name_chars)
-            } else if (building.address.isEmpty()) {
-                view?.snack(R.string.loc_address)
-            } else if (building.address.length > 25){
-                view?.snack(R.string.b_address_chars)
-            } else if (building.phone.isEmpty()) {
-                view?.snack(R.string.loc_phone)
-            }else if(building.phone.length > 15){
-                view?.snack(R.string.b_phone_chars)
-            } else if ( building.image == "") {
-                view?.snack(R.string.loc_img)
-            }
-                else {
-                if (building.id.toString().length == 1){
-                    building.id = Random().nextLong()
-                    app.builds.create(building)
-                    view?.snack(R.string.b_create)
+            // Input validation
+            when {
+                building.name.isEmpty() -> {
+                    view?.snack(R.string.loc_name)
                 }
-                else {
-                    app.builds.update(building)
-                    view?.snack(R.string.b_update)
+                building.name.length > 15 -> {
+                    view?.snack(R.string.b_name_chars)
                 }
-                Timber.i(building.toString())
+                building.address.isEmpty() -> {
+                    view?.snack(R.string.loc_address)
+                }
+                building.address.length > 25 -> {
+                    view?.snack(R.string.b_address_chars)
+                }
+                building.phone.isEmpty() -> {
+                    view?.snack(R.string.loc_phone)
+                }
+                building.phone.length > 15 -> {
+                    view?.snack(R.string.b_phone_chars)
+                }
+                building.image == "" -> {
+                    view?.snack(R.string.loc_img)
+                }
+                else -> {
+                    if (building.id.toString().length == 1){
+                        building.id = Random().nextLong()
+                        app.builds.create(building)
+                        view?.snack(R.string.b_create)
+                    } else {
+                        app.builds.update(building)
+                        view?.snack(R.string.b_update)
+                    }
+                    Timber.i(building.toString())
 
-                layout.buildingName.setText("")
-                layout.buildingAddress.setText("")
-                layout.editTextPhone.setText("")
-                layout.buildingImage.setImageURI(null)
-                building.name = ""
-                building.phone = ""
-                building.address = ""
-                building.image = ""
-                building.id = 0
-                building.zoom = 0f
-                building.lat = (0).toDouble()
-                building.lng = (0).toDouble()
+                    // Reset fields and variable values
+                    layout.buildingName.setText("")
+                    layout.buildingAddress.setText("")
+                    layout.editTextPhone.setText("")
+                    layout.buildingImage.setImageURI(null)
+                    building.name = ""
+                    building.phone = ""
+                    building.address = ""
+                    building.image = ""
+                    building.id = 0
+                    building.zoom = 0f
+                    building.lat = (0).toDouble()
+                    building.lng = (0).toDouble()
 
 
-                it.findNavController()
-                    .navigate(R.id.action_buildingFragment_to_buildingListFragment)
+                    it.findNavController()
+                        .navigate(R.id.action_buildingFragment_to_buildingListFragment)
+                }
             }
         }
     }
@@ -226,6 +239,13 @@ class BuildingFragment : Fragment() {
             BuildingFragment().apply {
                 arguments = Bundle().apply {}
             }
+    }
+
+    private fun showImagePicker(intentLauncher: ActivityResultLauncher<Intent>) {
+        var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        chooseFile.type = "image/*"
+        chooseFile = Intent.createChooser(chooseFile, R.string.button_addImage.toString())
+        intentLauncher.launch(chooseFile)
     }
 
 }

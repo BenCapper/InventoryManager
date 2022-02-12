@@ -14,9 +14,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
-import org.wit.inventorymanager.models.Location
 import splitties.snackbar.snack
-import timber.log.Timber
 
 
 class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
@@ -78,7 +76,6 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val frag = BuildingFragment.newInstance()
         frag.arguments?.putParcelable("editBuild",build)
-        Timber.i("BUILDING "+build)
         requireActivity().supportFragmentManager.findFragmentById(R.id.buildingFragment)
             ?.let { requireActivity().supportFragmentManager.beginTransaction().remove(it)
                 .replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit() }
@@ -90,7 +87,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         build.lat = marker.position.latitude
         build.lng = marker.position.longitude
         build.zoom = map.cameraPosition.zoom
-        view?.snack(R.string.b_setloc)
+        view?.snack(R.string.b_setLoc)
     }
 
 

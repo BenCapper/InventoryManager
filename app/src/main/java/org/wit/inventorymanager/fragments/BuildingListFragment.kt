@@ -1,8 +1,8 @@
 package org.wit.inventorymanager.fragments
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.SearchView
@@ -23,7 +23,7 @@ import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.helpers.TouchHelpers
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
-import splitties.snackbar.snack
+import timber.log.Timber
 
 class BuildingListFragment : Fragment(), BuildingListener {
 
@@ -66,7 +66,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     }
 
     private fun getSearchData(){
-        //https://stackoverflow.com/questions/55949305/how-to-properly-retrieve-data-from-searchview-in-kotlin
+        // https://stackoverflow.com/questions/55949305/how-to-properly-retrieve-data-from-searchview-in-kotlin
         fragBinding.buildingSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -89,7 +89,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
         super.onCreateOptionsMenu(menu, inflater)
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item!!.itemId
+        val id = item.itemId
         if (id == R.id.item_building_new){
             findNavController().navigate(R.id.action_buildingListFragment_to_buildingFragment)
         }
@@ -97,14 +97,15 @@ class BuildingListFragment : Fragment(), BuildingListener {
 }
 
     override fun onBuildingClick(building: BuildingModel) {
-        val action = BuildingListFragmentDirections.actionBuildingListFragmentToStockListFragment()
-        var bundle = Bundle()
+        // Open this buildings stock list
+        val bundle = Bundle()
         bundle.putParcelable("id", building)
         findNavController().navigate(R.id.action_buildingListFragment_to_stockListFragment, bundle)
 
     }
 
     override fun onEditBuildingClick(building: BuildingModel) {
+        // Send building info to the create building fragment
         val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment()
         build.name = building.name
         build.address = building.address
@@ -120,6 +121,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
 
     private fun getBuildingData(){
+        // Get list of buildings saved to the database
         db.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 buildings = mutableListOf()
@@ -139,8 +141,9 @@ class BuildingListFragment : Fragment(), BuildingListener {
                 }
             }
 
+
             override fun onCancelled(error: DatabaseError) {
-                Log.w("Failed", error.toException())
+                Timber.i("Failed: ${error.message}")
             }
         })
     }
@@ -156,6 +159,9 @@ class BuildingListFragment : Fragment(), BuildingListener {
     }
 
     private fun removeBuildingData(){
+        /* Get list of buildings saved to the database
+         * delete the one at the swiped position
+         */
         db.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
@@ -179,23 +185,17 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
             }
             override fun onCancelled(error: DatabaseError) {
-                Log.w("Failed", error.toException())
+                Timber.i("Failed: ${error.message}")
             }
         })
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun showBuildings (buildingList: List<BuildingModel>) {
         view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildingList, this@BuildingListFragment)
         view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            BuildingListFragment().apply {
-                arguments = Bundle().apply { }
-            }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
