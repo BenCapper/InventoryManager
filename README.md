@@ -9,3 +9,8 @@
 **Maps Integration<br>
 Firebase Integration<br>
 Navigation Drawer<br>**
+
+**Demo Video URL:** https://youtu.be/2_TFgNPe8YM <br>
+**Project Repo URL:** https://github.com/BenCapper/InventoryManager	
+
+**Filter Reference:** https://stackoverflow.com/questions/55949305/how-to-properly-retrieve-data-from-searchview-in-kotlin
