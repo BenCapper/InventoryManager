@@ -45,6 +45,7 @@ class StockListFragment : Fragment(), StockListener {
     private var id = (0).toLong()
     private var build = BuildingModel()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         app = activity?.application as InventoryApp
@@ -134,6 +135,7 @@ class StockListFragment : Fragment(), StockListener {
         // Add one to stock item quantity
         stock.inStock++
         app.stocks.update(stock)
+
     }
 
     override fun onMinusStockClick(stock: StockModel) {
@@ -145,8 +147,6 @@ class StockListFragment : Fragment(), StockListener {
             view?.snack(R.string.quantity_warn)
         }
     }
-
-
 
     private fun getStockData(){
         db.addValueEventListener(object: ValueEventListener {

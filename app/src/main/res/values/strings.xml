@@ -49,7 +49,7 @@
     <string name="s_price">Enter the Item Value</string>
     <string name="s_weight">Enter the Item Weight</string>
     <string name="s_name">Enter the Item Name</string>
-    <string name="s_name_chars">15 Chars Maximum</string>
+    <string name="s_name_chars">20 Chars Maximum</string>
     <string name="s_quantity">Enter the Item Quantity</string>
     <string name="stock_img">Select a Stock Image</string>
     <string name="fragment_stock">Stock</string>

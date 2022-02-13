@@ -127,7 +127,7 @@ class StockFragment : Fragment() {
                 stock.name.isEmpty() -> {
                     view?.snack(R.string.s_name)
                 }
-                stock.name.length > 15 -> {
+                stock.name.length > 20 -> {
                     view?.snack(R.string.s_name_chars)
                 }
                 stock.price == 0.0 -> {

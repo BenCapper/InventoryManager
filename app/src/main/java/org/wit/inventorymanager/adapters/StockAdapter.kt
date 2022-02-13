@@ -8,7 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.databinding.CardStockBinding
 import org.wit.inventorymanager.models.StockModel
+import splitties.snackbar.snack
+import splitties.views.InputType
+import java.math.RoundingMode
 import java.util.*
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 
 interface StockListener {
@@ -51,7 +56,8 @@ class StockAdapter constructor(private var stocks: List<StockModel>, private val
                     Locale.ROOT
                 ) else it.toString()
             }
-            binding.stockListPrice.text = stock.price.toString()
+            val currencyForm = NumberFormat.getCurrencyInstance().format(stock.price)
+            binding.stockListPrice.text = currencyForm
             binding.stockListWeight.text = stock.weight
             Picasso.get().load(stock.image).resize(200,200).into(binding.stockImageIcon)
             binding.stockListQuantity.text = stock.inStock.toString()
@@ -65,7 +71,7 @@ class StockAdapter constructor(private var stocks: List<StockModel>, private val
             binding.stockListPrice.setOnClickListener { listener.onStockClick(stock) }
             binding.stockListWeight.setOnClickListener { listener.onStockClick(stock) }
             binding.stockListQuantity.setOnClickListener { listener.onStockClick(stock) }
-            binding.plus.setOnClickListener { listener.onAddStockClick(stock) }
+            binding.plus.setOnClickListener { listener.onAddStockClick(stock)}
             binding.minus.setOnClickListener {listener.onMinusStockClick(stock)}
         }
     }
