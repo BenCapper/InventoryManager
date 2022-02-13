@@ -14,3 +14,5 @@ Navigation Drawer<br>**
 **Project Repo URL:** https://github.com/BenCapper/InventoryManager	
 
 **Filter Reference:** https://stackoverflow.com/questions/55949305/how-to-properly-retrieve-data-from-searchview-in-kotlin
+
+**Ben Capper 20088114**
