@@ -1,4 +1,4 @@
-package org.wit.inventorymanager.fragments
+package org.wit.inventorymanager.ui.building
 
 
 import android.content.Intent
@@ -16,6 +16,7 @@ import splitties.snackbar.snack
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
+
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location

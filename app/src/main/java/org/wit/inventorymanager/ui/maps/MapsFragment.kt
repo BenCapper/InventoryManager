@@ -1,4 +1,4 @@
-package org.wit.inventorymanager.fragments
+package org.wit.inventorymanager.ui.maps
 
 import android.os.Bundle
 import android.view.*
@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
+import org.wit.inventorymanager.ui.building.BuildingFragment
 import splitties.snackbar.snack
 
 

@@ -9,7 +9,7 @@ import timber.log.Timber
 import java.util.*
 
 
-class FirebaseBuildings : BuildingStore{
+object BuildingManager : BuildingStore{
 
     var buildings = mutableListOf<BuildingModel>()
     private val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")

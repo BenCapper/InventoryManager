@@ -3,7 +3,7 @@ package org.wit.inventorymanager.models
 import com.google.firebase.database.FirebaseDatabase
 
 
-class FirebaseStock : StockStore {
+object StockManager : StockStore {
 
     private var stock = mutableListOf<StockModel>()
     private val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")

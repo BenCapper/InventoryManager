@@ -1,4 +1,4 @@
-package org.wit.inventorymanager.fragments
+package org.wit.inventorymanager.ui.stockList
 
 
 import android.annotation.SuppressLint
@@ -21,6 +21,7 @@ import org.wit.inventorymanager.adapters.StockAdapter
 import org.wit.inventorymanager.adapters.StockListener
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentStockListBinding
+
 import org.wit.inventorymanager.helpers.TouchHelpers
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
