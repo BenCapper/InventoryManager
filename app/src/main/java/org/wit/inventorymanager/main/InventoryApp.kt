@@ -4,8 +4,8 @@ import android.app.Application
 
 
 import org.wit.inventorymanager.models.BuildingStore
-import org.wit.inventorymanager.models.FirebaseBuildings
-import org.wit.inventorymanager.models.FirebaseStock
+import org.wit.inventorymanager.models.BuildingManager
+import org.wit.inventorymanager.models.StockManager
 import org.wit.inventorymanager.models.StockStore
 import timber.log.Timber
 
@@ -17,8 +17,8 @@ class InventoryApp : Application() {
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
-        builds = FirebaseBuildings()
-        stocks = FirebaseStock()
+        builds = BuildingManager
+        stocks = StockManager
         Timber.i("Inventory Manager Started")
     }
 }

@@ -5,11 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import splitties.snackbar.snack
@@ -24,13 +26,12 @@ import timber.log.Timber
 import java.util.*
 
 
-lateinit var app: InventoryApp
-
-
 private var nFragBinding: FragmentBuildingBinding? = null
 private val fragBinding get() = nFragBinding!!
 private var building = BuildingModel()
 private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
+private lateinit var buildingViewModel: BuildingViewModel
+
 
 class BuildingFragment : Fragment() {
 
@@ -39,7 +40,6 @@ class BuildingFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        app = activity?.application as InventoryApp
         setHasOptionsMenu(true)
 
     }
@@ -54,6 +54,11 @@ class BuildingFragment : Fragment() {
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
         registerImagePickerCallback()
+
+        buildingViewModel = ViewModelProvider(this).get(BuildingViewModel::class.java)
+        buildingViewModel.observableStatus.observe(viewLifecycleOwner) { status ->
+            status?.let { render(status) }
+        }
 
         val bundle = arguments
         if (arguments?.isEmpty == false) { // There is a building object passed to the fragment
@@ -127,6 +132,16 @@ class BuildingFragment : Fragment() {
         return root
     }
 
+    private fun render(status: Boolean) {
+        when (status) {
+            true -> {
+                view?.let {
+                }
+            }
+            false -> view?.snack("Failed")
+        }
+    }
+
     override fun onPause() {
         building.name = fragBinding.buildingName.text.toString()
         building.address = fragBinding.buildingAddress.text.toString()
@@ -179,10 +194,10 @@ class BuildingFragment : Fragment() {
                 else -> {
                     if (building.id.toString().length == 1){
                         building.id = Random().nextLong()
-                        app.builds.create(building)
+                        buildingViewModel.addBuilding(building)
                         view?.snack(R.string.b_create)
                     } else {
-                        app.builds.update(building)
+                        buildingViewModel.updateBuilding(building)
                         view?.snack(R.string.b_update)
                     }
                     Timber.i(building.toString())
