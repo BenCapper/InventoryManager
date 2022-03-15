@@ -1,4 +1,4 @@
-package org.wit.inventorymanager.fragments
+package org.wit.inventorymanager.ui.buildingList
 
 
 import android.annotation.SuppressLint
@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -27,7 +28,7 @@ import timber.log.Timber
 
 class BuildingListFragment : Fragment(), BuildingListener {
 
-    lateinit var app: InventoryApp
+
     private var _fragBinding: FragmentBuildingListBinding? = null
     private val fragBinding get() = _fragBinding!!
     private lateinit var buildings: MutableList<BuildingModel>
@@ -37,11 +38,11 @@ class BuildingListFragment : Fragment(), BuildingListener {
     private var build = BuildingModel()
     private lateinit var swipeCallback: TouchHelpers
     private lateinit var foundList: MutableList<BuildingModel>
+    private lateinit var buildingListViewModel: BuildingListViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        app = activity?.application as InventoryApp
         setHasOptionsMenu(true)
 
     }
@@ -55,14 +56,23 @@ class BuildingListFragment : Fragment(), BuildingListener {
         val root = fragBinding.root
         activity?.title = getString(R.string.action_location)
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
+
+        buildingListViewModel = ViewModelProvider(this).get(BuildingListViewModel::class.java)
+
         getBuildingData()
         removeBuildingData()
         getSearchData()
 
-
-
-
         return root
+    }
+
+    private fun render(buildingList: List<BuildingModel>) {
+        fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this)
+        if (buildingList.isEmpty()) {
+            fragBinding.recyclerView.visibility = View.GONE
+        } else {
+            fragBinding.recyclerView.visibility = View.VISIBLE
+        }
     }
 
     private fun getSearchData(){
@@ -174,7 +184,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
                     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                         val pos = viewHolder.absoluteAdapterPosition
                         if (builds.isNotEmpty()) {
-                            app.builds.delete(builds[pos])
+                            buildingListViewModel.deleteBuilding(builds[pos])
                             builds.remove(builds[pos])
                             fragBinding.recyclerView.adapter?.notifyItemRemoved(pos)
                         }

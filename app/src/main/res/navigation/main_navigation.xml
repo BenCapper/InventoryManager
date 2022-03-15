@@ -6,7 +6,7 @@
     app:startDestination="@id/buildingListFragment">
     <fragment
         android:id="@+id/buildingFragment"
-        android:name="org.wit.inventorymanager.fragments.BuildingFragment"
+        android:name="org.wit.inventorymanager.ui.building.BuildingFragment"
         android:label="@string/action_location"
         tools:layout="@layout/fragment_building" >
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/buildingListFragment"
-        android:name="org.wit.inventorymanager.fragments.BuildingListFragment"
+        android:name="org.wit.inventorymanager.ui.buildingList.BuildingListFragment"
         android:label="@string/action_location"
         tools:layout="@layout/fragment_building_list" >
         <action
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="org.wit.inventorymanager.fragments.MapsFragment"
+        android:name="org.wit.inventorymanager.ui.maps.MapsFragment"
         tools:layout="@layout/fragment_maps" >
         <action
             android:id="@+id/action_mapsFragment_to_buildingFragment"
@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/stockListFragment"
-        android:name="org.wit.inventorymanager.fragments.StockListFragment"
+        android:name="org.wit.inventorymanager.ui.stockList.StockListFragment"
         android:label="Stock"
         tools:layout="@layout/fragment_stock_list" >
         <action
@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/stockFragment"
-        android:name="org.wit.inventorymanager.fragments.StockFragment"
+        android:name="org.wit.inventorymanager.ui.stock.StockFragment"
         android:label="Stock"
         tools:layout="@layout/fragment_stock" >
         <action

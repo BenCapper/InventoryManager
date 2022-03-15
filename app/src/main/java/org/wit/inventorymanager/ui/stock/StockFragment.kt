@@ -1,4 +1,4 @@
-package org.wit.inventorymanager.fragments
+package org.wit.inventorymanager.ui.stock
 
 
 import android.content.Intent

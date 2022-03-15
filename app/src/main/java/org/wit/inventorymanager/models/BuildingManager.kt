@@ -1,15 +1,19 @@
 package org.wit.inventorymanager.models
 
 
+import android.view.View
+import android.widget.Button
+import androidx.navigation.findNavController
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import org.wit.inventorymanager.R
 import timber.log.Timber
 import java.util.*
 
 
-class FirebaseBuildings : BuildingStore{
+object BuildingManager : BuildingStore{
 
     var buildings = mutableListOf<BuildingModel>()
     private val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
@@ -20,6 +24,7 @@ class FirebaseBuildings : BuildingStore{
     override fun findAll(): MutableList<BuildingModel> {
         db.addValueEventListener(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
+                buildings = mutableListOf()
                 if(snapshot.exists()){
                     for(buildSnap in snapshot.children){
                         val build = buildSnap.getValue(BuildingModel::class.java)
