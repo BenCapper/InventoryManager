@@ -21,7 +21,6 @@ import splitties.snackbar.snack
 class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
 
     private lateinit var map: GoogleMap
-    private val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment()
     private var build = BuildingModel()
 
 
@@ -55,6 +54,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         mapFragment?.getMapAsync(callback)
         val bundle = arguments
         build = bundle?.getParcelable("build")!!
+        val action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment(build.id)
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             action.arguments.putParcelable("editBuild", build)
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)

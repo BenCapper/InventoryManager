@@ -11,8 +11,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navArgument
 import androidx.navigation.ui.NavigationUI
 import splitties.snackbar.snack
 import com.squareup.picasso.Picasso
@@ -20,23 +23,23 @@ import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 
 import org.wit.inventorymanager.main.InventoryApp
+import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
 import timber.log.Timber
 import java.util.*
 
 
-private var nFragBinding: FragmentBuildingBinding? = null
-private val fragBinding get() = nFragBinding!!
-private var building = BuildingModel()
-private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
-private lateinit var buildingViewModel: BuildingViewModel
-
-
 class BuildingFragment : Fragment() {
 
+    private val args by navArgs<BuildingFragmentArgs>()
+    private var nFragBinding: FragmentBuildingBinding? = null
+    private val fragBinding get() = nFragBinding!!
+    private var building = BuildingModel()
+    private var foundBuild = BuildingModel()
+    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var buildingViewModel: BuildingViewModel
 
-    private var id: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,42 +57,27 @@ class BuildingFragment : Fragment() {
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
         registerImagePickerCallback()
-
         buildingViewModel = ViewModelProvider(this).get(BuildingViewModel::class.java)
         buildingViewModel.observableStatus.observe(viewLifecycleOwner) { status ->
             status?.let { render(status) }
         }
+        buildingViewModel.observableBuild.observe(viewLifecycleOwner) { status ->
+            status?.let { renderBuild() } }
+        Timber.i("ARRRGS:" + args.buildingId.toString())
+        if (args.buildingId != 0L) {
+            foundBuild = fragBinding.buildingvm?.getBuild(args.buildingId)!!
 
-        val bundle = arguments
-        if (arguments?.isEmpty == false) { // There is a building object passed to the fragment
-
-            building = bundle?.getParcelable("editBuild")!!
-
-            // Set the text fields to the building values passed by the list/map fragment
-            if (building.id.toString() !== (0).toLong().toString()){ // Long equality comparison has been deprecated
-                id = building.id
-                fragBinding.btnAdd.setText(R.string.up_loc)
-            }
-            if (building.name != ""){
-                fragBinding.buildingName.setText(building.name)
-            }
-            if (building.address != ""){
-                fragBinding.buildingAddress.setText(building.address)
-            }
-            if (building.phone != ""){
-                fragBinding.editTextPhone.setText(building.phone)
-            }
-            if (building.image != ""){
-                Picasso.get()
-                    .load(Uri.parse(building.image))
-                    .into(fragBinding.buildingImage)
-                fragBinding.chooseImage.setText(R.string.img_ch)
-            }
-            else{
-                fragBinding.buildingImage.setImageURI(null) // Make sure the imageView is empty if not an edit screen
-            }
-
+            Timber.i("FOUNDBUILD:$foundBuild")
+            fragBinding.btnAdd.setText(R.string.up_loc)
+            fragBinding.buildingName.setText(foundBuild.name)
+            fragBinding.buildingAddress.setText(foundBuild.address)
+            fragBinding.editTextPhone.setText(foundBuild.phone)
+            Picasso.get()
+                .load(Uri.parse(foundBuild.image))
+                .into(fragBinding.buildingImage)
+            fragBinding.chooseImage.setText(R.string.img_ch)
         }
+
 
 
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
@@ -140,6 +128,10 @@ class BuildingFragment : Fragment() {
             }
             false -> view?.snack("Failed")
         }
+    }
+
+    private fun renderBuild() {
+        fragBinding.buildingvm = buildingViewModel
     }
 
     override fun onPause() {

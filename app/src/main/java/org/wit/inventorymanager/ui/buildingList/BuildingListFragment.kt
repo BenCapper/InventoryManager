@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -23,6 +24,7 @@ import org.wit.inventorymanager.adapters.BuildingListener
 import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.helpers.TouchHelpers
 import org.wit.inventorymanager.main.InventoryApp
+import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
 import timber.log.Timber
 
@@ -36,6 +38,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
         .getReference("Building")
     var builds = mutableListOf<BuildingModel>()
     private var build = BuildingModel()
+    private var foundBuild = BuildingModel()
     private lateinit var swipeCallback: TouchHelpers
     private lateinit var foundList: MutableList<BuildingModel>
     private lateinit var buildingListViewModel: BuildingListViewModel
@@ -58,8 +61,10 @@ class BuildingListFragment : Fragment(), BuildingListener {
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
 
         buildingListViewModel = ViewModelProvider(this).get(BuildingListViewModel::class.java)
-
-        getBuildingData()
+        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner) { building_list ->
+            building_list?.let { render(building_list) }
+        }
+        buildings = buildingListViewModel.observableBuildingList.value as MutableList<BuildingModel>
         removeBuildingData()
         getSearchData()
 
@@ -68,11 +73,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     private fun render(buildingList: List<BuildingModel>) {
         fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this)
-        if (buildingList.isEmpty()) {
-            fragBinding.recyclerView.visibility = View.GONE
-        } else {
-            fragBinding.recyclerView.visibility = View.VISIBLE
-        }
     }
 
     private fun getSearchData(){
@@ -116,47 +116,10 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     override fun onEditBuildingClick(building: BuildingModel) {
         // Send building info to the create building fragment
-        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment()
-        build.name = building.name
-        build.address = building.address
-        build.phone = building.phone
-        build.image = building.image
-        build.id = building.id
-        build.zoom = building.zoom
-        build.lat = building.lat
-        build.lng = building.lng
-        action.arguments.putParcelable("editBuild", build)
+        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment(building.id)
         findNavController().navigate(action)
     }
 
-
-    private fun getBuildingData(){
-        // Get list of buildings saved to the database
-        db.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                buildings = mutableListOf()
-                if(snapshot.exists()){
-                    for(buildSnap in snapshot.children){
-                        val build = buildSnap.getValue(BuildingModel::class.java)
-                        buildings.add(build!!)
-                    }
-                }
-                showBuildings(buildings)
-                if (buildings.isEmpty()) {
-                    view?.findViewById<Button>(R.id.noList)?.visibility = View.VISIBLE
-                    view?.findViewById<Button>(R.id.noList)?.setOnClickListener {
-                        it.findNavController()
-                            .navigate(R.id.action_buildingListFragment_to_buildingFragment)
-                    }
-                }
-            }
-
-
-            override fun onCancelled(error: DatabaseError) {
-                Timber.i("Failed: ${error.message}")
-            }
-        })
-    }
 
     private fun search(newText: String){
         foundList = mutableListOf()
