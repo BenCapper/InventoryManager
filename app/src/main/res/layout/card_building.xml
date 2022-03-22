@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="building"
+            type="org.wit.inventorymanager.models.BuildingModel" />
+    </data>
+<androidx.cardview.widget.CardView
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -31,6 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/imageIcon"
+            android:text="@{building.name}"
             android:textColor="@color/orange"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -43,6 +50,7 @@
             android:layout_below="@id/buildingName"
             android:layout_marginTop="4dp"
             android:layout_toEndOf="@+id/imageIcon"
+            android:text="@{building.address}"
             android:textColor="@color/dark"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -54,6 +62,7 @@
             android:layout_below="@id/buildingName"
             android:layout_marginTop="22dp"
             android:layout_toEndOf="@+id/imageIcon"
+            android:text="@{building.phone}"
             android:textColor="@color/dark"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -73,3 +82,4 @@
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
+</layout>

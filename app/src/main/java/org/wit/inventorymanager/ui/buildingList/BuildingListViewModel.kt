@@ -15,8 +15,6 @@ class BuildingListViewModel : ViewModel() {
 
     private val status = MutableLiveData<Boolean>()
 
-    val observableStatus: LiveData<Boolean>
-        get() = status
 
     init {
         load()
@@ -31,6 +29,7 @@ class BuildingListViewModel : ViewModel() {
         }
     }
     private fun load() {
-        buildingList.value = BuildingManager.findAll()
+        buildingList.value = BuildingManager.findAll(buildingList)
     }
+
 }
