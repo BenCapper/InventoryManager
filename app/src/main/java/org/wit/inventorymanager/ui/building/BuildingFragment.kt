@@ -32,7 +32,6 @@ import java.util.*
 
 class BuildingFragment : Fragment() {
 
-    private val args by navArgs<BuildingFragmentArgs>()
     private var nFragBinding: FragmentBuildingBinding? = null
     private val fragBinding get() = nFragBinding!!
     private var building = BuildingModel()
@@ -61,28 +60,10 @@ class BuildingFragment : Fragment() {
         buildingViewModel.observableStatus.observe(viewLifecycleOwner) { status ->
             status?.let { render(status) }
         }
-        buildingViewModel.observableBuild.observe(viewLifecycleOwner) { status ->
-            status?.let { renderBuild() } }
-        Timber.i("ARRRGS:" + args.buildingId.toString())
-        if (args.buildingId != 0L) {
-            foundBuild = fragBinding.buildingvm?.getBuild(args.buildingId)!!
-
-            Timber.i("FOUNDBUILD:$foundBuild")
-            fragBinding.btnAdd.setText(R.string.up_loc)
-            fragBinding.buildingName.setText(foundBuild.name)
-            fragBinding.buildingAddress.setText(foundBuild.address)
-            fragBinding.editTextPhone.setText(foundBuild.phone)
-            Picasso.get()
-                .load(Uri.parse(foundBuild.image))
-                .into(fragBinding.buildingImage)
-            fragBinding.chooseImage.setText(R.string.img_ch)
-        }
-
-
 
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-        requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
+            requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
         }
 
         fragBinding.chooseImage.setOnClickListener {
@@ -143,12 +124,6 @@ class BuildingFragment : Fragment() {
 
     override fun onResume() {
         setButtonListener(fragBinding)
-        if (building.image != ""){
-            Picasso.get()
-                .load(Uri.parse(building.image))
-                .into(fragBinding.buildingImage)
-            fragBinding.chooseImage.setText(R.string.img_ch)
-        }
         super.onResume()
     }
 
@@ -184,14 +159,8 @@ class BuildingFragment : Fragment() {
                     view?.snack(R.string.loc_img)
                 }
                 else -> {
-                    if (building.id.toString().length == 1){
-                        building.id = Random().nextLong()
-                        buildingViewModel.addBuilding(building)
-                        view?.snack(R.string.b_create)
-                    } else {
-                        buildingViewModel.updateBuilding(building)
-                        view?.snack(R.string.b_update)
-                    }
+                    buildingViewModel.addBuilding(building)
+                    view?.snack(R.string.b_create)
                     Timber.i(building.toString())
 
                     // Reset fields and variable values

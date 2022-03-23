@@ -116,7 +116,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     override fun onEditBuildingClick(building: BuildingModel) {
         // Send building info to the create building fragment
-        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment(building.id)
+        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingDetailFragment(building.id)
         findNavController().navigate(action)
     }
 

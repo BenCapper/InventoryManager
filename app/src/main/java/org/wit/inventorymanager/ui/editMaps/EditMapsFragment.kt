@@ -1,10 +1,15 @@
-package org.wit.inventorymanager.ui.maps
+package org.wit.inventorymanager.ui.editMaps
+
+import androidx.fragment.app.Fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -15,10 +20,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.building.BuildingFragment
+import org.wit.inventorymanager.ui.maps.MapsFragmentDirections
 import splitties.snackbar.snack
 
-
-class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
+class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
 
     private lateinit var map: GoogleMap
     private var build = BuildingModel()
@@ -76,10 +81,12 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val frag = BuildingFragment.newInstance()
-        frag.arguments?.putParcelable("editBuild",build)
+        frag.arguments?.putParcelable("editBuild", build)
         requireActivity().supportFragmentManager.findFragmentById(R.id.buildingFragment)
-            ?.let { requireActivity().supportFragmentManager.beginTransaction().remove(it)
-                .replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit() }
+            ?.let {
+                requireActivity().supportFragmentManager.beginTransaction().remove(it)
+                    .replace(R.id.nav_host_fragment, frag).disallowAddToBackStack().commit()
+            }
         return super.onOptionsItemSelected(item)
     }
 
@@ -90,6 +97,5 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         build.zoom = map.cameraPosition.zoom
         view?.snack(R.string.b_setLoc)
     }
-
-
 }
+

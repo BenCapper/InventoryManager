@@ -46,9 +46,14 @@ object BuildingManager : BuildingStore {
     }
 
 
-    override fun update(building: BuildingModel) {
-        db.child(building.id.toString()).setValue(building)
+    override fun update(buildingId: String, build: BuildingModel) {
 
+        val buildValues = build.toMap()
+
+        val childUpdate : MutableMap<String, Any?> = HashMap()
+        childUpdate["$buildingId"] = buildValues
+
+        db.updateChildren(childUpdate)
     }
 
     override fun delete(building: BuildingModel) {
@@ -69,7 +74,13 @@ object BuildingManager : BuildingStore {
         return buildings.filter { b -> b.id == id }
     }
 
-    override fun buildingById(id: Long): BuildingModel? {
-        return buildings.find { it.id == id }
+    override fun buildingById(buildingId: String, build: MutableLiveData<BuildingModel>) {
+
+        db.child(buildingId).get().addOnSuccessListener {
+                build.value = it.getValue(BuildingModel::class.java)
+                Timber.i("firebase Got value ${it.value}")
+            }.addOnFailureListener{
+                Timber.e("firebase Error getting data $it")
+            }
     }
 }

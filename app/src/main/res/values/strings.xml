@@ -16,6 +16,7 @@
     <string name="loc_address">Enter the Location Address</string>
     <string name="loc_phone">Enter the Location Phone Number</string>
     <string name="loc_img">Select a Location Image</string>
+    <string name="loc_none">Select a Location</string>
     <string name="b_update">Location Updated</string>
     <string name="b_create">Location Created</string>
     <string name="b_setLoc">Location Set</string>
@@ -32,7 +33,7 @@
     <string name="change_building_image">Change Image</string>
     <string name="b_name_chars">Name: 15 characters maximum</string>
     <string name="b_address_chars">Address: 25 characters maximum</string>
-    <string name="b_phone_chars" >Phone: 15 characters maximum</string>
+    <string name="b_phone_chars">Phone: 15 characters maximum</string>
     <string name="fragment_building">Locations</string>
     <string name="building_image">Branch Image</string>
     <string name="button_location">Location</string>
@@ -77,5 +78,7 @@
     <string name="quantity_warn">Quantity already at the minimum level</string>
     <string name="save_stock">Save</string>
     <string name="button_addStockImage">Add Image</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

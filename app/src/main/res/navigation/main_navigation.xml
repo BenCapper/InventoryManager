@@ -19,9 +19,6 @@
             app:destination="@id/mapsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
-        <argument
-            android:name="buildingId"
-            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/buildingListFragment"
@@ -36,6 +33,11 @@
         <action
             android:id="@+id/action_buildingListFragment_to_stockListFragment"
             app:destination="@id/stockListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_buildingListFragment_to_buildingDetailFragment"
+            app:destination="@id/buildingDetailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
@@ -64,6 +66,14 @@
             app:destination="@id/buildingListFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="buildingId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_stockListFragment_to_stockDetailFragment"
+            app:destination="@id/stockDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/stockFragment"
@@ -75,5 +85,50 @@
             app:destination="@id/stockListFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/stockDetailFragment"
+        android:name="org.wit.inventorymanager.ui.stockDetail.StockDetailFragment"
+        android:label="stock_detail_fragment"
+        tools:layout="@layout/stock_detail_fragment" >
+        <action
+            android:id="@+id/action_stockDetailFragment_to_stockListFragment"
+            app:destination="@id/stockListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument android:name="stockId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/editMapsFragment"
+        android:name="org.wit.inventorymanager.ui.editMaps.EditMapsFragment"
+        android:label="fragment_edit_maps"
+        tools:layout="@layout/fragment_edit_maps" >
+        <argument
+            android:name="buildingId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_editMapsFragment_to_buildingDetailFragment"
+            app:destination="@id/buildingDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/buildingDetailFragment"
+        android:name="org.wit.inventorymanager.ui.buildingDetail.BuildingDetailFragment"
+        android:label="Location Details" >
+        <action
+            android:id="@+id/action_buildingDetailFragment_to_buildingListFragment"
+            app:destination="@id/buildingListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_buildingDetailFragment_to_editMapsFragment"
+            app:destination="@id/editMapsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="buildingId"
+            app:argType="long" />
     </fragment>
 </navigation>
