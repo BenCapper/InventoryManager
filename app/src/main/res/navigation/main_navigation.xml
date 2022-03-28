@@ -19,6 +19,17 @@
             app:destination="@id/mapsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="lat"
+            app:argType="string"
+            android:defaultValue='" "' />
+        <argument android:name="lng"
+            app:argType="string"
+            android:defaultValue='" "' />
+        <argument
+            android:name="zoom"
+            app:argType="float"
+            android:defaultValue="0" />
     </fragment>
     <fragment
         android:id="@+id/buildingListFragment"
@@ -98,6 +109,9 @@
             app:exitAnim="@anim/nav_default_exit_anim" />
         <argument android:name="stockId"
             app:argType="long" />
+        <argument
+            android:name="buildingId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/editMapsFragment"
@@ -105,13 +119,22 @@
         android:label="fragment_edit_maps"
         tools:layout="@layout/fragment_edit_maps" >
         <argument
-            android:name="buildingId"
-            app:argType="long" />
+            android:name="lat"
+            app:argType="string"
+            android:defaultValue='" "' />
         <action
             android:id="@+id/action_editMapsFragment_to_buildingDetailFragment"
             app:destination="@id/buildingDetailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="lng"
+            app:argType="string"
+            android:defaultValue='" "' />
+        <argument
+            android:name="zoom"
+            app:argType="float"
+            android:defaultValue="0" />
     </fragment>
     <fragment
         android:id="@+id/buildingDetailFragment"
@@ -130,5 +153,17 @@
         <argument
             android:name="buildingId"
             app:argType="long" />
+        <argument
+            android:name="lat"
+            app:argType="string"
+            android:defaultValue='" "' />
+        <argument
+            android:name="lng"
+            app:argType="string"
+            android:defaultValue='" "' />
+        <argument
+            android:name="zoom"
+            app:argType="float"
+            android:defaultValue="0" />
     </fragment>
 </navigation>

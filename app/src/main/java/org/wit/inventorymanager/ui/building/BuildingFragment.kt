@@ -26,12 +26,14 @@ import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
+import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailFragmentArgs
 import timber.log.Timber
 import java.util.*
 
 
 class BuildingFragment : Fragment() {
 
+    private val args by navArgs<BuildingFragmentArgs>()
     private var nFragBinding: FragmentBuildingBinding? = null
     private val fragBinding get() = nFragBinding!!
     private var building = BuildingModel()
@@ -74,7 +76,7 @@ class BuildingFragment : Fragment() {
             val location = Location(52.245696, -7.139102, 15f)
             val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
 
-            if (building.zoom == 0f && building.lat == (0).toDouble() && building.lng == (0).toDouble()) {
+            if (args.zoom == 0f && args.lat.toDouble() == (0).toDouble() && args.lng.toDouble() == (0).toDouble()) {
                 // Fresh location, set default values
                 building.zoom = location.zoom
                 building.lat = location.lat

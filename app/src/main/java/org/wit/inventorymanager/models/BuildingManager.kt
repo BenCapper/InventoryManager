@@ -2,10 +2,7 @@ package org.wit.inventorymanager.models
 
 
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import timber.log.Timber
 import java.util.*
 
@@ -13,7 +10,7 @@ import java.util.*
 object BuildingManager : BuildingStore {
 
     var buildings = mutableListOf<BuildingModel>()
-    private val db =
+    private var db: DatabaseReference =
         FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
             .getReference("Building")
 
@@ -77,9 +74,11 @@ object BuildingManager : BuildingStore {
     override fun buildingById(buildingId: String, build: MutableLiveData<BuildingModel>) {
 
         db.child(buildingId).get().addOnSuccessListener {
-                build.value = it.getValue(BuildingModel::class.java)
+                build.value = it.getValue(BuildingModel::class.java)!!
+                Timber.i("(ON SUCCESS) BUILD.VALUE VM Got value ${build.value}")
                 Timber.i("firebase Got value ${it.value}")
-            }.addOnFailureListener{
+            }
+            .addOnFailureListener {
                 Timber.e("firebase Error getting data $it")
             }
     }

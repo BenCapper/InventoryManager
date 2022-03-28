@@ -12,6 +12,7 @@ import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
@@ -51,19 +52,19 @@ class BuildingDetailFragment : Fragment() {
         activity?.title = getString(R.string.action_location)
         registerImagePickerCallback()
         buildingDetailViewModel = ViewModelProvider(this)[BuildingDetailViewModel::class.java]
-        buildingDetailViewModel.observableBuild.observe(viewLifecycleOwner) { status ->
-            status?.let { renderBuild() }
-        }
+        buildingDetailViewModel.observableBuild.observe(viewLifecycleOwner) { renderBuild() }
+
         buildingDetailViewModel.getBuild(args.buildingId.toString())
         try {
-            building = buildingDetailViewModel.observableBuild.value!!
+            building = buildingDetailViewModel.observableBuild?.value!!
+            Picasso.get()
+                .load(buildingDetailViewModel.observableBuild.value?.image)
+                .into(fragBinding.buildingDetailImage)
         }
         catch (e:Exception){
-            Timber.i("OBSERVABLE BUILD IS EMPTY!!")
+            Timber.i("OBSERVABLE BUILD IS EMPTY!! $e")
         }
-        Picasso.get()
-            .load(buildingDetailViewModel.observableBuild.value?.image)
-            .into(fragBinding.buildingDetailImage)
+
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
@@ -74,7 +75,9 @@ class BuildingDetailFragment : Fragment() {
         }
 
         fragBinding.buildingDetailLocation.setOnClickListener {
-            val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToEditMapsFragment(args.buildingId)
+            val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToEditMapsFragment(
+                args.buildingId.toString()
+            )
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
         return root
@@ -82,6 +85,7 @@ class BuildingDetailFragment : Fragment() {
 
     private fun renderBuild() {
         fragBinding.buildDetailVm = buildingDetailViewModel
+        Timber.i("Retrofit fragBinding.buildDetailVm == $fragBinding.buildDetailVm")
     }
 
 
@@ -89,9 +93,6 @@ class BuildingDetailFragment : Fragment() {
         super.onResume()
         setButtonListener(fragBinding)
         buildingDetailViewModel.getBuild(args.buildingId.toString())
-        Picasso.get()
-            .load(buildingDetailViewModel.observableBuild.value?.image)
-            .into(fragBinding.buildingDetailImage)
     }
 
     private fun setButtonListener(layout: FragmentBuildingDetailBinding) {

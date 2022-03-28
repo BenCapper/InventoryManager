@@ -19,7 +19,6 @@ class BuildingDetailViewModel : ViewModel() {
 
     fun getBuild(id: String) {
         try {
-            //DonationManager.findById(email, id, donation)
             BuildingManager.buildingById(id, build)
             Timber.i("Detail getBuild() Success : ${
                 build.value.toString()}")

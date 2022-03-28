@@ -40,14 +40,11 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
             * Capitalise the first letter of the name and address
             * Load the image into the imageView
             * Building details act as links to that buildings stock */
-
+            binding.root.tag = building
             binding.building = building
-            Picasso.get().load(building.image).resize(200,200).into(binding.imageIcon)
+            //Picasso.get().load(building.image).resize(200,200).into(binding.imageIcon)
             binding.edit.setOnClickListener { listener.onEditBuildingClick(building)}
-            binding.buildingName.setOnClickListener { listener.onBuildingClick(building)}
-            binding.imageIcon.setOnClickListener { listener.onBuildingClick(building)}
-            binding.address.setOnClickListener { listener.onBuildingClick(building)}
-            binding.phone.setOnClickListener { listener.onBuildingClick(building)}
+            binding.root.setOnClickListener { listener.onBuildingClick(building) }
             binding.executePendingBindings()
         }
     }
