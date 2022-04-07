@@ -33,7 +33,6 @@ import java.util.*
 
 class BuildingFragment : Fragment() {
 
-    private val args by navArgs<BuildingFragmentArgs>()
     private var nFragBinding: FragmentBuildingBinding? = null
     private val fragBinding get() = nFragBinding!!
     private var building = BuildingModel()
@@ -73,33 +72,10 @@ class BuildingFragment : Fragment() {
         }
 
         fragBinding.buildingLocation.setOnClickListener {
-            val location = Location(52.245696, -7.139102, 15f)
             val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
+            requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+            }
 
-            if (args.zoom == 0f && args.lat.toDouble() == (0).toDouble() && args.lng.toDouble() == (0).toDouble()) {
-                // Fresh location, set default values
-                building.zoom = location.zoom
-                building.lat = location.lat
-                building.lng = location.lng
-                action.arguments.putParcelable("build", building)
-                requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-            }
-            else {
-                if (arguments?.containsKey("editBuild") == true) {
-                    // Already have building info to send to maps
-                    action.arguments.putParcelable("build", building)
-                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-                }else{
-                    // Set default values
-                    building.id = (0).toLong()
-                    building.zoom = 15f
-                    building.lat = 52.245696
-                    building.lng = -7.139102
-                    action.arguments.putParcelable("build", building)
-                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-                }
-            }
-        }
         return root
     }
 
@@ -170,14 +146,6 @@ class BuildingFragment : Fragment() {
                     layout.buildingAddress.setText("")
                     layout.editTextPhone.setText("")
                     layout.buildingImage.setImageURI(null)
-                    building.name = ""
-                    building.phone = ""
-                    building.address = ""
-                    building.image = ""
-                    building.id = 0
-                    building.zoom = 0f
-                    building.lat = (0).toDouble()
-                    building.lng = (0).toDouble()
 
 
                     it.findNavController()
