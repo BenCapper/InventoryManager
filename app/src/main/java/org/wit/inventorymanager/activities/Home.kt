@@ -2,18 +2,25 @@ package org.wit.inventorymanager.activities
 
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
+import com.google.firebase.auth.FirebaseUser
 import org.wit.inventorymanager.databinding.HomeBinding
 import org.wit.inventorymanager.R
+import org.wit.inventorymanager.databinding.NavHeaderBinding
 import org.wit.inventorymanager.helpers.checkLocationPermissions
 import org.wit.inventorymanager.helpers.isPermissionGranted
+import org.wit.inventorymanager.ui.auth.LoggedInViewModel
+import org.wit.inventorymanager.ui.auth.Login
 import org.wit.inventorymanager.ui.maps.MapsViewModel
 import timber.log.Timber
 
@@ -24,6 +31,8 @@ class Home : AppCompatActivity() {
     private lateinit var homeBinding : HomeBinding
     private val mapsViewModel : MapsViewModel by viewModels()
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var loggedInViewModel : LoggedInViewModel
+    private lateinit var navHeaderBinding : NavHeaderBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +59,22 @@ class Home : AppCompatActivity() {
 
     }
 
+    public override fun onStart() {
+        super.onStart()
+        loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
+        loggedInViewModel.liveFirebaseUser.observe(this, Observer { firebaseUser ->
+            if (firebaseUser != null)
+                updateNavHeader(loggedInViewModel.liveFirebaseUser.value!!)
+        })
+
+        loggedInViewModel.loggedOut.observe(this, Observer { loggedout ->
+            if (loggedout) {
+                startActivity(Intent(this, Login::class.java))
+            }
+        })
+
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
@@ -68,5 +93,11 @@ class Home : AppCompatActivity() {
             }
         }
         Timber.i("LOC : %s", mapsViewModel.currentLocation.value)
+    }
+
+    private fun updateNavHeader(currentUser: FirebaseUser) {
+        var headerView = homeBinding.navView.getHeaderView(0)
+        navHeaderBinding = NavHeaderBinding.bind(headerView)
+        navHeaderBinding.navHeaderEmail.text = currentUser.email
     }
 }
