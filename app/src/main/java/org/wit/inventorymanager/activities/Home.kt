@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -99,5 +100,13 @@ class Home : AppCompatActivity() {
         var headerView = homeBinding.navView.getHeaderView(0)
         navHeaderBinding = NavHeaderBinding.bind(headerView)
         navHeaderBinding.navHeaderEmail.text = currentUser.email
+    }
+
+    fun signOut(item: MenuItem) {
+        loggedInViewModel.logOut()
+        //Launch Login activity and clear the back stack to stop navigating back to the Home activity
+        val intent = Intent(this, Login::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 }
