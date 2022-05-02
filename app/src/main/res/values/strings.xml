@@ -103,5 +103,5 @@
     <string name="emailpassword_title_text">Please Login Below</string>
     <string name="nav_header_title">Inventory Manager</string>
     <string name="nav_header_subtitle">bc@android.com</string>
-
+    <string name="messageLoading">Buildings Loading...</string>
 </resources>
