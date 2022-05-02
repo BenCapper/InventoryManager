@@ -28,9 +28,9 @@ class BuildingDetailViewModel : ViewModel() {
         }
     }
 
-    fun updateBuild(id: String,build: BuildingModel) {
+    fun updateBuild(userid: String, id: String,build: BuildingModel) {
         try {
-            BuildingManager.update(id, build)
+            BuildingManager.update(userid,id, build)
             Timber.i("Detail update() Success : $build")
         } catch (e: Exception) {
             Timber.i("Detail update() Error : $e.message")

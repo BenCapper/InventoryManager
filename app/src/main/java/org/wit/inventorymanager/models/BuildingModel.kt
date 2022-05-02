@@ -5,7 +5,8 @@ import com.google.firebase.database.Exclude
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class BuildingModel(var id: Long = 0,
+data class BuildingModel(var id: String = "",
+                         var uid: String = "",
                          var name: String = "",
                          var address: String = "",
                          var image: String = "",
@@ -19,6 +20,7 @@ data class BuildingModel(var id: Long = 0,
                         fun toMap(): Map<String, Any?> {
                             return mapOf(
                                 "id" to id,
+                                "uid" to uid,
                                 "name" to name,
                                 "address" to address,
                                 "image" to image,

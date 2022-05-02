@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -26,6 +27,7 @@ import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
+import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailFragmentArgs
 import timber.log.Timber
 import java.util.*
@@ -39,7 +41,7 @@ class BuildingFragment : Fragment() {
     private var foundBuild = BuildingModel()
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var buildingViewModel: BuildingViewModel
-
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,7 +139,7 @@ class BuildingFragment : Fragment() {
                     view?.snack(R.string.loc_img)
                 }
                 else -> {
-                    buildingViewModel.addBuilding(building)
+                    buildingViewModel.addBuilding(loggedInViewModel.liveFirebaseUser,building)
                     view?.snack(R.string.b_create)
                     Timber.i(building.toString())
 

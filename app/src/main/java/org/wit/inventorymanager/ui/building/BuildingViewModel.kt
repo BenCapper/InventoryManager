@@ -3,6 +3,7 @@ package org.wit.inventorymanager.ui.building
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseUser
 import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
 import timber.log.Timber
@@ -18,9 +19,9 @@ class BuildingViewModel : ViewModel() {
         get() = status
 
 
-    fun addBuilding(building: BuildingModel) {
+    fun addBuilding(firebaseUser: MutableLiveData<FirebaseUser>,building: BuildingModel) {
         status.value = try {
-            BuildingManager.create(building)
+            BuildingManager.create(firebaseUser,building)
             true
         } catch (e: IllegalArgumentException) {
             false

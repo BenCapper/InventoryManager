@@ -130,7 +130,7 @@ class BuildingDetailFragment : Fragment() {
                     view?.snack(R.string.loc_none)
                 }
                 else -> {
-                    buildingDetailViewModel.updateBuild(args.buildingId.toString(), building)
+                    buildingDetailViewModel.updateBuild(args.buildingId.toString(),args.buildingId.toString(), building)
                     Timber.i(building.toString())
                     it.findNavController()
                         .navigate(R.id.action_buildingFragment_to_buildingListFragment)
