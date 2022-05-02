@@ -16,6 +16,7 @@
     <string name="loc_address">Enter the Location Address</string>
     <string name="loc_phone">Enter the Location Phone Number</string>
     <string name="loc_img">Select a Location Image</string>
+    <string name="loc_none">Select a Location</string>
     <string name="b_update">Location Updated</string>
     <string name="b_create">Location Created</string>
     <string name="b_setLoc">Location Set</string>
@@ -32,7 +33,7 @@
     <string name="change_building_image">Change Image</string>
     <string name="b_name_chars">Name: 15 characters maximum</string>
     <string name="b_address_chars">Address: 25 characters maximum</string>
-    <string name="b_phone_chars" >Phone: 15 characters maximum</string>
+    <string name="b_phone_chars">Phone: 15 characters maximum</string>
     <string name="fragment_building">Locations</string>
     <string name="building_image">Branch Image</string>
     <string name="button_location">Location</string>
@@ -77,5 +78,31 @@
     <string name="quantity_warn">Quantity already at the minimum level</string>
     <string name="save_stock">Save</string>
     <string name="button_addStockImage">Add Image</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="label_emailpassword">Email/Password Authentication</string>
+    <string name="desc_emailpassword">Use an email and password to authenticate with Firebase.</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="send_link">Send Link</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="loading">Loading…</string>
+    <string name="signed_in">Signed In</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="token_null">Token: null</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="desc_firebase_lockup">Firebase logo and name</string>
+    <string name="auth_failed">Authentication failed</string>
+    <string name="firebase_status_fmt">Firebase User: %s</string>
+    <string name="firebase_user_management">Firebase User Management</string>
+    <string name="emailpassword_status_fmt">Email User: %1$s (verified: %2$b)</string>
+    <string name="emailpassword_title_text">Please Login Below</string>
+    <string name="nav_header_title">Inventory Manager</string>
+    <string name="nav_header_subtitle">bc@android.com</string>
+    <string name="messageLoading">Buildings Loading...</string>
+    <string name="select_profile_image">Select Profile Image</string>
 </resources>

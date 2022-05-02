@@ -32,7 +32,7 @@ object StockManager : StockStore {
 
 
     override fun filterStock(id: Long): List<StockModel> {
-        return stock.filter { item -> item.branch != id }
+        return stock.filter { item -> item.branch.equals(id)}
     }
 }
 

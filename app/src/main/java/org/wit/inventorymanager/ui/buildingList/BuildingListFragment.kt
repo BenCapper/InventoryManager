@@ -2,11 +2,13 @@ package org.wit.inventorymanager.ui.buildingList
 
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -22,10 +24,11 @@ import org.wit.inventorymanager.R
 import org.wit.inventorymanager.adapters.BuildingAdapter
 import org.wit.inventorymanager.adapters.BuildingListener
 import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
-import org.wit.inventorymanager.helpers.TouchHelpers
+import org.wit.inventorymanager.helpers.*
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
+import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import timber.log.Timber
 
 class BuildingListFragment : Fragment(), BuildingListener {
@@ -37,11 +40,11 @@ class BuildingListFragment : Fragment(), BuildingListener {
     private val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
         .getReference("Building")
     var builds = mutableListOf<BuildingModel>()
-    private var build = BuildingModel()
-    private var foundBuild = BuildingModel()
+    lateinit var loader : AlertDialog
     private lateinit var swipeCallback: TouchHelpers
-    private lateinit var foundList: MutableList<BuildingModel>
-    private lateinit var buildingListViewModel: BuildingListViewModel
+    private lateinit var foundList: ArrayList<BuildingModel>
+    private val buildingListViewModel: BuildingListViewModel by activityViewModels()
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,22 +60,77 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
         _fragBinding = FragmentBuildingListBinding.inflate(inflater, container, false)
         val root = fragBinding.root
+        loader = createLoader(requireActivity())
         activity?.title = getString(R.string.action_location)
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        buildingListViewModel = ViewModelProvider(this).get(BuildingListViewModel::class.java)
-        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner) { building_list ->
-            building_list?.let { render(building_list) }
+        showLoader(loader, "Downloading Building")
+        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner, Observer { building ->
+            building?.let {
+                render(building as ArrayList<BuildingModel>)
+                hideLoader(loader)
+                checkSwipeRefresh()
+            }
+        })
+        setSwipeRefresh()
+
+        val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                showLoader(loader, "Deleting Building")
+                val adapter = fragBinding.recyclerView.adapter as BuildingAdapter
+                adapter.removeAt(viewHolder.adapterPosition)
+                buildingListViewModel.delete(
+                    buildingListViewModel.liveFirebaseUser.value?.uid!!,
+                    (viewHolder.itemView.tag as BuildingModel).uid!!
+                )
+                hideLoader(loader)
+            }
         }
-        buildings = buildingListViewModel.observableBuildingList.value as MutableList<BuildingModel>
+        val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
+        itemTouchDeleteHelper.attachToRecyclerView(fragBinding.recyclerView)
+
+        val swipeEditHandler = object : SwipeToEditCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                onBuildingClick(viewHolder.itemView.tag as BuildingModel)
+            }
+        }
+        val itemTouchEditHelper = ItemTouchHelper(swipeEditHandler)
+        itemTouchEditHelper.attachToRecyclerView(fragBinding.recyclerView)
         removeBuildingData()
         getSearchData()
 
         return root
     }
 
-    private fun render(buildingList: List<BuildingModel>) {
-        fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this)
+    private fun render(buildingList: ArrayList<BuildingModel>) {
+        fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this, buildingListViewModel.readOnly.value!!)
+    }
+
+    private fun setSwipeRefresh() {
+        fragBinding.swiperefresh.setOnRefreshListener {
+            fragBinding.swiperefresh.isRefreshing = true
+            showLoader(loader, "Downloading Buildings")
+            if(buildingListViewModel.readOnly.value!!)
+                buildingListViewModel.loadAll()
+            else
+                buildingListViewModel.load()
+        }
+    }
+
+    private fun checkSwipeRefresh() {
+        if (fragBinding.swiperefresh.isRefreshing)
+            fragBinding.swiperefresh.isRefreshing = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showLoader(loader, "Downloading Buildings")
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+            if (firebaseUser != null) {
+                buildingListViewModel.liveFirebaseUser.value = firebaseUser
+                buildingListViewModel.load()
+            }
+        })
     }
 
     private fun getSearchData(){
@@ -116,13 +174,12 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     override fun onEditBuildingClick(building: BuildingModel) {
         // Send building info to the create building fragment
-        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment(building.id)
+        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingDetailFragment(building.id)
         findNavController().navigate(action)
     }
 
 
     private fun search(newText: String){
-        foundList = mutableListOf()
         for(item in buildings){
             if(item.name.lowercase().contains(newText.lowercase())){
                 foundList.add(item)
@@ -147,7 +204,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
                     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                         val pos = viewHolder.absoluteAdapterPosition
                         if (builds.isNotEmpty()) {
-                            buildingListViewModel.deleteBuilding(builds[pos])
+                            buildingListViewModel.delete(loggedInViewModel.liveFirebaseUser.value!!.uid, builds[pos].id)
                             builds.remove(builds[pos])
                             fragBinding.recyclerView.adapter?.notifyItemRemoved(pos)
                         }
@@ -164,8 +221,8 @@ class BuildingListFragment : Fragment(), BuildingListener {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun showBuildings (buildingList: List<BuildingModel>) {
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildingList, this@BuildingListFragment)
+    private fun showBuildings (buildingList: ArrayList<BuildingModel>) {
+        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildingList, this@BuildingListFragment, buildingListViewModel.readOnly.value!!)
         view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
     }
 

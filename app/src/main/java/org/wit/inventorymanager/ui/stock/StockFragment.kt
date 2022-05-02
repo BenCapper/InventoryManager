@@ -163,7 +163,7 @@ class StockFragment : Fragment() {
                     stock.image = ""
                     stock.inStock = 0
                     stock.id = 0
-                    stock.branch = 0
+                    stock.branch = ""
 
 
                     it.findNavController()

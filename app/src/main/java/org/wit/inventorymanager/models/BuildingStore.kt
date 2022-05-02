@@ -1,13 +1,18 @@
 package org.wit.inventorymanager.models
 
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseUser
 
 interface BuildingStore {
-    fun findAll(buildingList: MutableLiveData<List<BuildingModel>>): List<BuildingModel>
-    fun create(building: BuildingModel)
-    fun update(building: BuildingModel)
-    fun delete(building: BuildingModel)
-    fun filterBuildings(buildingName: String): List<BuildingModel>
-    fun filterById(id: Long): List <BuildingModel>
-    fun buildingById(id: Long): BuildingModel?
+    fun findAll(buildingList:
+                MutableLiveData<List<BuildingModel>>)
+    fun findAll(userid:String,
+                buildingList:
+                MutableLiveData<List<BuildingModel>>)
+    fun findById(userid:String, buildingid: String,
+                 donation: MutableLiveData<BuildingModel>)
+    fun create(firebaseUser: MutableLiveData<FirebaseUser>, building: BuildingModel)
+    fun delete(userid:String, buildingid: String)
+    fun update(userid:String, buildingid: String, building: BuildingModel)
+    fun buildingById(id: String,building: MutableLiveData<BuildingModel>)
 }

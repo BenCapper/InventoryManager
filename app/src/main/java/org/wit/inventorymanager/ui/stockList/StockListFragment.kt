@@ -64,7 +64,6 @@ class StockListFragment : Fragment(), StockListener {
         val bundle = arguments
         if (arguments?.containsKey("id") == true) {
             build = bundle?.getParcelable("id")!!
-            id = build.id
             Timber.i("Build = $id")
             view?.snack(id.toString())
         }
@@ -74,7 +73,6 @@ class StockListFragment : Fragment(), StockListener {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_stockListFragment_to_buildingListFragment)
         }
-        getStockData()
         loadBranchStock()
         removeStockData()
         getSearchStockData()
@@ -149,34 +147,7 @@ class StockListFragment : Fragment(), StockListener {
         }
     }
 
-    private fun getStockData(){
-        db.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                stockList = mutableListOf()
-                if (snapshot.exists()) {
-                    for (stockSnap in snapshot.children) {
-                        val stock = stockSnap.getValue(StockModel::class.java)
-                        if(stock?.branch == build.id){
-                            stockList.add(stock)
-                        }
-                    }
-                }
-                showStock(stockList)
-                if (stockList.isEmpty()) {
-                    view?.findViewById<Button>(R.id.stockNoList)?.visibility = View.VISIBLE
-                    view?.findViewById<Button>(R.id.stockNoList)?.setOnClickListener {
-                        val bundle = Bundle()
-                        bundle.putParcelable("build", build)
-                        it.findNavController()
-                            .navigate(R.id.action_stockListFragment_to_stockFragment, bundle)
-                    }
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Timber.i("Failed: ${error.message}")
-            }
-        })
-    }
+
 
     private fun loadBranchStock(){
         val filteredStock = app.stocks.filterStock(id)
