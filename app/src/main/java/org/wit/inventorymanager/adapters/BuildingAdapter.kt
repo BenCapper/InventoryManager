@@ -2,9 +2,12 @@ package org.wit.inventorymanager.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.databinding.CardBuildingBinding
+import org.wit.inventorymanager.helpers.customTransformation
 import org.wit.inventorymanager.models.BuildingModel
 import java.util.*
 
@@ -13,17 +16,20 @@ interface BuildingListener {
     fun onEditBuildingClick(building: BuildingModel)
 }
 
-class BuildingAdapter constructor(private var buildings: List<BuildingModel>, private val listener: BuildingListener)
+class BuildingAdapter constructor(private var buildings: ArrayList<BuildingModel>, private val listener: BuildingListener, private val readOnly: Boolean)
     : RecyclerView.Adapter<BuildingAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
         val binding = CardBuildingBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return MainHolder(binding)
+        return MainHolder(binding, readOnly)
     }
 
-
+    fun removeAt(position: Int) {
+        buildings.removeAt(position)
+        notifyItemRemoved(position)
+    }
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val building = buildings[holder.absoluteAdapterPosition]
@@ -33,7 +39,9 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
     override fun getItemCount(): Int = buildings.size
 
 
-    inner class MainHolder(private val binding : CardBuildingBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class MainHolder(private val binding : CardBuildingBinding, private val readOnly : Boolean) : RecyclerView.ViewHolder(binding.root) {
+
+        val readOnlyRow = readOnly
 
         fun bind(building: BuildingModel, listener : BuildingListener) {
             /*Bind building information to the recyclerview card
@@ -42,7 +50,12 @@ class BuildingAdapter constructor(private var buildings: List<BuildingModel>, pr
             * Building details act as links to that buildings stock */
             binding.root.tag = building
             binding.building = building
-            //Picasso.get().load(building.image).resize(200,200).into(binding.imageIcon)
+            Picasso.get().load(building.image.toUri())
+                .resize(200, 200)
+                .transform(customTransformation())
+                .centerCrop()
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .into(binding.imageIcon)
             binding.edit.setOnClickListener { listener.onEditBuildingClick(building)}
             binding.root.setOnClickListener { listener.onBuildingClick(building) }
             binding.executePendingBindings()

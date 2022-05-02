@@ -6,8 +6,9 @@ import android.graphics.drawable.ColorDrawable
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import ie.wit.donationx.R
-import ie.wit.donationx.adapters.DonationAdapter
+import org.wit.inventorymanager.R
+import org.wit.inventorymanager.adapters.BuildingAdapter
+
 
 abstract class SwipeToEditCallback(context: Context) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
@@ -25,7 +26,7 @@ abstract class SwipeToEditCallback(context: Context) : ItemTouchHelper.SimpleCal
          * if (viewHolder?.itemViewType == YourAdapter.SOME_TYPE) return 0
          * if (viewHolder?.adapterPosition == 0) return 0
          */
-        if ((viewHolder as DonationAdapter.MainHolder).readOnlyRow) return 0
+        if ((viewHolder as BuildingAdapter.MainHolder).readOnlyRow) return 0
         return super.getMovementFlags(recyclerView, viewHolder)
     }
 

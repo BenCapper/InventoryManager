@@ -14,7 +14,7 @@ import com.makeramen.roundedimageview.RoundedTransformationBuilder
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
-import ie.wit.donationx.R
+import org.wit.inventorymanager.R
 import java.io.IOException
 
 fun createLoader(activity: FragmentActivity) : AlertDialog {
