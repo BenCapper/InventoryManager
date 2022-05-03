@@ -107,9 +107,6 @@ object BuildingManager : BuildingStore {
         database.updateChildren(childUpdate)
     }
 
-    override fun buildingById(id: String, building: MutableLiveData<BuildingModel>) {
-        TODO("Not yet implemented")
-    }
 
     fun updateImageRef(userid: String,imageUri: String) {
 

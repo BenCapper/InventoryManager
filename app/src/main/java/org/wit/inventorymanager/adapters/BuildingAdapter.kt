@@ -13,7 +13,7 @@ import java.util.*
 
 interface BuildingListener {
     fun onBuildingClick(building: BuildingModel)
-    fun onEditBuildingClick(building: BuildingModel)
+    fun onEditSwipe(building: BuildingModel)
 }
 
 class BuildingAdapter constructor(private var buildings: ArrayList<BuildingModel>, private val listener: BuildingListener, private val readOnly: Boolean)

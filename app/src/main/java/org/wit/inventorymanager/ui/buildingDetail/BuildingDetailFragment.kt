@@ -12,6 +12,7 @@ import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
@@ -21,6 +22,7 @@ import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingDetailBinding
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
+import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import splitties.snackbar.snack
 import timber.log.Timber
 import kotlin.random.Random
@@ -33,6 +35,7 @@ class BuildingDetailFragment : Fragment() {
     private var building = BuildingModel()
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var buildingDetailViewModel: BuildingDetailViewModel
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,16 +57,6 @@ class BuildingDetailFragment : Fragment() {
         buildingDetailViewModel = ViewModelProvider(this)[BuildingDetailViewModel::class.java]
         buildingDetailViewModel.observableBuild.observe(viewLifecycleOwner) { renderBuild() }
 
-        buildingDetailViewModel.getBuild(args.buildingId.toString())
-        try {
-            building = buildingDetailViewModel.observableBuild?.value!!
-            Picasso.get()
-                .load(buildingDetailViewModel.observableBuild.value?.image)
-                .into(fragBinding.buildingDetailImage)
-        }
-        catch (e:Exception){
-            Timber.i("OBSERVABLE BUILD IS EMPTY!! $e")
-        }
 
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -92,7 +85,7 @@ class BuildingDetailFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setButtonListener(fragBinding)
-        buildingDetailViewModel.getBuild(args.buildingId.toString())
+        buildingDetailViewModel.getBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!,args.buildingId.toString())
     }
 
     private fun setButtonListener(layout: FragmentBuildingDetailBinding) {

@@ -68,7 +68,6 @@ class StockFragment : Fragment() {
         }
 
             if (stock.id.toString() !== (0).toLong().toString()){
-                id = stock.id
                 fragBinding.btnAddItem.setText(R.string.up_stock)
             }
             if (stock.name != ""){
@@ -142,7 +141,7 @@ class StockFragment : Fragment() {
                 else -> {
 
                     if (stock.id.toString().length == 1){
-                        stock.id = Random().nextLong()
+                        stock.id = Random().nextLong().toString()
                         app.stocks.create(stock)
                         view?.snack(R.string.s_create)
                     } else {
@@ -157,13 +156,6 @@ class StockFragment : Fragment() {
                     layout.stockPrice.setText("")
                     layout.stockWeight.setText("")
                     layout.stockImage.setImageURI(null)
-                    stock.name = ""
-                    stock.price = 0.0
-                    stock.weight = ""
-                    stock.image = ""
-                    stock.inStock = 0
-                    stock.id = 0
-                    stock.branch = ""
 
 
                     it.findNavController()

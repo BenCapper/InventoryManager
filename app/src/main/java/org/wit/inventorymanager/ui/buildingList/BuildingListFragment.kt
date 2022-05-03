@@ -37,11 +37,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     private var _fragBinding: FragmentBuildingListBinding? = null
     private val fragBinding get() = _fragBinding!!
     private lateinit var buildings: MutableList<BuildingModel>
-    private val db = FirebaseDatabase.getInstance("https://invmanage-4bcbd-default-rtdb.firebaseio.com")
-        .getReference("Building")
-    var builds = mutableListOf<BuildingModel>()
     lateinit var loader : AlertDialog
-    private lateinit var swipeCallback: TouchHelpers
     private lateinit var foundList: ArrayList<BuildingModel>
     private val buildingListViewModel: BuildingListViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
@@ -64,7 +60,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
         activity?.title = getString(R.string.action_location)
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        showLoader(loader, "Downloading Building")
+        showLoader(loader, "Downloading Buildings")
         buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner, Observer { building ->
             building?.let {
                 render(building as ArrayList<BuildingModel>)
@@ -91,12 +87,12 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
         val swipeEditHandler = object : SwipeToEditCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                onBuildingClick(viewHolder.itemView.tag as BuildingModel)
+                onEditSwipe(viewHolder.itemView.tag as BuildingModel)
             }
         }
         val itemTouchEditHelper = ItemTouchHelper(swipeEditHandler)
         itemTouchEditHelper.attachToRecyclerView(fragBinding.recyclerView)
-        removeBuildingData()
+
         getSearchData()
 
         return root
@@ -166,17 +162,19 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     override fun onBuildingClick(building: BuildingModel) {
         // Open this buildings stock list
-        val bundle = Bundle()
-        bundle.putParcelable("id", building)
-        findNavController().navigate(R.id.action_buildingListFragment_to_stockListFragment, bundle)
+        findNavController().navigate(R.id.action_buildingListFragment_to_stockListFragment)
 
     }
 
-    override fun onEditBuildingClick(building: BuildingModel) {
-        // Send building info to the create building fragment
-        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingDetailFragment(building.id)
-        findNavController().navigate(action)
+    override fun onEditSwipe(building: BuildingModel) {
+        // Open this buildings stock list
+        //findNavController().navigate(R.id.action_buildingListFragment_to_stockListFragment)
+        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingDetailFragment(building.uid!!)
+
+        if(!buildingListViewModel.readOnly.value!!)
+            findNavController().navigate(action)
     }
+
 
 
     private fun search(newText: String){
@@ -188,37 +186,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
         showBuildings(foundList)
     }
 
-    private fun removeBuildingData(){
-        /* Get list of buildings saved to the database
-         * delete the one at the swiped position
-         */
-        db.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    for(buildSnap in snapshot.children){
-                        val build = buildSnap.getValue(BuildingModel::class.java)
-                        builds.add(build!!)
-                    }
-                }
-                swipeCallback = object: TouchHelpers(){
-                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                        val pos = viewHolder.absoluteAdapterPosition
-                        if (builds.isNotEmpty()) {
-                            buildingListViewModel.delete(loggedInViewModel.liveFirebaseUser.value!!.uid, builds[pos].id)
-                            builds.remove(builds[pos])
-                            fragBinding.recyclerView.adapter?.notifyItemRemoved(pos)
-                        }
-                    }
-                }
-                val itemTouchHelper = ItemTouchHelper(swipeCallback)
-                itemTouchHelper.attachToRecyclerView(view?.findViewById(R.id.recyclerView))
 
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Timber.i("Failed: ${error.message}")
-            }
-        })
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showBuildings (buildingList: ArrayList<BuildingModel>) {

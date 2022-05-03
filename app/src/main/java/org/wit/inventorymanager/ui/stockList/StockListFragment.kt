@@ -74,7 +74,6 @@ class StockListFragment : Fragment(), StockListener {
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_stockListFragment_to_buildingListFragment)
         }
         loadBranchStock()
-        removeStockData()
         getSearchStockData()
 
 
@@ -164,35 +163,7 @@ class StockListFragment : Fragment(), StockListener {
         showStock(foundList)
     }
 
-    private fun removeStockData() {
-        db.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    for (stockSnap in snapshot.children) {
-                        val stock = stockSnap.getValue(StockModel::class.java)
-                        stocks.add(stock!!)
-                    }
-                }
-                swipeCallback = object : TouchHelpers() {
-                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                        val pos = viewHolder.absoluteAdapterPosition
-                        if (stocks.isNotEmpty()) {
-                            app.stocks.delete(stocks[pos])
-                            stocks.remove(stocks[pos])
-                            fragBinding.sRecyclerView.adapter?.notifyItemRemoved(pos)
-                        }
-                    }
-                }
-                val itemTouchHelper = ItemTouchHelper(swipeCallback)
-                itemTouchHelper.attachToRecyclerView(view?.findViewById(R.id.sRecyclerView))
 
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Timber.i("Failed: ${error.message}")
-            }
-        })
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showStock(stockList: List<StockModel>) {
