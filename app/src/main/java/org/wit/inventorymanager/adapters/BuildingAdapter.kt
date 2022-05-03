@@ -56,7 +56,6 @@ class BuildingAdapter constructor(private var buildings: ArrayList<BuildingModel
                 .centerCrop()
                 .memoryPolicy(MemoryPolicy.NO_CACHE)
                 .into(binding.imageIcon)
-            binding.edit.setOnClickListener { listener.onEditBuildingClick(building)}
             binding.root.setOnClickListener { listener.onBuildingClick(building) }
             binding.executePendingBindings()
         }
