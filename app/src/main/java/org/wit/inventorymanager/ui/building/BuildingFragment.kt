@@ -29,6 +29,8 @@ import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.Location
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailFragmentArgs
+import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
+import org.wit.inventorymanager.ui.maps.MapsViewModel
 import timber.log.Timber
 import java.util.*
 
@@ -38,10 +40,12 @@ class BuildingFragment : Fragment() {
     private var nFragBinding: FragmentBuildingBinding? = null
     private val fragBinding get() = nFragBinding!!
     private var building = BuildingModel()
-    private var foundBuild = BuildingModel()
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var buildingViewModel: BuildingViewModel
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    private val buildingListViewModel: BuildingListViewModel by activityViewModels()
+    private val mapsViewModel: MapsViewModel by activityViewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +62,8 @@ class BuildingFragment : Fragment() {
         val root = fragBinding.root
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
-        registerImagePickerCallback()
-        buildingViewModel = ViewModelProvider(this).get(BuildingViewModel::class.java)
+
+        buildingViewModel = ViewModelProvider(this)[BuildingViewModel::class.java]
         buildingViewModel.observableStatus.observe(viewLifecycleOwner) { status ->
             status?.let { render(status) }
         }
@@ -89,10 +93,6 @@ class BuildingFragment : Fragment() {
             }
             false -> view?.snack("Failed")
         }
-    }
-
-    private fun renderBuild() {
-        fragBinding.buildingvm = buildingViewModel
     }
 
     override fun onPause() {

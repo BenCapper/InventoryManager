@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
+import org.wit.inventorymanager.firebase.FirebaseImageManager
 import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
 import timber.log.Timber
@@ -21,6 +22,7 @@ class BuildingViewModel : ViewModel() {
 
     fun addBuilding(firebaseUser: MutableLiveData<FirebaseUser>,building: BuildingModel) {
         status.value = try {
+            building.image = FirebaseImageManager.imageUri.value.toString()
             BuildingManager.create(firebaseUser,building)
             true
         } catch (e: IllegalArgumentException) {

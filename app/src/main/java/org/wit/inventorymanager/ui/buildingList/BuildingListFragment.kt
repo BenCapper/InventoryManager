@@ -93,7 +93,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
         val itemTouchEditHelper = ItemTouchHelper(swipeEditHandler)
         itemTouchEditHelper.attachToRecyclerView(fragBinding.recyclerView)
 
-        getSearchData()
 
         return root
     }
@@ -129,24 +128,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
         })
     }
 
-    private fun getSearchData(){
-        // https://stackoverflow.com/questions/55949305/how-to-properly-retrieve-data-from-searchview-in-kotlin
-        fragBinding.buildingSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-                    search(newText)
-                }
-                else {
-                    showBuildings(foundList)
-                }
-                return true
-            }
-        })
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_building, menu)
@@ -177,14 +159,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
 
 
-    private fun search(newText: String){
-        for(item in buildings){
-            if(item.name.lowercase().contains(newText.lowercase())){
-                foundList.add(item)
-            }
-        }
-        showBuildings(foundList)
-    }
+
 
 
 
