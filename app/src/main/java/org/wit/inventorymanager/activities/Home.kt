@@ -128,13 +128,13 @@ class Home : AppCompatActivity() {
                         currentUser.uid,
                         currentUser.photoUrl,
                         navHeaderBinding.imageView,
-                        false
+                        true
                     )
                 } else {
                     Timber.i("Loading Existing Default imageUri")
                     FirebaseImageManager.updateDefaultImage(
                         currentUser.uid,
-                        R.drawable.ic_launcher_homer,
+                        R.drawable.ic_stock,
                         navHeaderBinding.imageView
                     )
                 }
@@ -171,7 +171,7 @@ class Home : AppCompatActivity() {
                 when(result.resultCode){
                     RESULT_OK -> {
                         if (result.data != null) {
-                            Timber.i("DX registerPickerCallback() ${readImageUri(result.resultCode, result.data).toString()}")
+                            Timber.i("registerPickerCallback() ${readImageUri(result.resultCode, result.data).toString()}")
                             FirebaseImageManager
                                 .updateUserImage(loggedInViewModel.liveFirebaseUser.value!!.uid,
                                     readImageUri(result.resultCode, result.data),

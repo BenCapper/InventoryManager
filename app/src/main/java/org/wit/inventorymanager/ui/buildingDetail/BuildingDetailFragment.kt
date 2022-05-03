@@ -85,7 +85,7 @@ class BuildingDetailFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setButtonListener(fragBinding)
-        buildingDetailViewModel.getBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!,args.buildingId.toString())
+        buildingDetailViewModel.getBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingId)
     }
 
     private fun setButtonListener(layout: FragmentBuildingDetailBinding) {
@@ -116,17 +116,12 @@ class BuildingDetailFragment : Fragment() {
                 building.phone.length > 15 -> {
                     view?.snack(R.string.b_phone_chars)
                 }
-                building.image == "" -> {
-                    view?.snack(R.string.loc_img)
-                }
-                building.zoom == 0F && building.lat == (0).toDouble() && building.lng == (0).toDouble() -> {
-                    view?.snack(R.string.loc_none)
-                }
+
                 else -> {
-                    buildingDetailViewModel.updateBuild(args.buildingId.toString(),args.buildingId.toString(), building)
+                    buildingDetailViewModel.updateBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingId, building)
                     Timber.i(building.toString())
                     it.findNavController()
-                        .navigate(R.id.action_buildingFragment_to_buildingListFragment)
+                        .navigate(R.id.action_buildingDetailFragment_to_buildingListFragment)
                 }
             }
         }

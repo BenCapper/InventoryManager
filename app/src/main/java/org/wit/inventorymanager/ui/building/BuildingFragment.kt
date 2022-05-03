@@ -73,9 +73,7 @@ class BuildingFragment : Fragment() {
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
         }
 
-        fragBinding.chooseImage.setOnClickListener {
-            showImagePicker(imageIntentLauncher)
-        }
+
 
         fragBinding.buildingLocation.setOnClickListener {
             val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
@@ -135,19 +133,10 @@ class BuildingFragment : Fragment() {
                 building.phone.length > 15 -> {
                     view?.snack(R.string.b_phone_chars)
                 }
-                building.image == "" -> {
-                    view?.snack(R.string.loc_img)
-                }
                 else -> {
                     buildingViewModel.addBuilding(loggedInViewModel.liveFirebaseUser,building)
                     view?.snack(R.string.b_create)
                     Timber.i(building.toString())
-
-                    // Reset fields and variable values
-                    layout.buildingName.setText("")
-                    layout.buildingAddress.setText("")
-                    layout.editTextPhone.setText("")
-                    layout.buildingImage.setImageURI(null)
 
 
                     it.findNavController()
