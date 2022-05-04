@@ -2,37 +2,26 @@ package org.wit.inventorymanager.ui.building
 
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
+import android.widget.ArrayAdapter
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navArgument
 import androidx.navigation.ui.NavigationUI
 import splitties.snackbar.snack
-import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
-
-import org.wit.inventorymanager.main.InventoryApp
-import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
-import org.wit.inventorymanager.models.Location
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
-import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailFragmentArgs
 import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
 import org.wit.inventorymanager.ui.maps.MapsViewModel
 import timber.log.Timber
-import java.util.*
 
 
 class BuildingFragment : Fragment() {
@@ -40,6 +29,7 @@ class BuildingFragment : Fragment() {
     private var nFragBinding: FragmentBuildingBinding? = null
     private val fragBinding get() = nFragBinding!!
     private var building = BuildingModel()
+    private val args by navArgs<BuildingFragmentArgs>()
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var buildingViewModel: BuildingViewModel
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
@@ -67,7 +57,21 @@ class BuildingFragment : Fragment() {
         buildingViewModel.observableStatus.observe(viewLifecycleOwner) { status ->
             status?.let { render(status) }
         }
+        val counties = resources.getStringArray(R.array.counties)
+        val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
+        fragBinding.county.setAdapter(countyAdapter)
 
+        if (args.lat != "default"){
+            fragBinding.lat.setText(args.lat)
+            fragBinding.lng.setText(args.lng)
+        }
+
+        fragBinding.staffQuantity.minValue = 1
+        fragBinding.staffQuantity.maxValue = 100
+
+        // Number picker listener
+        fragBinding.staffQuantity.setOnValueChangedListener { _, _, newVal ->
+        }
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
@@ -83,6 +87,11 @@ class BuildingFragment : Fragment() {
         return root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireView().snack("${args.lat} ${args.lng}")
+    }
+
     private fun render(status: Boolean) {
         when (status) {
             true -> {
@@ -95,7 +104,6 @@ class BuildingFragment : Fragment() {
 
     override fun onPause() {
         building.name = fragBinding.buildingName.text.toString()
-        building.address = fragBinding.buildingAddress.text.toString()
         building.phone = fragBinding.editTextPhone.text.toString()
         super.onPause()
     }
@@ -110,7 +118,6 @@ class BuildingFragment : Fragment() {
 
 
             building.name = layout.buildingName.text.toString()
-            building.address = layout.buildingAddress.text.toString()
             building.phone = layout.editTextPhone.text.toString()
 
             // Input validation
@@ -151,26 +158,6 @@ class BuildingFragment : Fragment() {
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
-    private fun registerImagePickerCallback() {
-        imageIntentLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            { result ->
-                when(result.resultCode){
-                    AppCompatActivity.RESULT_OK -> {
-                        if (result.data != null) {
-                            Timber.i("Got Result ${result.data!!.data}")
-                            building.image = result.data!!.data!!.toString()
-                            Picasso.get()
-                                .load(building.image)
-                                .into(fragBinding.buildingImage)
-                            fragBinding.chooseImage.setText(R.string.change_building_image)
-                        }
-                    }
-                    AppCompatActivity.RESULT_CANCELED -> { } else -> { }
-                }
-            }
-    }
-
     companion object {
         @JvmStatic
         fun newInstance() =
@@ -179,11 +166,5 @@ class BuildingFragment : Fragment() {
             }
     }
 
-    private fun showImagePicker(intentLauncher: ActivityResultLauncher<Intent>) {
-        var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        chooseFile.type = "image/*"
-        chooseFile = Intent.createChooser(chooseFile, R.string.button_addImage.toString())
-        intentLauncher.launch(chooseFile)
-    }
 
 }

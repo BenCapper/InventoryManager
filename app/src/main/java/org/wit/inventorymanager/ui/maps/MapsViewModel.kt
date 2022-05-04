@@ -22,20 +22,19 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
     lateinit var map : GoogleMap
     var currentLocation = MutableLiveData<Location>()
-    var locationClient : FusedLocationProviderClient
-    val locationRequest = LocationRequest.create().apply {
-        interval = 10000
-        fastestInterval = 5000
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    var locationClient : FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(application)
+    private val locationRequest = LocationRequest.create().apply {
+        //interval = 10000
+        //fastestInterval = 5000
+        //priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
-    val locationCallback = object : LocationCallback() {
+    private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             currentLocation.value = locationResult.locations.last()
         }
     }
 
     init {
-        locationClient = LocationServices.getFusedLocationProviderClient(application)
         locationClient.requestLocationUpdates(locationRequest, locationCallback,
             Looper.getMainLooper())
     }
