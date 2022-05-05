@@ -2,35 +2,28 @@ package org.wit.inventorymanager.ui.building
 
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
+import android.widget.ArrayAdapter
+import android.widget.CompoundButton
+import android.widget.Switch
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navArgument
 import androidx.navigation.ui.NavigationUI
-import splitties.snackbar.snack
-import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
-
-import org.wit.inventorymanager.main.InventoryApp
-import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
-import org.wit.inventorymanager.models.Location
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
-import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailFragmentArgs
+import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
+import org.wit.inventorymanager.ui.maps.MapsViewModel
+import splitties.snackbar.snack
 import timber.log.Timber
-import java.util.*
+import kotlin.random.Random
 
 
 class BuildingFragment : Fragment() {
@@ -38,10 +31,14 @@ class BuildingFragment : Fragment() {
     private var nFragBinding: FragmentBuildingBinding? = null
     private val fragBinding get() = nFragBinding!!
     private var building = BuildingModel()
-    private var foundBuild = BuildingModel()
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var buildingViewModel: BuildingViewModel
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    private val buildingListViewModel: BuildingListViewModel by activityViewModels()
+    private val mapsViewModel: MapsViewModel by activityViewModels()
+    private var hire: Boolean? = null
+    var test = "test"
+    var staff = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,29 +53,82 @@ class BuildingFragment : Fragment() {
 
         nFragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
         val root = fragBinding.root
-        setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
-        registerImagePickerCallback()
-        buildingViewModel = ViewModelProvider(this).get(BuildingViewModel::class.java)
+
+        buildingViewModel = ViewModelProvider(this)[BuildingViewModel::class.java]
         buildingViewModel.observableStatus.observe(viewLifecycleOwner) { status ->
             status?.let { render(status) }
         }
+        val counties = resources.getStringArray(R.array.counties)
+        val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
+        fragBinding.county.setAdapter(countyAdapter)
 
+        fragBinding.hiring.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
+            hire = b
+        }
+        fragBinding.staffQuantity.minValue = 0
+        fragBinding.staffQuantity.maxValue = 100
+
+        // Number picker listener
+        fragBinding.staffQuantity.setOnValueChangedListener { _, _, newVal ->
+            staff = newVal
+
+        }
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
         }
 
-        fragBinding.chooseImage.setOnClickListener {
-            showImagePicker(imageIntentLauncher)
-        }
-
-        fragBinding.buildingLocation.setOnClickListener {
-            val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
-            requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-            }
+        setButtonListener(fragBinding)
 
         return root
+    }
+
+    private fun setButtonListener(layout: FragmentBuildingBinding){
+        layout.buildingLocation.setOnClickListener {
+            val id = Random.nextLong().toString()
+            when {
+                fragBinding.buildingName.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_name)
+                }
+                fragBinding.buildingName.text.toString().length > 15 -> {
+                    view?.snack(R.string.warn_name_len)
+                }
+                fragBinding.editTextPhone.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_phone)
+                }
+                fragBinding.editTextPhone.text.toString().length > 10 -> {
+                    view?.snack(R.string.warn_phone_len)
+                }
+                fragBinding.town.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_town)
+                }
+                fragBinding.county.text.toString() == "Select County" || fragBinding.county.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_county)
+                }
+                fragBinding.staffQuantity.value == 0 -> {
+                    view?.snack(R.string.warn_staff)
+                }
+                else -> {
+                    if(hire == null){
+                        hire = false
+                    }
+                    var build = BuildingModel(
+                        id = id,
+                        uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
+                        name = fragBinding.buildingName.text.toString(),
+                        town = fragBinding.town.text.toString(),
+                        county = fragBinding.county.text.toString(),
+                        staff = staff,
+                        phone = fragBinding.editTextPhone.text.toString(),
+                        hiring = hire
+                    )
+                    val action =
+                        BuildingFragmentDirections.actionBuildingFragmentToMapsFragment(build)
+                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+                }
+            }
+        }
     }
 
     private fun render(status: Boolean) {
@@ -91,95 +141,25 @@ class BuildingFragment : Fragment() {
         }
     }
 
-    private fun renderBuild() {
-        fragBinding.buildingvm = buildingViewModel
-    }
-
     override fun onPause() {
         building.name = fragBinding.buildingName.text.toString()
-        building.address = fragBinding.buildingAddress.text.toString()
         building.phone = fragBinding.editTextPhone.text.toString()
         super.onPause()
     }
 
     override fun onResume() {
         setButtonListener(fragBinding)
+        val counties = resources.getStringArray(R.array.counties)
+        val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
+        fragBinding.county.setAdapter(countyAdapter)
         super.onResume()
     }
 
-    private fun setButtonListener(layout: FragmentBuildingBinding) {
-        layout.btnAdd.setOnClickListener {
 
-
-            building.name = layout.buildingName.text.toString()
-            building.address = layout.buildingAddress.text.toString()
-            building.phone = layout.editTextPhone.text.toString()
-
-            // Input validation
-            when {
-                building.name.isEmpty() -> {
-                    view?.snack(R.string.loc_name)
-                }
-                building.name.length > 15 -> {
-                    view?.snack(R.string.b_name_chars)
-                }
-                building.address.isEmpty() -> {
-                    view?.snack(R.string.loc_address)
-                }
-                building.address.length > 25 -> {
-                    view?.snack(R.string.b_address_chars)
-                }
-                building.phone.isEmpty() -> {
-                    view?.snack(R.string.loc_phone)
-                }
-                building.phone.length > 15 -> {
-                    view?.snack(R.string.b_phone_chars)
-                }
-                building.image == "" -> {
-                    view?.snack(R.string.loc_img)
-                }
-                else -> {
-                    buildingViewModel.addBuilding(loggedInViewModel.liveFirebaseUser,building)
-                    view?.snack(R.string.b_create)
-                    Timber.i(building.toString())
-
-                    // Reset fields and variable values
-                    layout.buildingName.setText("")
-                    layout.buildingAddress.setText("")
-                    layout.editTextPhone.setText("")
-                    layout.buildingImage.setImageURI(null)
-
-
-                    it.findNavController()
-                        .navigate(R.id.action_buildingFragment_to_buildingListFragment)
-                }
-            }
-        }
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return NavigationUI.onNavDestinationSelected(item,
             requireView().findNavController()) || super.onOptionsItemSelected(item)
-    }
-
-    private fun registerImagePickerCallback() {
-        imageIntentLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            { result ->
-                when(result.resultCode){
-                    AppCompatActivity.RESULT_OK -> {
-                        if (result.data != null) {
-                            Timber.i("Got Result ${result.data!!.data}")
-                            building.image = result.data!!.data!!.toString()
-                            Picasso.get()
-                                .load(building.image)
-                                .into(fragBinding.buildingImage)
-                            fragBinding.chooseImage.setText(R.string.change_building_image)
-                        }
-                    }
-                    AppCompatActivity.RESULT_CANCELED -> { } else -> { }
-                }
-            }
     }
 
     companion object {
@@ -190,11 +170,5 @@ class BuildingFragment : Fragment() {
             }
     }
 
-    private fun showImagePicker(intentLauncher: ActivityResultLauncher<Intent>) {
-        var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        chooseFile.type = "image/*"
-        chooseFile = Intent.createChooser(chooseFile, R.string.button_addImage.toString())
-        intentLauncher.launch(chooseFile)
-    }
 
 }

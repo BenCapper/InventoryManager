@@ -17,9 +17,9 @@ class BuildingDetailViewModel : ViewModel() {
         set(value) {build.value = value.value}
 
 
-    fun getBuild(id: String) {
+    fun getBuild(userid: String, id: String) {
         try {
-            BuildingManager.buildingById(id, build)
+            BuildingManager.findById(userid, id, build)
             Timber.i("Detail getBuild() Success : ${
                 build.value.toString()}")
         }

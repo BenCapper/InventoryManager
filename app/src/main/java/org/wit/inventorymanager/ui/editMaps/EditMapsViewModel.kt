@@ -1,4 +1,4 @@
-package org.wit.inventorymanager.ui.maps
+package org.wit.inventorymanager.ui.editMaps
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -18,7 +18,7 @@ import java.lang.NullPointerException
 import java.lang.RuntimeException
 
 @SuppressLint("MissingPermission")
-class MapsViewModel(application: Application) : AndroidViewModel(application) {
+class EditMapsViewModel(application: Application) : AndroidViewModel(application) {
 
     lateinit var map : GoogleMap
     var currentLocation = MutableLiveData<Location>()

@@ -11,28 +11,86 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="org.wit.inventorymanager.ui.buildingDetail.BuildingDetailFragment">
-
-        <ImageView
-            android:id="@+id/buildingDetailImage"
-            android:layout_width="326dp"
-            android:layout_height="169dp"
-            android:contentDescription="@string/img_choose"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.494"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.775"
-            app:srcCompat="@color/cardview_shadow_end_color" />
+        android:autofillHints="County"
+        tools:context="org.wit.inventorymanager.ui.building.BuildingDetailFragment">
 
         <EditText
-            android:id="@+id/buildingDetailAddress"
-            android:layout_width="255dp"
+            android:id="@+id/lng"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/orange"
+            android:ems="10"
+            android:hint="@string/hint_lng"
+            android:inputType="numberDecimal"
+            android:textColor="@color/dark"
+            android:textColorHint="@color/dark"
+            android:textSize="14sp"
+            android:text="@{buildDetailVm.observableBuild.lng}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.054"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.928" />
+
+        <EditText
+            android:id="@+id/lat"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/orange"
+            android:ems="10"
+            android:hint="@string/hint_lat"
+            android:inputType="numberDecimal"
+            android:textColor="@color/dark"
+            android:textColorHint="@color/dark"
+            android:textSize="14sp"
+            android:text="@{buildDetailVm.observableBuild.lat}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.054"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.843" />
+
+        <TextView
+            android:id="@+id/staffText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/hint_staffQuantity"
+            android:textColor="@color/dark"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/staffQuantity"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.654" />
+
+        <NumberPicker
+            android:id="@+id/staffQuantity"
+            android:layout_width="46dp"
+            android:layout_height="103dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:value="@{buildDetailVm.observableBuild.staff}"
+            android:outlineAmbientShadowColor="@color/color_secondary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.464"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.679" />
+
+        <EditText
+            android:id="@+id/town"
+            android:layout_width="258dp"
             android:layout_height="48dp"
             android:autofillHints=""
             android:backgroundTint="@color/orange"
-            android:hint="@string/hint_buildingAddress"
+            android:hint="@string/hint_town"
             android:inputType="text"
             android:maxLength="25"
             android:maxLines="1"
@@ -40,17 +98,33 @@
             android:textColor="@color/dark"
             android:textColorHint="@color/dark"
             android:textSize="14sp"
-            android:text="@{buildDetailVm.observableBuild.address}"
+            android:text="@{buildDetailVm.observableBuild.town}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.102"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.259" />
+            app:layout_constraintVertical_bias="0.364" />
 
         <Button
-            android:id="@+id/btnDetailAdd"
-            android:layout_width="178dp"
+            android:id="@+id/buildingLocation"
+            android:layout_width="170dp"
+            android:layout_height="48dp"
+            android:background="@color/d_grey"
+            android:stateListAnimator="@null"
+            android:text="@string/button_location"
+            android:textColor="@color/orange"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.934"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.843" />
+
+        <Button
+            android:id="@+id/btnAdd"
+            android:layout_width="170dp"
             android:layout_height="48dp"
             android:background="@color/d_grey"
             android:stateListAnimator="@null"
@@ -59,52 +133,18 @@
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.068"
+            app:layout_constraintHorizontal_bias="0.935"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.925" />
-
-        <Button
-            android:id="@+id/buildingDetailLocation"
-            android:layout_width="160dp"
-            android:layout_height="45dp"
-            android:background="@color/d_grey"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:stateListAnimator="@null"
-            android:text="@string/button_location"
-            android:textColor="@color/orange"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.943"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.499" />
-
-        <Button
-            android:id="@+id/chooseDetailImage"
-            android:layout_width="160dp"
-            android:layout_height="45dp"
-            android:background="@color/d_grey"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:text="@string/button_addImage"
-            android:textColor="@color/orange"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.056"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.499" />
+            app:layout_constraintVertical_bias="0.928" />
 
         <EditText
-            android:id="@+id/buildingDetailName"
+            android:id="@+id/buildingName"
             android:layout_width="255dp"
             android:layout_height="48dp"
             android:autofillHints=""
             android:backgroundTint="@color/orange"
+            android:hint="@string/hint_buildingName"
             android:inputType="text"
             android:maxLength="25"
             android:maxLines="1"
@@ -121,7 +161,7 @@
             app:layout_constraintVertical_bias="0.156" />
 
         <EditText
-            android:id="@+id/editTextDetailPhone"
+            android:id="@+id/editTextPhone"
             android:layout_width="258dp"
             android:layout_height="48dp"
             android:backgroundTint="@color/orange"
@@ -137,7 +177,49 @@
             app:layout_constraintHorizontal_bias="0.104"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.36" />
+            app:layout_constraintVertical_bias="0.262" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="200dp"
+            android:layout_height="70dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.075"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.485">
+
+            <AutoCompleteTextView
+                android:id="@+id/county"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/orange"
+                android:drawableTint="@color/orange"
+                android:foregroundTint="@color/orange"
+                android:inputType="none"
+                android:outlineAmbientShadowColor="@color/orange"
+                android:outlineProvider="bounds"
+                android:outlineSpotShadowColor="@color/orange"
+                android:shadowColor="@color/orange"
+                android:text="@{buildDetailVm.observableBuild.county}"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Switch
+            android:id="@+id/hiring"
+            android:layout_width="170dp"
+            android:layout_height="24dp"
+            android:checked="@{buildDetailVm.observableBuild.hiring}"
+            android:text="Hiring"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.937"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.764" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

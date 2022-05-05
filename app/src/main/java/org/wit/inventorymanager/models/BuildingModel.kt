@@ -8,12 +8,14 @@ import kotlinx.android.parcel.Parcelize
 data class BuildingModel(var id: String = "",
                          var uid: String = "",
                          var name: String = "",
-                         var address: String = "",
-                         var image: String = "",
+                         var town: String = "",
+                         var county: String = "",
                          var phone: String = "",
-                         var lat: Double = 0.0,
-                         var lng: Double = 0.0,
-                         var zoom: Float = 0f)
+                         var staff: Int = 0,
+                         var hiring: Boolean? = null,
+                         var faved: Boolean? = null,
+                         var lat: String = "",
+                         var lng: String = "", )
                          : Parcelable
     {
                         @Exclude
@@ -22,18 +24,14 @@ data class BuildingModel(var id: String = "",
                                 "id" to id,
                                 "uid" to uid,
                                 "name" to name,
-                                "address" to address,
-                                "image" to image,
+                                "town" to town,
+                                "county" to county,
                                 "phone" to phone,
+                                "staff" to staff,
+                                "hiring" to hiring,
                                 "lat" to lat,
                                 "lng" to lng,
-                                "zoom" to zoom
                             )
                         }
 
     }
-
-@Parcelize
-data class Location(var lat: Double = 0.0,
-                    var lng: Double = 0.0,
-                    var zoom: Float = 0f) : Parcelable

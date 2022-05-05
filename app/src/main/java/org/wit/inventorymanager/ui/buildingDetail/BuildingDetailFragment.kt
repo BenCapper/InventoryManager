@@ -8,32 +8,39 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.addCallback
+import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
-import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingDetailBinding
 import org.wit.inventorymanager.models.BuildingModel
-import org.wit.inventorymanager.models.Location
+import org.wit.inventorymanager.ui.auth.LoggedInViewModel
+import org.wit.inventorymanager.ui.building.BuildingFragmentDirections
+import org.wit.inventorymanager.ui.building.BuildingViewModel
+import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
+import org.wit.inventorymanager.ui.maps.MapsViewModel
 import splitties.snackbar.snack
 import timber.log.Timber
 import kotlin.random.Random
 
 class BuildingDetailFragment : Fragment() {
 
-    private val args by navArgs<BuildingDetailFragmentArgs>()
     private var nFragBinding: FragmentBuildingDetailBinding? = null
     private val fragBinding get() = nFragBinding!!
     private var building = BuildingModel()
+    private val args by navArgs<BuildingDetailFragmentArgs>()
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
+    private val buildingViewModel: BuildingViewModel by activityViewModels()
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    private val buildingListViewModel: BuildingListViewModel by activityViewModels()
+    private val mapsViewModel: MapsViewModel by activityViewModels()
     private lateinit var buildingDetailViewModel: BuildingDetailViewModel
-
+    var hire:Boolean?  = null
+    var staff = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,90 +57,103 @@ class BuildingDetailFragment : Fragment() {
         val root = fragBinding.root
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
-        registerImagePickerCallback()
+
         buildingDetailViewModel = ViewModelProvider(this)[BuildingDetailViewModel::class.java]
         buildingDetailViewModel.observableBuild.observe(viewLifecycleOwner) { renderBuild() }
 
-        buildingDetailViewModel.getBuild(args.buildingId.toString())
-        try {
-            building = buildingDetailViewModel.observableBuild?.value!!
-            Picasso.get()
-                .load(buildingDetailViewModel.observableBuild.value?.image)
-                .into(fragBinding.buildingDetailImage)
-        }
-        catch (e:Exception){
-            Timber.i("OBSERVABLE BUILD IS EMPTY!! $e")
+        val counties = resources.getStringArray(R.array.counties)
+        val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
+        fragBinding.county.setAdapter(countyAdapter)
+
+        if (args.building.lat.toString() != "default"){
+            fragBinding.lat.setText(args.building.lat.toString())
+            fragBinding.lng.setText(args.building.lat.toString())
         }
 
+        fragBinding.staffQuantity.minValue = 1
+        fragBinding.staffQuantity.maxValue = 100
+
+        // Number picker listener
+        fragBinding.staffQuantity.setOnValueChangedListener { _, _, newVal ->
+            staff = newVal
+        }
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
+        //requireActivity().onBackPressedDispatcher.addCallback(this) {
+        // requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
+        //}
+
+        fragBinding.hiring.setOnCheckedChangeListener { _, isChecked ->
+            hire = isChecked
         }
 
-        fragBinding.chooseDetailImage.setOnClickListener {
-            showImagePicker(imageIntentLauncher)
+
+        fragBinding.buildingLocation.setOnClickListener {
+            val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToEditMapsFragment(args.building)
+            findNavController().navigate(action)
         }
 
-        fragBinding.buildingDetailLocation.setOnClickListener {
-            val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToEditMapsFragment(
-                args.buildingId.toString()
-            )
-            requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-        }
         return root
     }
+
 
     private fun renderBuild() {
         fragBinding.buildDetailVm = buildingDetailViewModel
         Timber.i("Retrofit fragBinding.buildDetailVm == $fragBinding.buildDetailVm")
     }
 
-
     override fun onResume() {
-        super.onResume()
         setButtonListener(fragBinding)
-        buildingDetailViewModel.getBuild(args.buildingId.toString())
+        buildingDetailViewModel.getBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.building.id)
+        val counties = resources.getStringArray(R.array.counties)
+        val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
+        fragBinding.county.setAdapter(countyAdapter)
+        super.onResume()
+
     }
 
     private fun setButtonListener(layout: FragmentBuildingDetailBinding) {
-        layout.btnDetailAdd.setOnClickListener {
-
-
-            building.name = layout.buildingDetailName.text.toString()
-            building.address = layout.buildingDetailAddress.text.toString()
-            building.phone = layout.editTextDetailPhone.text.toString()
-
-            // Input validation
+        layout.btnAdd.setOnClickListener {
             when {
-                building.name.isEmpty() -> {
-                    view?.snack(R.string.loc_name)
+                fragBinding.buildingName.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_name)
                 }
-                building.name.length > 15 -> {
-                    view?.snack(R.string.b_name_chars)
+                fragBinding.buildingName.text.toString().length > 15 -> {
+                    view?.snack(R.string.warn_name_len)
                 }
-                building.address.isEmpty() -> {
-                    view?.snack(R.string.loc_address)
+                fragBinding.editTextPhone.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_phone)
                 }
-                building.address.length > 25 -> {
-                    view?.snack(R.string.b_address_chars)
+                fragBinding.editTextPhone.text.toString().length > 10 -> {
+                    view?.snack(R.string.warn_phone_len)
                 }
-                building.phone.isEmpty() -> {
-                    view?.snack(R.string.loc_phone)
+                fragBinding.town.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_town)
                 }
-                building.phone.length > 15 -> {
-                    view?.snack(R.string.b_phone_chars)
+                fragBinding.county.text.toString() == "Select County" || fragBinding.county.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_county)
                 }
-                building.image == "" -> {
-                    view?.snack(R.string.loc_img)
-                }
-                building.zoom == 0F && building.lat == (0).toDouble() && building.lng == (0).toDouble() -> {
-                    view?.snack(R.string.loc_none)
+                fragBinding.staffQuantity.value == 0 -> {
+                    view?.snack(R.string.warn_staff)
                 }
                 else -> {
-                    buildingDetailViewModel.updateBuild(args.buildingId.toString(),args.buildingId.toString(), building)
-                    Timber.i(building.toString())
-                    it.findNavController()
-                        .navigate(R.id.action_buildingFragment_to_buildingListFragment)
+                    if(hire == null){
+                        hire = false
+                    }
+                    var build = BuildingModel(
+                        id = args.building.id,
+                        uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
+                        name = layout.buildingName.text.toString(),
+                        town = layout.town.text.toString(),
+                        county =  layout.county.text.toString(),
+                        staff = staff,
+                        phone = layout.editTextPhone.text.toString(),
+                        hiring = hire,
+                        lat = layout.lat.text.toString(),
+                        lng = layout.lng.text.toString()
+                    )
+                    buildingDetailViewModel.updateBuild(args.building.uid,args.building.id,build)
+                    val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToBuildingListFragment()
+                    findNavController().navigate(action)
                 }
             }
         }
@@ -144,31 +164,12 @@ class BuildingDetailFragment : Fragment() {
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
-    private fun registerImagePickerCallback() {
-        imageIntentLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            { result ->
-                when(result.resultCode){
-                    AppCompatActivity.RESULT_OK -> {
-                        if (result.data != null) {
-                            Timber.i("Got Result ${result.data!!.data}")
-                            building.image = result.data!!.data!!.toString()
-                            Picasso.get()
-                                .load(building.image)
-                                .into(fragBinding.buildingDetailImage)
-                            fragBinding.chooseDetailImage.setText(R.string.change_building_image)
-                        }
-                    }
-                    AppCompatActivity.RESULT_CANCELED -> { } else -> { }
-                }
+    companion object {
+        @JvmStatic
+        fun newInstance() =
+            BuildingDetailFragment().apply {
+                arguments = Bundle().apply {}
             }
-    }
-
-    private fun showImagePicker(intentLauncher: ActivityResultLauncher<Intent>) {
-        var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        chooseFile.type = "image/*"
-        chooseFile = Intent.createChooser(chooseFile, R.string.button_addImage.toString())
-        intentLauncher.launch(chooseFile)
     }
 
 

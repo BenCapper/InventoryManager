@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class StockModel(var id: Long = 0,
+data class StockModel(var id: String = "",
                       var name: String = "",
                       var branch: String = "",
                       var weight: String = "",

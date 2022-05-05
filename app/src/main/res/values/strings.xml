@@ -20,12 +20,13 @@
     <string name="b_update">Location Updated</string>
     <string name="b_create">Location Created</string>
     <string name="b_setLoc">Location Set</string>
-    <string name="button_addBuilding">Add Location</string>
+    <string name="button_addBuilding">Update Location</string>
     <string name="hint_buildingName">Location Name</string>
     <string name="hint_buildingAddress">Location Address</string>
     <string name="hint_buildingPhone">Location Phone Number</string>
     <string name="menu_addBuilding">Add</string>
     <string name="menu_building_new">New</string>
+    <string name="menu_confirm">Confirm</string>
     <string name="enter_building_name">Enter the Location Name</string>
     <string name="save_building">Save Branch</string>
     <string name="button_addImage">Add Image</string>
@@ -36,12 +37,13 @@
     <string name="b_phone_chars">Phone: 15 characters maximum</string>
     <string name="fragment_building">Locations</string>
     <string name="building_image">Branch Image</string>
-    <string name="button_location">Location</string>
+    <string name="button_location">Find Location</string>
+    <string name="button_ch_location">Change Location</string>
     <string name="action_location">Locations</string>
     <string name="menu_deleteBuilding">Delete</string>
     <string name="img_choose">Choose Image</string>
 
-
+    <string name="hint_hiring">Currently Hiring: </string>
     <string name="s_noList">Create Item</string>
     <string name="stock_add_img">Image</string>
     <string name="stock_add_item">Add Item</string>
@@ -105,4 +107,51 @@
     <string name="nav_header_subtitle">bc@android.com</string>
     <string name="messageLoading">Buildings Loading...</string>
     <string name="select_profile_image">Select Profile Image</string>
+
+
+    <string name="hint_lat">Latitude</string>
+    <string name="hint_lng">Longitude</string>
+    <string name="hint_staffQuantity">Number of Staff</string>
+    <string name="hint_town">Village / Town</string>
+
+    <string name="warn_name">Enter the Branch Name </string>
+    <string name="warn_phone">Enter the Branch Phone Number </string>
+    <string name="warn_town">Enter the Town Name</string>
+    <string name="warn_county">Select the County</string>
+    <string name="warn_staff">Select the Number of Staff</string>
+
+    <string name="warn_name_len">Name: Max 15 Characters </string>
+    <string name="warn_phone_len">Phone: Max 10 Characters </string>
+
+    <string name="fave">Favourite</string>
+    <string name="faved">Favourited</string>
+
+    <string-array name="counties">
+        <item>Carlow</item>
+        <item>Cavan</item>
+        <item>Clare</item>
+        <item>Cork</item>
+        <item>Donegal</item>
+        <item>Dublin</item>
+        <item>Galway</item>
+        <item>Kerry</item>
+        <item>Kildare</item>
+        <item>Kilkenny</item>
+        <item>Laois</item>
+        <item>Leitrim</item>
+        <item>Limerick</item>
+        <item>Longford</item>
+        <item>Louth</item>
+        <item>Mayo</item>
+        <item>Meath</item>
+        <item>Monaghan</item>
+        <item>Offaly</item>
+        <item>Roscommon</item>
+        <item>Sligo</item>
+        <item>Tipperary</item>
+        <item>Waterford</item>
+        <item>Westmeath</item>
+        <item>Wexford</item>
+        <item>Wicklow</item>
+    </string-array>
 </resources>
