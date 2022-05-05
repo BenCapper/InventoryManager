@@ -114,6 +114,12 @@
     <string name="hint_staffQuantity">Number of Staff</string>
     <string name="hint_town">Village / Town</string>
 
+    <string name="warn_name">Enter the Branch Name </string>
+    <string name="warn_phone">Enter the Branch Phone Number </string>
+    <string name="warn_town">Enter the Town Name</string>
+    <string name="warn_county">Select the County</string>
+    <string name="warn_staff">Select the Number of Staff</string>
+
     <string-array name="counties">
         <item>Carlow</item>
         <item>Cavan</item>

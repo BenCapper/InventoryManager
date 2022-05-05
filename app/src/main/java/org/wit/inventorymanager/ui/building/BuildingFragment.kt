@@ -64,12 +64,10 @@ class BuildingFragment : Fragment() {
         val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
         fragBinding.county.setAdapter(countyAdapter)
 
-        fragBinding.hiring.setOnCheckedChangeListener { compoundButton: CompoundButton, b: Boolean ->
+        fragBinding.hiring.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
             hire = b
-            Timber.i(hire.toString())
-            test = "true yay"
         }
-        fragBinding.staffQuantity.minValue = 1
+        fragBinding.staffQuantity.minValue = 0
         fragBinding.staffQuantity.maxValue = 100
 
         // Number picker listener
@@ -82,24 +80,47 @@ class BuildingFragment : Fragment() {
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
         }
 
-
-
-        fragBinding.buildingLocation.setOnClickListener {
-            val id = Random.nextLong().toString()
-            Timber.i(hire.toString())
-            var build = BuildingModel(id=id,uid=loggedInViewModel.liveFirebaseUser.value?.uid!!, name=fragBinding.buildingName.text.toString(),
-                                                    town=fragBinding.town.text.toString(), county=fragBinding.county.text.toString(), staff = staff, phone=fragBinding.editTextPhone.text.toString(), hiring = hire)
-            Timber.i(hire.toString())
-            val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment(build)
-            requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-            }
+        setButtonListener(fragBinding)
 
         return root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requireView().snack("${args.lat} ${args.lng}")
+    private fun setButtonListener(layout: FragmentBuildingBinding){
+        layout.buildingLocation.setOnClickListener {
+            val id = Random.nextLong().toString()
+            when {
+                fragBinding.buildingName.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_name)
+                }
+                fragBinding.editTextPhone.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_phone)
+                }
+                fragBinding.town.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_town)
+                }
+                fragBinding.county.text.toString() == "Select County" || fragBinding.county.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_county)
+                }
+                fragBinding.staffQuantity.value == 0 -> {
+                    view?.snack(R.string.warn_staff)
+                }
+                else -> {
+                    var build = BuildingModel(
+                        id = id,
+                        uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
+                        name = fragBinding.buildingName.text.toString(),
+                        town = fragBinding.town.text.toString(),
+                        county = fragBinding.county.text.toString(),
+                        staff = staff,
+                        phone = fragBinding.editTextPhone.text.toString(),
+                        hiring = hire
+                    )
+                    val action =
+                        BuildingFragmentDirections.actionBuildingFragmentToMapsFragment(build)
+                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+                }
+            }
+        }
     }
 
     private fun render(status: Boolean) {
@@ -120,6 +141,9 @@ class BuildingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        val counties = resources.getStringArray(R.array.counties)
+        val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
+        fragBinding.county.setAdapter(countyAdapter)
     }
 
 

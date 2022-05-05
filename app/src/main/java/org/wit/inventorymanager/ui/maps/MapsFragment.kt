@@ -67,10 +67,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-        }
+        
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

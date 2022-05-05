@@ -36,7 +36,7 @@ class BuildingDetailFragment : Fragment() {
     private val buildingListViewModel: BuildingListViewModel by activityViewModels()
     private val mapsViewModel: MapsViewModel by activityViewModels()
     private lateinit var buildingDetailViewModel: BuildingDetailViewModel
-
+    var hire:Boolean?  = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +77,9 @@ class BuildingDetailFragment : Fragment() {
         // requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
         //}
 
+        fragBinding.hiring.setOnCheckedChangeListener { _, isChecked ->
+            hire = isChecked
+        }
 
 
         fragBinding.buildingLocation.setOnClickListener {
@@ -85,11 +88,6 @@ class BuildingDetailFragment : Fragment() {
         }
 
         return root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requireView().snack(args.building.toString())
     }
 
 
@@ -133,12 +131,9 @@ class BuildingDetailFragment : Fragment() {
                 }
                 else -> {
                     building.id = args.building.id
-                    var hire = false
-                    fragBinding.hiring.setOnCheckedChangeListener { _, isChecked ->
-                        hire = isChecked
-                    }
+
                     building.hiring = hire
-                    buildingViewModel.addBuilding(loggedInViewModel.liveFirebaseUser,building)
+                    buildingDetailViewModel.updateBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!,args.building.id,building)
                     view?.snack(R.string.b_create)
                     Timber.i(building.toString())
                     val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToBuildingListFragment()
