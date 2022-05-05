@@ -120,6 +120,9 @@
     <string name="warn_county">Select the County</string>
     <string name="warn_staff">Select the Number of Staff</string>
 
+    <string name="fave">Favourite</string>
+    <string name="faved">Favourited</string>
+
     <string-array name="counties">
         <item>Carlow</item>
         <item>Cavan</item>

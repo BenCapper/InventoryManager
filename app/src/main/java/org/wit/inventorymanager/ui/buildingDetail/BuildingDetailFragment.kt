@@ -105,6 +105,9 @@ class BuildingDetailFragment : Fragment() {
     override fun onResume() {
         setButtonListener(fragBinding)
         super.onResume()
+        val counties = resources.getStringArray(R.array.counties)
+        val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
+        fragBinding.county.setAdapter(countyAdapter)
         buildingDetailViewModel.getBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.building.id)
     }
 

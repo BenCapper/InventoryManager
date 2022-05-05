@@ -105,6 +105,9 @@ class BuildingFragment : Fragment() {
                     view?.snack(R.string.warn_staff)
                 }
                 else -> {
+                    if(hire == null){
+                        hire = false
+                    }
                     var build = BuildingModel(
                         id = id,
                         uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
@@ -140,10 +143,11 @@ class BuildingFragment : Fragment() {
     }
 
     override fun onResume() {
-        super.onResume()
+        setButtonListener(fragBinding)
         val counties = resources.getStringArray(R.array.counties)
         val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
         fragBinding.county.setAdapter(countyAdapter)
+        super.onResume()
     }
 
 

@@ -13,6 +13,7 @@ data class BuildingModel(var id: String = "",
                          var phone: String = "",
                          var staff: Int = 0,
                          var hiring: Boolean? = null,
+                         var faved: Boolean? = null,
                          var lat: String = "",
                          var lng: String = "", )
                          : Parcelable
