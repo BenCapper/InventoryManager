@@ -8,34 +8,34 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.addCallback
+import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
-import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingDetailBinding
 import org.wit.inventorymanager.models.BuildingModel
-import org.wit.inventorymanager.models.Location
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
+import org.wit.inventorymanager.ui.building.BuildingViewModel
+import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
+import org.wit.inventorymanager.ui.maps.MapsViewModel
 import splitties.snackbar.snack
 import timber.log.Timber
-import kotlin.random.Random
 
 class BuildingDetailFragment : Fragment() {
 
-    private val args by navArgs<BuildingDetailFragmentArgs>()
     private var nFragBinding: FragmentBuildingDetailBinding? = null
     private val fragBinding get() = nFragBinding!!
     private var building = BuildingModel()
+    private val args by navArgs<BuildingDetailFragmentArgs>()
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
-    private lateinit var buildingDetailViewModel: BuildingDetailViewModel
+    private val buildingViewModel: BuildingViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    private val buildingListViewModel: BuildingListViewModel by activityViewModels()
+    private val mapsViewModel: MapsViewModel by activityViewModels()
+    private lateinit var buildingDetailViewModel: BuildingDetailViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,27 +53,50 @@ class BuildingDetailFragment : Fragment() {
         val root = fragBinding.root
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
-        registerImagePickerCallback()
+
         buildingDetailViewModel = ViewModelProvider(this)[BuildingDetailViewModel::class.java]
         buildingDetailViewModel.observableBuild.observe(viewLifecycleOwner) { renderBuild() }
 
+        val counties = resources.getStringArray(R.array.counties)
+        val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
+        fragBinding.county.setAdapter(countyAdapter)
 
+        if (args.building.lat.toString() != "default"){
+            fragBinding.lat.setText(args.building.lat.toString())
+            fragBinding.lng.setText(args.building.lat.toString())
+        }
+
+        fragBinding.staffQuantity.minValue = 1
+        fragBinding.staffQuantity.maxValue = 100
+
+        // Number picker listener
+        fragBinding.staffQuantity.setOnValueChangedListener { _, _, newVal ->
+        }
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
+        //requireActivity().onBackPressedDispatcher.addCallback(this) {
+        // requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
+        //}
+
+
+
+        fragBinding.buildingLocation.setOnClickListener {
+            // val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
+            //requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
         }
 
-        fragBinding.chooseDetailImage.setOnClickListener {
-            showImagePicker(imageIntentLauncher)
-        }
-
-        fragBinding.buildingDetailLocation.setOnClickListener {
-            val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToEditMapsFragment(
-                args.buildingId.toString()
-            )
-            requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
-        }
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireView().snack(args.building.toString())
+    }
+
+
+    override fun onPause() {
+        building.name = fragBinding.buildingName.text.toString()
+        building.phone = fragBinding.editTextPhone.text.toString()
+        super.onPause()
     }
 
     private fun renderBuild() {
@@ -81,20 +104,18 @@ class BuildingDetailFragment : Fragment() {
         Timber.i("Retrofit fragBinding.buildDetailVm == $fragBinding.buildDetailVm")
     }
 
-
     override fun onResume() {
-        super.onResume()
         setButtonListener(fragBinding)
-        buildingDetailViewModel.getBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingId)
+        super.onResume()
+        buildingDetailViewModel.getBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.building.id)
     }
 
     private fun setButtonListener(layout: FragmentBuildingDetailBinding) {
-        layout.btnDetailAdd.setOnClickListener {
+        layout.btnAdd.setOnClickListener {
 
 
-            building.name = layout.buildingDetailName.text.toString()
-            building.address = layout.buildingDetailAddress.text.toString()
-            building.phone = layout.editTextDetailPhone.text.toString()
+            building.name = layout.buildingName.text.toString()
+            building.phone = layout.editTextPhone.text.toString()
 
             // Input validation
             when {
@@ -104,24 +125,25 @@ class BuildingDetailFragment : Fragment() {
                 building.name.length > 15 -> {
                     view?.snack(R.string.b_name_chars)
                 }
-                building.address.isEmpty() -> {
-                    view?.snack(R.string.loc_address)
-                }
-                building.address.length > 25 -> {
-                    view?.snack(R.string.b_address_chars)
-                }
                 building.phone.isEmpty() -> {
                     view?.snack(R.string.loc_phone)
                 }
                 building.phone.length > 15 -> {
                     view?.snack(R.string.b_phone_chars)
                 }
-
                 else -> {
-                    buildingDetailViewModel.updateBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingId, building)
+                    building.id = args.building.id
+                    var hire = false
+                    fragBinding.hiring.setOnCheckedChangeListener { _, isChecked ->
+                        hire = isChecked
+                    }
+                    building.hiring = hire
+                    buildingViewModel.addBuilding(loggedInViewModel.liveFirebaseUser,building)
+                    view?.snack(R.string.b_create)
                     Timber.i(building.toString())
-                    it.findNavController()
-                        .navigate(R.id.action_buildingDetailFragment_to_buildingListFragment)
+                    val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToBuildingListFragment()
+
+                    it.findNavController().navigate(action)
                 }
             }
         }
@@ -132,31 +154,12 @@ class BuildingDetailFragment : Fragment() {
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
-    private fun registerImagePickerCallback() {
-        imageIntentLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            { result ->
-                when(result.resultCode){
-                    AppCompatActivity.RESULT_OK -> {
-                        if (result.data != null) {
-                            Timber.i("Got Result ${result.data!!.data}")
-                            building.image = result.data!!.data!!.toString()
-                            Picasso.get()
-                                .load(building.image)
-                                .into(fragBinding.buildingDetailImage)
-                            fragBinding.chooseDetailImage.setText(R.string.change_building_image)
-                        }
-                    }
-                    AppCompatActivity.RESULT_CANCELED -> { } else -> { }
-                }
+    companion object {
+        @JvmStatic
+        fun newInstance() =
+            BuildingDetailFragment().apply {
+                arguments = Bundle().apply {}
             }
-    }
-
-    private fun showImagePicker(intentLauncher: ActivityResultLauncher<Intent>) {
-        var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        chooseFile.type = "image/*"
-        chooseFile = Intent.createChooser(chooseFile, R.string.button_addImage.toString())
-        intentLauncher.launch(chooseFile)
     }
 
 

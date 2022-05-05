@@ -27,6 +27,9 @@
             android:name="lng"
             app:argType="string"
             android:defaultValue='default' />
+        <action
+            android:id="@+id/action_buildingFragment_to_buildingListFragment2"
+            app:destination="@id/buildingListFragment" />
     </fragment>
     <fragment
         android:id="@+id/buildingListFragment"
@@ -58,6 +61,12 @@
             app:destination="@id/buildingFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="building"
+            app:argType="org.wit.inventorymanager.models.BuildingModel" />
+        <action
+            android:id="@+id/action_mapsFragment_to_buildingListFragment"
+            app:destination="@id/buildingListFragment" />
     </fragment>
     <fragment
         android:id="@+id/stockListFragment"
@@ -148,19 +157,7 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
         <argument
-            android:name="buildingId"
-            app:argType="string" />
-        <argument
-            android:name="lat"
-            app:argType="string"
-            android:defaultValue='" "' />
-        <argument
-            android:name="lng"
-            app:argType="string"
-            android:defaultValue='" "' />
-        <argument
-            android:name="zoom"
-            app:argType="float"
-            android:defaultValue="0" />
+            android:name="building"
+            app:argType="org.wit.inventorymanager.models.BuildingModel" />
     </fragment>
 </navigation>

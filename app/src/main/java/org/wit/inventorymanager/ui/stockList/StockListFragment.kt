@@ -4,19 +4,14 @@ package org.wit.inventorymanager.ui.stockList
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.SearchView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import org.wit.inventorymanager.adapters.StockAdapter
 import org.wit.inventorymanager.adapters.StockListener
 import org.wit.inventorymanager.R
@@ -108,7 +103,7 @@ class StockListFragment : Fragment(), StockListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val bundle = Bundle()
         val id = item.itemId
-        if (id == R.id.item_building_new) {
+        if (id == R.id.item_confirm) {
             bundle.putParcelable("build", build)
             bundle.putParcelable("stock", stock)
             findNavController().navigate(R.id.action_stockListFragment_to_stockFragment, bundle)

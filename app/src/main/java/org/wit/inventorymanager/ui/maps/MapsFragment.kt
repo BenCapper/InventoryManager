@@ -6,7 +6,6 @@ import android.view.*
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -20,14 +19,15 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
-import org.wit.inventorymanager.ui.building.BuildingFragment
-import org.wit.inventorymanager.ui.building.BuildingFragmentArgs
-import splitties.snackbar.snack
+import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailViewModel
+import timber.log.Timber
 
 
 class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
 
     private val mapsViewModel: MapsViewModel by activityViewModels()
+    private val args by navArgs<MapsFragmentArgs>()
+    private val buildingDetailViewModel: BuildingDetailViewModel by activityViewModels()
     private lateinit var action: NavDirections
     var lat = ""
     var lng = ""
@@ -73,6 +73,11 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onMarkerDrag(p0: Marker) {
 
     }
@@ -80,9 +85,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
     override fun onMarkerDragEnd(p0: Marker) {
         lat = p0.position.latitude.toString()
         lng = p0.position.longitude.toString()
-        action = MapsFragmentDirections.actionMapsFragmentToBuildingFragment(lat,lng)
 
-        requireView().snack("$lat $lng")
     }
 
     override fun onMarkerDragStart(p0: Marker) {
@@ -91,5 +94,23 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
 
     override fun onMarkerClick(p0: Marker): Boolean {
         return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_confirm, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.item_confirm){
+            var build = BuildingModel(id=args.building.id, uid=args.building.uid,name=args.building.name, phone = args.building.phone, hiring = args.building.hiring, town=args.building.town,
+                                                    county=args.building.county, staff=args.building.staff, lat =lat,lng=lng )
+            buildingDetailViewModel.updateBuild(args.building.uid, args.building.id, build)
+            action = MapsFragmentDirections.actionMapsFragmentToBuildingListFragment()
+            Timber.i("BUILD BEING SENT: $build")
+            findNavController().navigate(action)
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

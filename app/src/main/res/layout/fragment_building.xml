@@ -10,41 +10,17 @@
         android:autofillHints="County"
         tools:context="org.wit.inventorymanager.ui.building.BuildingFragment">
 
-        <EditText
-            android:id="@+id/lng"
-            android:layout_width="120dp"
-            android:layout_height="48dp"
-            android:backgroundTint="@color/orange"
-            android:ems="10"
-            android:hint="@string/hint_lng"
-            android:inputType="numberDecimal"
-            android:textColor="@color/dark"
-            android:textColorHint="@color/dark"
-            android:textSize="14sp"
+        <Switch
+            android:id="@+id/hiring"
+            android:layout_width="170dp"
+            android:layout_height="24dp"
+            android:text="Hiring"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.054"
+            app:layout_constraintHorizontal_bias="0.066"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.928" />
-
-        <EditText
-            android:id="@+id/lat"
-            android:layout_width="120dp"
-            android:layout_height="48dp"
-            android:backgroundTint="@color/orange"
-            android:ems="10"
-            android:hint="@string/hint_lat"
-            android:inputType="numberDecimal"
-            android:textColor="@color/dark"
-            android:textColorHint="@color/dark"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.054"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.843" />
+            app:layout_constraintVertical_bias="0.821" />
 
         <TextView
             android:id="@+id/staffText"
@@ -59,7 +35,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.654" />
+            app:layout_constraintVertical_bias="0.655" />
 
         <NumberPicker
             android:id="@+id/staffQuantity"
@@ -75,7 +51,7 @@
             app:layout_constraintHorizontal_bias="0.464"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.683" />
+            app:layout_constraintVertical_bias="0.679" />
 
         <EditText
             android:id="@+id/town"
@@ -100,32 +76,16 @@
 
         <Button
             android:id="@+id/buildingLocation"
-            android:layout_width="165dp"
+            android:layout_width="170dp"
             android:layout_height="48dp"
             android:background="@color/d_grey"
             android:stateListAnimator="@null"
-            android:text="@string/button_location"
+            android:text="@string/button_ch_location"
             android:textColor="@color/orange"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.934"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.843" />
-
-        <Button
-            android:id="@+id/btnAdd"
-            android:layout_width="165dp"
-            android:layout_height="48dp"
-            android:background="@color/d_grey"
-            android:stateListAnimator="@null"
-            android:text="@string/button_addBuilding"
-            android:textColor="@color/orange"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.935"
+            app:layout_constraintHorizontal_bias="0.065"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.928" />
@@ -170,6 +130,7 @@
             app:layout_constraintVertical_bias="0.262" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="200dp"
             android:layout_height="70dp"

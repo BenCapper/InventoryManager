@@ -50,12 +50,6 @@ class BuildingAdapter constructor(private var buildings: ArrayList<BuildingModel
             * Building details act as links to that buildings stock */
             binding.root.tag = building
             binding.building = building
-            Picasso.get().load(building.image.toUri())
-                .resize(200, 200)
-                .transform(customTransformation())
-                .centerCrop()
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .into(binding.imageIcon)
             binding.root.setOnClickListener { listener.onBuildingClick(building) }
             binding.executePendingBindings()
         }

@@ -51,10 +51,10 @@ class BuildingListViewModel : ViewModel() {
     fun delete(userid: String, id: String) {
         try {
             BuildingManager.delete(userid,id)
-            Timber.i("Report Delete Success")
+            Timber.i("Building Delete Success")
         }
         catch (e: Exception) {
-            Timber.i("Report Delete Error : $e.message")
+            Timber.i("Building Delete Error : $e.message")
         }
     }
 }

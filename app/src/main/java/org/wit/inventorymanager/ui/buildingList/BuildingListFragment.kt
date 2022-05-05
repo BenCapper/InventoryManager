@@ -5,31 +5,20 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.adapters.BuildingAdapter
 import org.wit.inventorymanager.adapters.BuildingListener
 import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.helpers.*
-import org.wit.inventorymanager.main.InventoryApp
-import org.wit.inventorymanager.models.BuildingManager
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
-import timber.log.Timber
 
 class BuildingListFragment : Fragment(), BuildingListener {
 
@@ -74,10 +63,10 @@ class BuildingListFragment : Fragment(), BuildingListener {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 showLoader(loader, "Deleting Building")
                 val adapter = fragBinding.recyclerView.adapter as BuildingAdapter
-                adapter.removeAt(viewHolder.adapterPosition)
+                adapter.removeAt(viewHolder.absoluteAdapterPosition)
                 buildingListViewModel.delete(
                     buildingListViewModel.liveFirebaseUser.value?.uid!!,
-                    (viewHolder.itemView.tag as BuildingModel).uid!!
+                    (viewHolder.itemView.tag as BuildingModel).id!!
                 )
                 hideLoader(loader)
             }
@@ -136,7 +125,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id == R.id.item_building_new){
+        if (id == R.id.item_new){
             findNavController().navigate(R.id.action_buildingListFragment_to_buildingFragment)
         }
         return super.onOptionsItemSelected(item)
@@ -151,7 +140,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     override fun onEditSwipe(building: BuildingModel) {
         // Open this buildings stock list
         //findNavController().navigate(R.id.action_buildingListFragment_to_stockListFragment)
-        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingDetailFragment(building.uid!!)
+        val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingDetailFragment(building)
 
         if(!buildingListViewModel.readOnly.value!!)
             findNavController().navigate(action)

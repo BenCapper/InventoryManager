@@ -22,7 +22,6 @@ class BuildingViewModel : ViewModel() {
 
     fun addBuilding(firebaseUser: MutableLiveData<FirebaseUser>,building: BuildingModel) {
         status.value = try {
-            building.image = FirebaseImageManager.imageUri.value.toString()
             BuildingManager.create(firebaseUser,building)
             true
         } catch (e: IllegalArgumentException) {

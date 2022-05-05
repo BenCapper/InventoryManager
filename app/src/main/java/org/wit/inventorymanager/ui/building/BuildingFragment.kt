@@ -5,23 +5,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
+import android.widget.CompoundButton
+import android.widget.Switch
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
-import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
-import splitties.snackbar.snack
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
 import org.wit.inventorymanager.ui.maps.MapsViewModel
+import splitties.snackbar.snack
 import timber.log.Timber
+import kotlin.random.Random
 
 
 class BuildingFragment : Fragment() {
@@ -35,7 +37,9 @@ class BuildingFragment : Fragment() {
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
     private val buildingListViewModel: BuildingListViewModel by activityViewModels()
     private val mapsViewModel: MapsViewModel by activityViewModels()
-
+    private var hire: Boolean? = null
+    var test = "test"
+    var staff = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +54,6 @@ class BuildingFragment : Fragment() {
 
         nFragBinding = FragmentBuildingBinding.inflate(inflater, container, false)
         val root = fragBinding.root
-        setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
 
         buildingViewModel = ViewModelProvider(this)[BuildingViewModel::class.java]
@@ -61,16 +64,18 @@ class BuildingFragment : Fragment() {
         val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
         fragBinding.county.setAdapter(countyAdapter)
 
-        if (args.lat != "default"){
-            fragBinding.lat.setText(args.lat)
-            fragBinding.lng.setText(args.lng)
+        fragBinding.hiring.setOnCheckedChangeListener { compoundButton: CompoundButton, b: Boolean ->
+            hire = b
+            Timber.i(hire.toString())
+            test = "true yay"
         }
-
         fragBinding.staffQuantity.minValue = 1
         fragBinding.staffQuantity.maxValue = 100
 
         // Number picker listener
         fragBinding.staffQuantity.setOnValueChangedListener { _, _, newVal ->
+            staff = newVal
+
         }
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -80,7 +85,12 @@ class BuildingFragment : Fragment() {
 
 
         fragBinding.buildingLocation.setOnClickListener {
-            val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
+            val id = Random.nextLong().toString()
+            Timber.i(hire.toString())
+            var build = BuildingModel(id=id,uid=loggedInViewModel.liveFirebaseUser.value?.uid!!, name=fragBinding.buildingName.text.toString(),
+                                                    town=fragBinding.town.text.toString(), county=fragBinding.county.text.toString(), staff = staff, phone=fragBinding.editTextPhone.text.toString(), hiring = hire)
+            Timber.i(hire.toString())
+            val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment(build)
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
             }
 
@@ -109,49 +119,10 @@ class BuildingFragment : Fragment() {
     }
 
     override fun onResume() {
-        setButtonListener(fragBinding)
         super.onResume()
     }
 
-    private fun setButtonListener(layout: FragmentBuildingBinding) {
-        layout.btnAdd.setOnClickListener {
 
-
-            building.name = layout.buildingName.text.toString()
-            building.phone = layout.editTextPhone.text.toString()
-
-            // Input validation
-            when {
-                building.name.isEmpty() -> {
-                    view?.snack(R.string.loc_name)
-                }
-                building.name.length > 15 -> {
-                    view?.snack(R.string.b_name_chars)
-                }
-                building.address.isEmpty() -> {
-                    view?.snack(R.string.loc_address)
-                }
-                building.address.length > 25 -> {
-                    view?.snack(R.string.b_address_chars)
-                }
-                building.phone.isEmpty() -> {
-                    view?.snack(R.string.loc_phone)
-                }
-                building.phone.length > 15 -> {
-                    view?.snack(R.string.b_phone_chars)
-                }
-                else -> {
-                    buildingViewModel.addBuilding(loggedInViewModel.liveFirebaseUser,building)
-                    view?.snack(R.string.b_create)
-                    Timber.i(building.toString())
-
-
-                    it.findNavController()
-                        .navigate(R.id.action_buildingFragment_to_buildingListFragment)
-                }
-            }
-        }
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return NavigationUI.onNavDestinationSelected(item,

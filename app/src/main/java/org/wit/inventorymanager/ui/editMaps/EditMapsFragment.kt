@@ -31,13 +31,13 @@ class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.O
 
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
-        val loc = LatLng(build.lat, build.lng)
+        val loc = LatLng(build.lat.toDouble(), build.lng.toDouble())
         val options = MarkerOptions()
             .title("Branch Location")
             .snippet("GPS : $loc")
             .draggable(true)
             .position(loc)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, build.zoom))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 0F))
         map.setOnMarkerClickListener(this)
         map.addMarker(options)
         map.setOnMarkerDragListener(this)
@@ -67,7 +67,7 @@ class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.O
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
-        val loc = LatLng(build.lat, build.lng)
+        val loc = LatLng(build.lat.toDouble(), build.lng.toDouble())
         marker.snippet = "GPS : $loc"
         return false
     }
@@ -92,9 +92,8 @@ class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.O
 
 
     override fun onMarkerDragEnd(marker: Marker) {
-        build.lat = marker.position.latitude
-        build.lng = marker.position.longitude
-        build.zoom = map.cameraPosition.zoom
+        build.lat = marker.position.latitude.toString()
+        build.lng = marker.position.longitude.toString()
         view?.snack(R.string.b_setLoc)
     }
 }
