@@ -12,17 +12,20 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingDetailBinding
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
+import org.wit.inventorymanager.ui.building.BuildingFragmentDirections
 import org.wit.inventorymanager.ui.building.BuildingViewModel
 import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
 import org.wit.inventorymanager.ui.maps.MapsViewModel
 import splitties.snackbar.snack
 import timber.log.Timber
+import kotlin.random.Random
 
 class BuildingDetailFragment : Fragment() {
 
@@ -37,6 +40,7 @@ class BuildingDetailFragment : Fragment() {
     private val mapsViewModel: MapsViewModel by activityViewModels()
     private lateinit var buildingDetailViewModel: BuildingDetailViewModel
     var hire:Boolean?  = null
+    var staff = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +75,7 @@ class BuildingDetailFragment : Fragment() {
 
         // Number picker listener
         fragBinding.staffQuantity.setOnValueChangedListener { _, _, newVal ->
+            staff = newVal
         }
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
         //requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -83,19 +88,13 @@ class BuildingDetailFragment : Fragment() {
 
 
         fragBinding.buildingLocation.setOnClickListener {
-            // val action = BuildingFragmentDirections.actionBuildingFragmentToMapsFragment()
-            //requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+            val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToEditMapsFragment(args.building)
+            findNavController().navigate(action)
         }
 
         return root
     }
 
-
-    override fun onPause() {
-        building.name = fragBinding.buildingName.text.toString()
-        building.phone = fragBinding.editTextPhone.text.toString()
-        super.onPause()
-    }
 
     private fun renderBuild() {
         fragBinding.buildDetailVm = buildingDetailViewModel
@@ -104,44 +103,57 @@ class BuildingDetailFragment : Fragment() {
 
     override fun onResume() {
         setButtonListener(fragBinding)
-        super.onResume()
+        buildingDetailViewModel.getBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.building.id)
         val counties = resources.getStringArray(R.array.counties)
         val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
         fragBinding.county.setAdapter(countyAdapter)
-        buildingDetailViewModel.getBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.building.id)
+        super.onResume()
+
     }
 
     private fun setButtonListener(layout: FragmentBuildingDetailBinding) {
         layout.btnAdd.setOnClickListener {
-
-
-            building.name = layout.buildingName.text.toString()
-            building.phone = layout.editTextPhone.text.toString()
-
-            // Input validation
             when {
-                building.name.isEmpty() -> {
-                    view?.snack(R.string.loc_name)
+                fragBinding.buildingName.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_name)
                 }
-                building.name.length > 15 -> {
-                    view?.snack(R.string.b_name_chars)
+                fragBinding.buildingName.text.toString().length > 15 -> {
+                    view?.snack(R.string.warn_name_len)
                 }
-                building.phone.isEmpty() -> {
-                    view?.snack(R.string.loc_phone)
+                fragBinding.editTextPhone.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_phone)
                 }
-                building.phone.length > 15 -> {
-                    view?.snack(R.string.b_phone_chars)
+                fragBinding.editTextPhone.text.toString().length > 10 -> {
+                    view?.snack(R.string.warn_phone_len)
+                }
+                fragBinding.town.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_town)
+                }
+                fragBinding.county.text.toString() == "Select County" || fragBinding.county.text.toString().isEmpty() -> {
+                    view?.snack(R.string.warn_county)
+                }
+                fragBinding.staffQuantity.value == 0 -> {
+                    view?.snack(R.string.warn_staff)
                 }
                 else -> {
-                    building.id = args.building.id
-
-                    building.hiring = hire
-                    buildingDetailViewModel.updateBuild(loggedInViewModel.liveFirebaseUser.value?.uid!!,args.building.id,building)
-                    view?.snack(R.string.b_create)
-                    Timber.i(building.toString())
+                    if(hire == null){
+                        hire = false
+                    }
+                    var build = BuildingModel(
+                        id = args.building.id,
+                        uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
+                        name = layout.buildingName.text.toString(),
+                        town = layout.town.text.toString(),
+                        county =  layout.county.text.toString(),
+                        staff = staff,
+                        phone = layout.editTextPhone.text.toString(),
+                        hiring = hire,
+                        lat = layout.lat.text.toString(),
+                        lng = layout.lng.text.toString()
+                    )
+                    buildingDetailViewModel.updateBuild(args.building.uid,args.building.id,build)
                     val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToBuildingListFragment()
-
-                    it.findNavController().navigate(action)
+                    findNavController().navigate(action)
                 }
             }
         }

@@ -31,7 +31,6 @@ class BuildingFragment : Fragment() {
     private var nFragBinding: FragmentBuildingBinding? = null
     private val fragBinding get() = nFragBinding!!
     private var building = BuildingModel()
-    private val args by navArgs<BuildingFragmentArgs>()
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var buildingViewModel: BuildingViewModel
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
@@ -92,8 +91,14 @@ class BuildingFragment : Fragment() {
                 fragBinding.buildingName.text.toString().isEmpty() -> {
                     view?.snack(R.string.warn_name)
                 }
+                fragBinding.buildingName.text.toString().length > 15 -> {
+                    view?.snack(R.string.warn_name_len)
+                }
                 fragBinding.editTextPhone.text.toString().isEmpty() -> {
                     view?.snack(R.string.warn_phone)
+                }
+                fragBinding.editTextPhone.text.toString().length > 10 -> {
+                    view?.snack(R.string.warn_phone_len)
                 }
                 fragBinding.town.text.toString().isEmpty() -> {
                     view?.snack(R.string.warn_town)

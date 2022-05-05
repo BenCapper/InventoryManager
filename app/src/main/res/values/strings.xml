@@ -120,6 +120,9 @@
     <string name="warn_county">Select the County</string>
     <string name="warn_staff">Select the Number of Staff</string>
 
+    <string name="warn_name_len">Name: Max 15 Characters </string>
+    <string name="warn_phone_len">Phone: Max 10 Characters </string>
+
     <string name="fave">Favourite</string>
     <string name="faved">Favourited</string>
 

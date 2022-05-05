@@ -19,14 +19,6 @@
             app:destination="@id/mapsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
-        <argument
-            android:name="lat"
-            app:argType="string"
-            android:defaultValue='default' />
-        <argument
-            android:name="lng"
-            app:argType="string"
-            android:defaultValue='default' />
         <action
             android:id="@+id/action_buildingFragment_to_buildingListFragment2"
             app:destination="@id/buildingListFragment" />
@@ -122,25 +114,16 @@
     <fragment
         android:id="@+id/editMapsFragment"
         android:name="org.wit.inventorymanager.ui.editMaps.EditMapsFragment"
-        android:label="fragment_edit_maps"
+        android:label="@string/button_location"
         tools:layout="@layout/fragment_edit_maps" >
-        <argument
-            android:name="lat"
-            app:argType="string"
-            android:defaultValue='" "' />
         <action
             android:id="@+id/action_editMapsFragment_to_buildingDetailFragment"
             app:destination="@id/buildingDetailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
         <argument
-            android:name="lng"
-            app:argType="string"
-            android:defaultValue='" "' />
-        <argument
-            android:name="zoom"
-            app:argType="float"
-            android:defaultValue="0" />
+            android:name="building"
+            app:argType="org.wit.inventorymanager.models.BuildingModel" />
     </fragment>
     <fragment
         android:id="@+id/buildingDetailFragment"
