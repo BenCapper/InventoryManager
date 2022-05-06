@@ -29,6 +29,7 @@ data class BuildingModel(var id: String = "",
                                 "phone" to phone,
                                 "staff" to staff,
                                 "hiring" to hiring,
+                                "faved" to faved,
                                 "lat" to lat,
                                 "lng" to lng,
                             )

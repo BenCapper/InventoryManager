@@ -1,6 +1,7 @@
 package org.wit.inventorymanager.ui.buildingDetail
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -85,6 +86,12 @@ class BuildingDetailFragment : Fragment() {
 
         fragBinding.hiring.setOnCheckedChangeListener { _, isChecked ->
             hire = isChecked
+            if (fragBinding.hiring.isChecked){
+                fragBinding.hiring.setTextColor(Color.argb(255,235, 172, 12))
+            }
+            else {
+                fragBinding.hiring.setTextColor(Color.BLACK)
+            }
         }
 
 

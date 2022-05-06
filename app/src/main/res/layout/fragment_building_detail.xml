@@ -112,7 +112,7 @@
             android:layout_height="48dp"
             android:background="@color/d_grey"
             android:stateListAnimator="@null"
-            android:text="@string/button_location"
+            android:text="@string/button_ch_location"
             android:textColor="@color/orange"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"

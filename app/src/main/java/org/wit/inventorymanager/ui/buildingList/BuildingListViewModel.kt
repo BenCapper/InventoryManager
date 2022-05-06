@@ -17,6 +17,12 @@ class BuildingListViewModel : ViewModel() {
     val observableBuildingList: LiveData<List<BuildingModel>>
         get() = buildingList
 
+    private val build = MutableLiveData<BuildingModel>()
+
+    var observableBuild: LiveData<BuildingModel>
+        get() = build
+        set(value) {build.value = value.value}
+
     var liveFirebaseUser = MutableLiveData<FirebaseUser>()
 
     var readOnly = MutableLiveData(false)
@@ -55,6 +61,15 @@ class BuildingListViewModel : ViewModel() {
         }
         catch (e: Exception) {
             Timber.i("Building Delete Error : $e.message")
+        }
+    }
+
+    fun update(userid: String, id: String, build:BuildingModel) {
+        try {
+            BuildingManager.update(userid,id, build)
+            Timber.i("Detail update() Success : $build")
+        } catch (e: Exception) {
+            Timber.i("Detail update() Error : $e.message")
         }
     }
 }

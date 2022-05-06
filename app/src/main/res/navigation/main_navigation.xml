@@ -149,7 +149,7 @@
     <fragment
         android:id="@+id/faveMapsFragment"
         android:name="org.wit.inventorymanager.ui.faveMaps.FaveMapsFragment"
-        android:label="fragment_fave_maps"
+        android:label="Your Locations"
         tools:layout="@layout/fragment_fave_maps" >
         <action
             android:id="@+id/action_faveMapsFragment_to_buildingListFragment2"

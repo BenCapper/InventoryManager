@@ -89,17 +89,17 @@ class BuildingListFragment : Fragment(), BuildingListener {
     }
 
     private fun render(buildingList: ArrayList<BuildingModel>) {
-        fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this, buildingListViewModel.readOnly.value!!)
+        fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this, false)
     }
 
     override fun onFave(building: BuildingModel) {
         if (building.faved){
             building.faved = false
-            buildingDetailViewModel.updateBuild(loggedInViewModel.liveFirebaseUser.value.toString(), building.id, building)
+            buildingListViewModel.update(building.uid, building.id, building)
         }
         else if (!building.faved){
             building.faved = true
-            buildingDetailViewModel.updateBuild(loggedInViewModel.liveFirebaseUser.value.toString(), building.id, building)
+            buildingListViewModel.update(building.uid, building.id, building)
         }
 
     }

@@ -14,6 +14,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -46,6 +47,9 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
                 .title("Branch Location")
                 .snippet("GPS : $loc")
                 .draggable(true)
+                .icon(
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
+                )
                 .position(loc)
             mapsViewModel.map.addMarker(options)
             mapsViewModel.map.setOnMarkerDragListener(this)
@@ -102,8 +106,14 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.item_confirm){
+            if (lat == "" || lng == ""){
+                lat = mapsViewModel.currentLocation.value!!.latitude.toString()
+                lng = mapsViewModel.currentLocation.value!!.longitude.toString()
+
+
+            }
             var build = BuildingModel(id=args.building.id, uid=args.building.uid,name=args.building.name, phone = args.building.phone, hiring = args.building.hiring, town=args.building.town,
-                                                    county=args.building.county, staff=args.building.staff, lat =lat,lng=lng )
+                                                    county=args.building.county, staff=args.building.staff, lat =lat,lng=lng , faved = false)
             buildingDetailViewModel.updateBuild(args.building.uid, args.building.id, build)
             action = MapsFragmentDirections.actionMapsFragmentToBuildingListFragment()
             Timber.i("BUILD BEING SENT: $build")
