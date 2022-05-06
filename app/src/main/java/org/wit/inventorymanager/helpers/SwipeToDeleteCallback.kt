@@ -16,7 +16,7 @@ abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleC
     private val intrinsicWidth = deleteIcon?.intrinsicWidth
     private val intrinsicHeight = deleteIcon?.intrinsicHeight
     private val background = ColorDrawable()
-    private val backgroundColor = Color.parseColor("#f44336")
+    private val backgroundColor = Color.parseColor("#FFAB00")
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
@@ -57,13 +57,14 @@ abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleC
         // Calculate position of delete icon
         val deleteIconTop = itemView.top + (itemHeight - intrinsicHeight!!) / 2
         val deleteIconMargin = (itemHeight - intrinsicHeight) / 2
-        val deleteIconLeft = itemView.right - deleteIconMargin - intrinsicWidth!!
-        val deleteIconRight = itemView.right - deleteIconMargin
+        val deleteIconLeft = itemView.right - deleteIconMargin - intrinsicWidth!! * 2
+        val deleteIconRight = itemView.right - deleteIconMargin * 2.75
         val deleteIconBottom = deleteIconTop + intrinsicHeight
 
 
         // Draw the delete icon
-        deleteIcon?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+        deleteIcon?.setBounds(deleteIconLeft, deleteIconTop,
+            deleteIconRight.toInt(), deleteIconBottom)
         deleteIcon?.draw(c)
 
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
