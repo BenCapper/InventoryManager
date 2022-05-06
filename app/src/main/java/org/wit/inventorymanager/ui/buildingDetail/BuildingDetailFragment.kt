@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -78,9 +79,9 @@ class BuildingDetailFragment : Fragment() {
             staff = newVal
         }
         // Only ever want to return to the buildList fragment from the back button to avoid weird maps interactions
-        //requireActivity().onBackPressedDispatcher.addCallback(this) {
-        // requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.action_buildingFragment_to_buildingListFragment)
-        //}
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+         findNavController().navigate(R.id.action_buildingDetailFragment_to_buildingListFragment)
+        }
 
         fragBinding.hiring.setOnCheckedChangeListener { _, isChecked ->
             hire = isChecked
@@ -107,6 +108,7 @@ class BuildingDetailFragment : Fragment() {
         val counties = resources.getStringArray(R.array.counties)
         val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
         fragBinding.county.setAdapter(countyAdapter)
+        fragBinding.staffQuantity.value = args.building.staff
         super.onResume()
 
     }
@@ -145,7 +147,7 @@ class BuildingDetailFragment : Fragment() {
                         name = layout.buildingName.text.toString(),
                         town = layout.town.text.toString(),
                         county =  layout.county.text.toString(),
-                        staff = staff,
+                        staff = layout.staffQuantity.value,
                         phone = layout.editTextPhone.text.toString(),
                         hiring = hire,
                         lat = layout.lat.text.toString(),
@@ -160,8 +162,9 @@ class BuildingDetailFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return NavigationUI.onNavDestinationSelected(item,
-            requireView().findNavController()) || super.onOptionsItemSelected(item)
+        val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToBuildingListFragment()
+        requireView().findNavController().navigate(action)
+        return true
     }
 
     companion object {

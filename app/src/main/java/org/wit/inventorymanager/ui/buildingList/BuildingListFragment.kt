@@ -19,6 +19,7 @@ import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.helpers.*
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
+import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailViewModel
 
 class BuildingListFragment : Fragment(), BuildingListener {
 
@@ -29,6 +30,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     lateinit var loader : AlertDialog
     private lateinit var foundList: ArrayList<BuildingModel>
     private val buildingListViewModel: BuildingListViewModel by activityViewModels()
+    private val buildingDetailViewModel: BuildingDetailViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
 
@@ -90,6 +92,17 @@ class BuildingListFragment : Fragment(), BuildingListener {
         fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this, buildingListViewModel.readOnly.value!!)
     }
 
+    override fun onFave(building: BuildingModel) {
+        if (building.faved){
+            building.faved = false
+            buildingDetailViewModel.updateBuild(loggedInViewModel.liveFirebaseUser.value.toString(), building.id, building)
+        }
+        else if (!building.faved){
+            building.faved = true
+            buildingDetailViewModel.updateBuild(loggedInViewModel.liveFirebaseUser.value.toString(), building.id, building)
+        }
+
+    }
     private fun setSwipeRefresh() {
         fragBinding.swiperefresh.setOnRefreshListener {
             fragBinding.swiperefresh.isRefreshing = true

@@ -14,6 +14,7 @@ import java.util.*
 interface BuildingListener {
     fun onBuildingClick(building: BuildingModel)
     fun onEditSwipe(building: BuildingModel)
+    fun onFave(building: BuildingModel)
 }
 
 class BuildingAdapter constructor(private var buildings: ArrayList<BuildingModel>, private val listener: BuildingListener, private val readOnly: Boolean)
@@ -50,6 +51,7 @@ class BuildingAdapter constructor(private var buildings: ArrayList<BuildingModel
             * Building details act as links to that buildings stock */
             binding.root.tag = building
             binding.building = building
+            binding.fave.setOnClickListener { listener.onFave(building) }
             binding.root.setOnClickListener { listener.onBuildingClick(building) }
             binding.executePendingBindings()
         }

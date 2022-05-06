@@ -117,6 +117,11 @@ class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.O
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+        if (latUpdate == "" || lngUpdate == ""){
+            latUpdate = lat
+            lngUpdate = lng
+
+        }
         if (id == R.id.item_confirm){
             var build = BuildingModel(id=args.building.id, uid=args.building.uid,name=args.building.name, phone = args.building.phone, hiring = args.building.hiring, town=args.building.town,
                 county=args.building.county, staff=args.building.staff, lat =latUpdate,lng=lngUpdate )

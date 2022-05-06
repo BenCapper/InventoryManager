@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailViewModel
+import splitties.snackbar.snack
 import timber.log.Timber
 
 
