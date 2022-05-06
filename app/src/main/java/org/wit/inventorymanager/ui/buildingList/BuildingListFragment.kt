@@ -62,6 +62,10 @@ class BuildingListFragment : Fragment(), BuildingListener {
         })
         setSwipeRefresh()
 
+        fragBinding.fab.setOnClickListener { view ->
+            val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment()
+            findNavController().navigate(action)
+        }
         fragBinding.buildingSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
