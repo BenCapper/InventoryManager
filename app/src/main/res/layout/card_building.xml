@@ -151,6 +151,7 @@
             android:layout_marginEnd="30dp"
             android:textOff="@string/fave"
             android:textOn="@string/faved"
+            android:checked="@{building.faved}"
             android:textSize="8sp" />
 
         <TextView

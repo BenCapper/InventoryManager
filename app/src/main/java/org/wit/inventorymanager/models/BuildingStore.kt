@@ -14,4 +14,5 @@ interface BuildingStore {
     fun create(firebaseUser: MutableLiveData<FirebaseUser>, building: BuildingModel)
     fun delete(userid:String, buildingid: String)
     fun update(userid:String, buildingid: String, building: BuildingModel)
+    fun search(userid: String,term: String, buildingList: MutableLiveData<List<BuildingModel>>)
 }

@@ -57,6 +57,31 @@ object BuildingManager : BuildingStore {
             })
     }
 
+    override fun search(userid: String,term: String, buildingList: MutableLiveData<List<BuildingModel>>) {
+
+        database.child("user-buildings").child(userid)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    Timber.i("Firebase building error : ${error.message}")
+                }
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val localList = ArrayList<BuildingModel>()
+                    val children = snapshot.children
+                    children.forEach {
+                        if (it.getValue(BuildingModel::class.java)?.name!!.contains(term) ) {
+                            val building = it.getValue(BuildingModel::class.java)
+                            localList.add(building!!)
+                        }
+                    }
+                    database.child("user-buildings").child(userid)
+                        .removeEventListener(this)
+
+                    buildingList.value = localList
+                }
+            })
+    }
+
     override fun findById(userid: String, buildingid: String, building: MutableLiveData<BuildingModel>) {
 
         database.child("user-buildings").child(userid)
@@ -128,4 +153,5 @@ object BuildingManager : BuildingStore {
                 }
             })
     }
+
 }

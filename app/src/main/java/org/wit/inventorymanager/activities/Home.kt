@@ -165,6 +165,11 @@ class Home : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun faveLocation(item: MenuItem){
+        findNavController(R.id.nav_host_fragment).navigate(R.id.faveMapsFragment)
+        findViewById<DrawerLayout>(R.id.drawer_layout).closeDrawers()
+    }
+
     private fun registerImagePickerCallback() {
         intentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

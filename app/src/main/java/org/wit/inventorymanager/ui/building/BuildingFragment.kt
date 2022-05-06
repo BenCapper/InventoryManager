@@ -1,7 +1,9 @@
 package org.wit.inventorymanager.ui.building
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
@@ -46,6 +48,7 @@ class BuildingFragment : Fragment() {
 
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,6 +68,12 @@ class BuildingFragment : Fragment() {
 
         fragBinding.hiring.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
             hire = b
+            if (fragBinding.hiring.isChecked){
+                fragBinding.hiring.setTextColor(Color.argb(255,235, 172, 12))
+            }
+            else {
+                fragBinding.hiring.setTextColor(Color.BLACK)
+            }
         }
         fragBinding.staffQuantity.minValue = 0
         fragBinding.staffQuantity.maxValue = 100
@@ -121,7 +130,8 @@ class BuildingFragment : Fragment() {
                         county = fragBinding.county.text.toString(),
                         staff = staff,
                         phone = fragBinding.editTextPhone.text.toString(),
-                        hiring = hire
+                        hiring = hire,
+                        faved = false
                     )
                     val action =
                         BuildingFragmentDirections.actionBuildingFragmentToMapsFragment(build)

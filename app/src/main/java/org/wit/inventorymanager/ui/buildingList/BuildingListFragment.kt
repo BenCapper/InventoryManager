@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -19,6 +20,7 @@ import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.helpers.*
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
+import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailViewModel
 
 class BuildingListFragment : Fragment(), BuildingListener {
 
@@ -29,6 +31,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
     lateinit var loader : AlertDialog
     private lateinit var foundList: ArrayList<BuildingModel>
     private val buildingListViewModel: BuildingListViewModel by activityViewModels()
+    private val buildingDetailViewModel: BuildingDetailViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
 
@@ -59,6 +62,24 @@ class BuildingListFragment : Fragment(), BuildingListener {
         })
         setSwipeRefresh()
 
+        fragBinding.buildingSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    buildingListViewModel.search(loggedInViewModel.liveFirebaseUser.value?.uid!!, newText)
+                }
+                else {
+
+                }
+                return true
+            }
+        })
+
+
+
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 showLoader(loader, "Deleting Building")
@@ -86,10 +107,23 @@ class BuildingListFragment : Fragment(), BuildingListener {
         return root
     }
 
-    private fun render(buildingList: ArrayList<BuildingModel>) {
+
+
+        private fun render(buildingList: ArrayList<BuildingModel>) {
         fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this, buildingListViewModel.readOnly.value!!)
     }
 
+    override fun onFave(building: BuildingModel) {
+        if (building.faved){
+            building.faved = false
+            buildingListViewModel.update(building.uid, building.id, building)
+        }
+        else if (!building.faved){
+            building.faved = true
+            buildingListViewModel.update(building.uid, building.id, building)
+        }
+
+    }
     private fun setSwipeRefresh() {
         fragBinding.swiperefresh.setOnRefreshListener {
             fragBinding.swiperefresh.isRefreshing = true

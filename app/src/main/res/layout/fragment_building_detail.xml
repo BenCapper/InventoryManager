@@ -112,7 +112,7 @@
             android:layout_height="48dp"
             android:background="@color/d_grey"
             android:stateListAnimator="@null"
-            android:text="@string/button_location"
+            android:text="@string/button_ch_location"
             android:textColor="@color/orange"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -195,14 +195,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/orange"
-                android:drawableTint="@color/orange"
-                android:foregroundTint="@color/orange"
                 android:inputType="none"
-                android:outlineAmbientShadowColor="@color/orange"
-                android:outlineProvider="bounds"
-                android:outlineSpotShadowColor="@color/orange"
-                android:shadowColor="@color/orange"
                 android:text="@{buildDetailVm.observableBuild.county}"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>

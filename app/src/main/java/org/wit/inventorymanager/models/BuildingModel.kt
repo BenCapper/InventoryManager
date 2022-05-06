@@ -13,7 +13,7 @@ data class BuildingModel(var id: String = "",
                          var phone: String = "",
                          var staff: Int = 0,
                          var hiring: Boolean? = null,
-                         var faved: Boolean? = null,
+                         var faved: Boolean = false,
                          var lat: String = "",
                          var lng: String = "", )
                          : Parcelable
@@ -29,6 +29,7 @@ data class BuildingModel(var id: String = "",
                                 "phone" to phone,
                                 "staff" to staff,
                                 "hiring" to hiring,
+                                "faved" to faved,
                                 "lat" to lat,
                                 "lng" to lng,
                             )

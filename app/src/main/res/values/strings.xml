@@ -126,6 +126,8 @@
     <string name="fave">Favourite</string>
     <string name="faved">Favourited</string>
 
+    <string name="nav_loc">Locations</string>
+
     <string-array name="counties">
         <item>Carlow</item>
         <item>Cavan</item>
