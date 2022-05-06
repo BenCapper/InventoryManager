@@ -43,6 +43,9 @@
             app:destination="@id/buildingDetailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_buildingListFragment_to_faveMapsFragment2"
+            app:destination="@id/faveMapsFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapsFragment"
@@ -142,5 +145,14 @@
         <argument
             android:name="building"
             app:argType="org.wit.inventorymanager.models.BuildingModel" />
+    </fragment>
+    <fragment
+        android:id="@+id/faveMapsFragment"
+        android:name="org.wit.inventorymanager.ui.faveMaps.FaveMapsFragment"
+        android:label="fragment_fave_maps"
+        tools:layout="@layout/fragment_fave_maps" >
+        <action
+            android:id="@+id/action_faveMapsFragment_to_buildingListFragment2"
+            app:destination="@id/buildingListFragment" />
     </fragment>
 </navigation>
