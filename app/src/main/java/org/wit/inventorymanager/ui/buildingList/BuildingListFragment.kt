@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -61,6 +62,24 @@ class BuildingListFragment : Fragment(), BuildingListener {
         })
         setSwipeRefresh()
 
+        fragBinding.buildingSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    buildingListViewModel.search(loggedInViewModel.liveFirebaseUser.value?.uid!!, newText)
+                }
+                else {
+
+                }
+                return true
+            }
+        })
+
+
+
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 showLoader(loader, "Deleting Building")
@@ -88,8 +107,10 @@ class BuildingListFragment : Fragment(), BuildingListener {
         return root
     }
 
-    private fun render(buildingList: ArrayList<BuildingModel>) {
-        fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this, false)
+
+
+        private fun render(buildingList: ArrayList<BuildingModel>) {
+        fragBinding.recyclerView.adapter = BuildingAdapter(buildingList,this, buildingListViewModel.readOnly.value!!)
     }
 
     override fun onFave(building: BuildingModel) {

@@ -195,14 +195,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/orange"
-                android:drawableTint="@color/orange"
-                android:foregroundTint="@color/orange"
                 android:inputType="none"
-                android:outlineAmbientShadowColor="@color/orange"
-                android:outlineProvider="bounds"
-                android:outlineSpotShadowColor="@color/orange"
-                android:shadowColor="@color/orange"
                 android:text="@{buildDetailVm.observableBuild.county}"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>

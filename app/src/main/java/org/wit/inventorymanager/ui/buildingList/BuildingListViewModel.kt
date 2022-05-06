@@ -27,8 +27,6 @@ class BuildingListViewModel : ViewModel() {
 
     var readOnly = MutableLiveData(false)
 
-    var searchResults = ArrayList<BuildingModel>()
-
     init { load() }
 
     fun load() {
@@ -53,6 +51,16 @@ class BuildingListViewModel : ViewModel() {
             Timber.i("Report LoadAll Error : $e.message")
         }
     }
+
+    fun search(userid: String, term: String) {
+        try {
+            BuildingManager.search(userid,term,buildingList)
+            Timber.i("Building Search Success")
+        }
+        catch (e: Exception) {
+            Timber.i("Building Search Error : $e.message")
+        }
+        }
 
     fun delete(userid: String, id: String) {
         try {
