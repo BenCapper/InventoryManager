@@ -45,10 +45,10 @@ class BuildingListViewModel : ViewModel() {
         try {
             readOnly.value = true
             BuildingManager.findAll(buildingList)
-            Timber.i("Report LoadAll Success : ${buildingList.value.toString()}")
+            Timber.i("LoadAll Success : ${buildingList.value.toString()}")
         }
         catch (e: Exception) {
-            Timber.i("Report LoadAll Error : $e.message")
+            Timber.i("LoadAll Error : $e.message")
         }
     }
 

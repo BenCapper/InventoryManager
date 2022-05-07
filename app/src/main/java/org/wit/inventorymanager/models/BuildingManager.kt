@@ -48,6 +48,7 @@ object BuildingManager : BuildingStore {
                     children.forEach {
                         val building = it.getValue(BuildingModel::class.java)
                         localList.add(building!!)
+                        Timber.i("TTTTTTTTTTTTTIMBER::::    ${building}")
                     }
                     database.child("user-buildings").child(userid)
                         .removeEventListener(this)
@@ -102,7 +103,7 @@ object BuildingManager : BuildingStore {
             Timber.i("Firebase Error : Key Empty")
             return
         }
-        building.uid = key
+        building.id = key
         val buildingValues = building.toMap()
 
         val childAdd = HashMap<String, Any>()

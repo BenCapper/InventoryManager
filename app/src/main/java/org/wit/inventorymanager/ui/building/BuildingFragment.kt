@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import org.wit.inventorymanager.R
@@ -32,14 +33,9 @@ class BuildingFragment : Fragment() {
 
     private var nFragBinding: FragmentBuildingBinding? = null
     private val fragBinding get() = nFragBinding!!
-    private var building = BuildingModel()
-    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var buildingViewModel: BuildingViewModel
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
-    private val buildingListViewModel: BuildingListViewModel by activityViewModels()
-    private val mapsViewModel: MapsViewModel by activityViewModels()
     private var hire: Boolean? = null
-    var test = "test"
     var staff = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +91,7 @@ class BuildingFragment : Fragment() {
 
     private fun setButtonListener(layout: FragmentBuildingBinding){
         layout.buildingLocation.setOnClickListener {
-            val id = Random.nextLong().toString()
+            var newid = Random.nextLong().toString()
             when {
                 fragBinding.buildingName.text.toString().isEmpty() -> {
                     view?.snack(R.string.warn_name)
@@ -123,7 +119,7 @@ class BuildingFragment : Fragment() {
                         hire = false
                     }
                     var build = BuildingModel(
-                        id = id,
+                        id = newid,
                         uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
                         name = fragBinding.buildingName.text.toString(),
                         town = fragBinding.town.text.toString(),
@@ -135,7 +131,7 @@ class BuildingFragment : Fragment() {
                     )
                     val action =
                         BuildingFragmentDirections.actionBuildingFragmentToMapsFragment(build)
-                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+                    findNavController().navigate(action)
                 }
             }
         }
@@ -151,11 +147,6 @@ class BuildingFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        building.name = fragBinding.buildingName.text.toString()
-        building.phone = fragBinding.editTextPhone.text.toString()
-        super.onPause()
-    }
 
     override fun onResume() {
         setButtonListener(fragBinding)

@@ -10,7 +10,7 @@ interface BuildingStore {
                 buildingList:
                 MutableLiveData<List<BuildingModel>>)
     fun findById(userid:String, buildingid: String,
-                 donation: MutableLiveData<BuildingModel>)
+                 building: MutableLiveData<BuildingModel>)
     fun create(firebaseUser: MutableLiveData<FirebaseUser>, building: BuildingModel)
     fun delete(userid:String, buildingid: String)
     fun update(userid:String, buildingid: String, building: BuildingModel)

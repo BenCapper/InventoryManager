@@ -42,12 +42,15 @@
     <string name="action_location">Locations</string>
     <string name="menu_deleteBuilding">Delete</string>
     <string name="img_choose">Choose Image</string>
+    <string name="max_quant">Max Quantity</string>
+    <string name="fav">Favourite</string>
 
     <string name="hint_hiring">Currently Hiring: </string>
     <string name="s_noList">Create Item</string>
     <string name="stock_add_img">Image</string>
     <string name="stock_add_item">Add Item</string>
     <string name="s_update">Item Updated</string>
+    <string name="i_update">Update Item</string>
     <string name="s_create">Item Created</string>
     <string name="s_price">Enter the Item Value</string>
     <string name="s_weight">Enter the Item Weight</string>
@@ -128,6 +131,18 @@
 
     <string name="nav_loc">Locations</string>
 
+
+    <string name="iname">Enter the Item Name</string>
+    <string name="charsmax">15 Characters Max</string>
+    <string name="iweight">Enter the Item Weight</string>
+    <string name="noweight">Invalid Weight</string>
+    <string name="iunit">Select a Unit Type</string>
+    <string name="iprice">Enter the Item Price</string>
+    <string name="eu">€</string>
+    <string name="noprice">Invalid Price</string>
+    <string name="imax">Select a Maximum Amount</string>
+    <string name="charsmin">Minimum Stock Level 0</string>
+
     <string-array name="counties">
         <item>Carlow</item>
         <item>Cavan</item>
@@ -155,5 +170,16 @@
         <item>Westmeath</item>
         <item>Wexford</item>
         <item>Wicklow</item>
+    </string-array>
+
+    <string-array name="units">
+        <item>mg</item>
+        <item>g</item>
+        <item>kg</item>
+        <item>oz</item>
+        <item>lb</item>
+        <item>gal</item>
+        <item>ml</item>
+        <item>lt</item>
     </string-array>
 </resources>

@@ -8,8 +8,40 @@
     android:focusable="true"
     tools:context=".ui.stockList.StockListFragment">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/sfab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:clickable="true"
+        android:contentDescription="@string/nav_loc"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.92" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/sswiperefresh"
+        android:layout_width="402dp"
+        android:layout_height="660dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.518"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.85">
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/sRecyclerView"
+        android:id="@+id/srecyclerView"
         android:layout_width="406dp"
         android:layout_height="632dp"
         android:background="@color/dark"
@@ -17,21 +49,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0">
 
-    <Button
-        android:id="@+id/stockNoList"
-        android:layout_width="162dp"
-        android:layout_height="39dp"
-        android:text="@string/s_noList"
-        android:textSize="12sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.268" />
+    </androidx.recyclerview.widget.RecyclerView>
 
     <SearchView
         android:id="@+id/stockSearch"
@@ -41,11 +61,12 @@
         android:searchHintIcon="@drawable/ic_search_or"
         android:searchIcon="@drawable/ic_search_or"
         android:theme="@style/SearchViewStyle"
-        app:layout_constraintBottom_toTopOf="@+id/sRecyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/srecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0">
 
+    </SearchView>
 </androidx.constraintlayout.widget.ConstraintLayout>

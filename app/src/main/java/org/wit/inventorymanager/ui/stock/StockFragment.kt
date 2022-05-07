@@ -1,45 +1,65 @@
 package org.wit.inventorymanager.ui.stock
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.ArrayAdapter
+import android.widget.CompoundButton
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import splitties.snackbar.snack
 import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
+import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 import org.wit.inventorymanager.databinding.FragmentStockBinding
 import org.wit.inventorymanager.main.InventoryApp
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.StockModel
+import org.wit.inventorymanager.ui.auth.LoggedInViewModel
+import org.wit.inventorymanager.ui.building.BuildingFragmentDirections
+import org.wit.inventorymanager.ui.building.BuildingViewModel
+import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
+import org.wit.inventorymanager.ui.maps.MapsViewModel
+import org.wit.inventorymanager.ui.stock.StockFragmentDirections.Companion.actionStockFragmentToStockListFragment
+import org.wit.inventorymanager.ui.stockList.StockListFragmentArgs
+import org.wit.inventorymanager.ui.stockList.StockListViewModel
 import timber.log.Timber
 import java.util.*
+import kotlin.random.Random
 
-
-private var nFragBinding: FragmentStockBinding? = null
-private val fragBinding get() = nFragBinding!!
-private var stock = StockModel()
-private var build = BuildingModel()
-private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
 
 class StockFragment : Fragment() {
 
-    lateinit var app: InventoryApp
-    private var id: Long = 0
+    private var nFragBinding: FragmentStockBinding? = null
+    private val fragBinding get() = nFragBinding!!
+    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var stockViewModel: StockViewModel
+    private val args by navArgs<StockFragmentArgs>()
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    private var fav: Boolean? = null
+    var max = 0
+    var current = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        app = activity?.application as InventoryApp
         setHasOptionsMenu(true)
 
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,155 +67,136 @@ class StockFragment : Fragment() {
 
         nFragBinding = FragmentStockBinding.inflate(inflater, container, false)
         val root = fragBinding.root
-        setButtonListener(fragBinding)
-        activity?.title = getString(R.string.action_location)
-        registerImagePickerCallback()
-        fragBinding.quantity.minValue = 1
-        fragBinding.quantity.maxValue = 2000
+        activity?.title = getString(R.string.action_stock)
+
+        stockViewModel = ViewModelProvider(this)[StockViewModel::class.java]
+        stockViewModel.observableStatus.observe(viewLifecycleOwner) { status ->
+            status?.let { render(status) }
+        }
+        val units = resources.getStringArray(R.array.units)
+        val unitAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, units)
+        fragBinding.unit.setAdapter(unitAdapter)
+
+        fragBinding.sfave.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
+            fav = b
+            if (fragBinding.sfave.isChecked){
+                fragBinding.sfave.setTextColor(Color.argb(255,235, 172, 12))
+            }
+            else {
+                fragBinding.sfave.setTextColor(Color.BLACK)
+            }
+        }
+        fragBinding.stockQuantity.minValue = 0
+        fragBinding.stockQuantity.maxValue = 10000
+
+        fragBinding.stockQuantity2.minValue = 0
+        fragBinding.stockQuantity2.maxValue = 10000
 
         // Number picker listener
-        fragBinding.quantity.setOnValueChangedListener { _, _, newVal ->
-            stock.inStock = newVal.toLong()
+        fragBinding.stockQuantity.setOnValueChangedListener { _, _, newVal ->
+            max = newVal
         }
 
-        // Check for arguments and save / set fields and text views
-        val bundle = arguments
-        if (arguments?.containsKey("stock") == true){
-            stock = bundle?.getParcelable("stock")!!
-        }
-        if(arguments?.containsKey("build") == true) {
-            build = bundle?.getParcelable("build")!!
+        fragBinding.stockQuantity.setOnValueChangedListener { _, _, newVal ->
+            current = newVal
         }
 
-            if (stock.id.toString() !== (0).toLong().toString()){
-                fragBinding.btnAddItem.setText(R.string.up_stock)
-            }
-            if (stock.name != ""){
-                fragBinding.stockName.setText(stock.name)
-            }
-            if (stock.price.toString() != "0.0"){
-                fragBinding.stockPrice.setText(stock.price.toString())
-            }
-            if (stock.weight != ""){
-                fragBinding.stockWeight.setText(stock.weight)
-            }
-            if (stock.image != ""){
-                Picasso.get()
-                    .load(Uri.parse(stock.image))
-                    .into(fragBinding.stockImage)
-                fragBinding.chooseImage.setText(R.string.img_ch)
-            }
-            else{
-                fragBinding.stockImage.setImageURI(null)
-            }
 
-
-        fragBinding.chooseImage.setOnClickListener {
-            showImagePicker(imageIntentLauncher)
-        }
-
+        setButtonListener(fragBinding)
 
         return root
+    }
+
+    private fun setButtonListener(layout: FragmentStockBinding){
+        layout.stockAdd.setOnClickListener {
+            val name = layout.stockName.text.toString()
+            val branch = args.buildingid
+            val weight = layout.editWeight.text.toString()
+            val price = layout.price.text.toString()
+            val unit = layout.unit.text.toString()
+            val max = layout.stockQuantity.value
+            val inStock = layout.stockQuantity2.value
+            when {
+                name.isEmpty() -> {
+                    view?.snack(R.string.iname)
+                }
+                name.length > 15 -> {
+                    view?.snack(R.string.charsmax)
+                }
+                weight.isEmpty() -> {
+                    view?.snack(R.string.iweight)
+                }
+                weight.length > 6 -> {
+                    view?.snack(R.string.noweight)
+                }
+                price.isEmpty() -> {
+                    view?.snack(R.string.iprice)
+                }
+                unit == "Unit" || unit.isEmpty() -> {
+                    view?.snack(R.string.iunit)
+                }
+                inStock < 0 -> {
+                    view?.snack(R.string.charsmin)
+                }
+                else -> {
+                    if(fav == null){
+                        fav = false
+                    }
+
+                    var stock = StockModel(
+                        id = Random.nextLong().toString(),
+                        uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
+                        name = name,
+                        branch = branch,
+                        weight = weight,
+                        price = price.toDouble(),
+                        max = max,
+                        inStock = current,
+                        image = "",
+                        faved = fav!!
+                    )
+                    stockViewModel.addStock(loggedInViewModel.liveFirebaseUser, stock)
+                    val action =
+                        StockFragmentDirections.actionStockFragmentToStockListFragment("")
+                    findNavController().navigate(action)
+                }
+            }
+        }
+    }
+
+    private fun render(status: Boolean) {
+        when (status) {
+            true -> {
+                view?.let {
+                }
+            }
+            false -> view?.snack("Failed")
+        }
     }
 
 
     override fun onResume() {
         setButtonListener(fragBinding)
-        if (stock.image != ""){
-            Picasso.get()
-                .load(Uri.parse(stock.image))
-                .into(fragBinding.stockImage)
-            fragBinding.chooseImage.setText(R.string.img_ch)
-        }
+        val units = resources.getStringArray(R.array.units)
+        val unitAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, units)
+        fragBinding.unit.setAdapter(unitAdapter)
         super.onResume()
     }
 
-    private fun setButtonListener(layout: FragmentStockBinding) {
-        layout.btnAddItem.setOnClickListener {
 
-            stock.name = layout.stockName.text.toString()
-            if(!layout.stockPrice.text.isNullOrEmpty()) {
-                stock.price = layout.stockPrice.text.toString().toDouble()
-            }
-            stock.weight = layout.stockWeight.text.toString()
-            stock.inStock = layout.quantity.value.toLong()
-            stock.branch = build.id
-
-            // Input validation
-            when {
-                stock.name.isEmpty() -> {
-                    view?.snack(R.string.s_name)
-                }
-                stock.name.length > 20 -> {
-                    view?.snack(R.string.s_name_chars)
-                }
-                stock.price == 0.0 -> {
-                    view?.snack(R.string.s_price)
-                }
-                stock.weight.isEmpty() -> {
-                    view?.snack(R.string.s_weight)
-                }
-                stock.image == "" -> {
-                    view?.snack(R.string.stock_img)
-                }
-                else -> {
-
-                    if (stock.id.toString().length == 1){
-                        stock.id = Random().nextLong().toString()
-                        app.stocks.create(stock)
-                        view?.snack(R.string.s_create)
-                    } else {
-                        app.stocks.update(stock)
-                        view?.snack(R.string.s_update)
-                    }
-                    Timber.i(stock.toString())
-                    val bundle = Bundle()
-                    bundle.putParcelable("id", build)
-                    bundle.putParcelable("stock", stock)
-                    layout.stockName.setText("")
-                    layout.stockPrice.setText("")
-                    layout.stockWeight.setText("")
-                    layout.stockImage.setImageURI(null)
-
-
-                    it.findNavController()
-                        .navigate(R.id.action_stockFragment_to_stockListFragment, bundle)
-                }
-            }
-        }
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return NavigationUI.onNavDestinationSelected(item,
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
-    private fun registerImagePickerCallback() {
-        imageIntentLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            { result ->
-                when(result.resultCode){
-                    AppCompatActivity.RESULT_OK -> {
-                        if (result.data != null) {
-                            Timber.i("Got Result ${result.data!!.data}")
-                            stock.image = result.data!!.data!!.toString()
-                            Picasso.get()
-                                .load(stock.image)
-                                .into(fragBinding.stockImage)
-                            fragBinding.chooseImage.setText(R.string.change_stock_image)
-                        }
-                    }
-                    AppCompatActivity.RESULT_CANCELED -> { } else -> { }
-                }
+    companion object {
+        @JvmStatic
+        fun newInstance() =
+            StockFragment().apply {
+                arguments = Bundle().apply {}
             }
     }
-    private fun showImagePicker(intentLauncher: ActivityResultLauncher<Intent>) {
-
-        var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        chooseFile.type = "image/*"
-        chooseFile = Intent.createChooser(chooseFile, R.string.button_addImage.toString())
-        intentLauncher.launch(chooseFile)
-    }
-    }
 
 
+}

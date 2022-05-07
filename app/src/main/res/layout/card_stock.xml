@@ -1,140 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:elevation="24dp">
-
-    <RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="stock"
+            type="org.wit.inventorymanager.models.StockModel" />
+    </data>
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#E1E3E1E1"
-        android:padding="16dp">
+        android:layout_marginBottom="8dp"
+        android:elevation="24dp">
 
-        <TextView
-            android:id="@+id/stockListQuantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/stockListPrice"
-            android:layout_marginStart="17dp"
-            android:layout_marginTop="21dp"
-            android:layout_toEndOf="@+id/textViewWeight"
-            android:textColor="@color/orange"
-            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#E1E3E1E1"
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/textViewQuantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/stockListPrice"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="20dp"
-            android:layout_toEndOf="@+id/stockImageIcon"
-            android:text="@string/quantity_colon"
-            android:textColor="@color/dark"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="110dp"
+                android:layout_height="15dp"
+                android:layout_below="@+id/snamecard"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="335dp"
+                android:text="$"
+                android:textColor="@color/dark"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
-        <ImageView
-            android:id="@+id/stockImageIcon"
-            android:layout_width="69dp"
-            android:layout_height="80dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="@string/building_image" />
+            <TextView
+                android:id="@+id/sbranch"
+                android:layout_width="110dp"
+                android:layout_height="15dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="160dp"
+                android:text="@{stock.branch}"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold|italic" />
 
-        <TextView
-            android:id="@+id/stockListName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/stockImageIcon"
-            android:textColor="@color/orange"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:ignore="RelativeOverlap" />
+            <TextView
+                android:id="@+id/instock"
+                android:layout_width="110dp"
+                android:layout_height="15dp"
+                android:layout_below="@+id/snamecard"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="200dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="145dp"
+                android:text="@{Long.toString(stock.inStock)}"
+                android:textColor="@color/orange"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
-        <TextView
-            android:id="@+id/stockListWeight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/stockListPrice"
-            android:layout_marginStart="7dp"
-            android:layout_marginTop="1dp"
-            android:layout_toEndOf="@+id/textViewWeight"
-            android:textColor="@color/orange"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/sweight"
+                android:layout_width="110dp"
+                android:layout_height="15dp"
+                android:layout_below="@+id/snamecard"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="200dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="145dp"
+                android:text="@{stock.weight.toString()}"
+                android:textColor="@color/orange"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
+            <TextView
+                android:id="@+id/weighttext"
+                android:layout_width="110dp"
+                android:layout_height="15dp"
+                android:layout_below="@+id/snamecard"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="180dp"
+                android:text="Weight:"
+                android:textColor="@color/dark"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
-        <TextView
-            android:id="@+id/textViewWeight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/stockListPrice"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_toEndOf="@+id/stockImageIcon"
-            android:text="@string/weight_colon"
-            android:textColor="@color/dark"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/instocktext"
+                android:layout_width="110dp"
+                android:layout_height="15dp"
+                android:layout_below="@+id/snamecard"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="180dp"
+                android:text="In Stock:"
+                android:textColor="@color/dark"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
-        <TextView
-            android:id="@+id/stockListPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/stockListName"
-            android:layout_marginStart="7dp"
-            android:layout_marginTop="11dp"
-            android:layout_toEndOf="@+id/textViewPrice"
-            android:textColor="@color/orange"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/sprice"
+                android:layout_width="110dp"
+                android:layout_height="15dp"
+                android:layout_below="@+id/snamecard"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="35dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="270dp"
+                android:text="@{Double.toString(stock.price)}"
+                android:textColor="@color/dark"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
-        <TextView
-            android:id="@+id/textViewPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/stockListName"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="11dp"
-            android:layout_toEndOf="@+id/stockImageIcon"
-            android:text="@string/price_icon"
-            android:textColor="@color/dark"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/towncard2"
+                android:layout_width="110dp"
+                android:layout_height="15dp"
+                android:layout_below="@+id/snamecard"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="270dp"
+                android:textColor="@color/dark"
+                android:textSize="12sp"
+                android:textStyle="normal|italic" />
 
-        <ImageButton
-            android:id="@+id/plus"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="317dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="21dp"
-            android:contentDescription="@string/plus_desc"
-            android:minHeight="48dp"
-            app:srcCompat="@drawable/ic_add"
-            tools:ignore="TouchTargetSizeCheck" />
+            <ToggleButton
+                android:id="@+id/sfave"
+                android:layout_width="83dp"
+                android:layout_height="34dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="250dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginEnd="30dp"
+                android:textOff="@string/fave"
+                android:textOn="@string/faved"
+                android:checked="@{stock.faved}"
+                android:textSize="8sp" />
 
-        <ImageButton
-            android:id="@+id/minus"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="317dp"
-            android:layout_marginTop="54dp"
-            android:layout_marginEnd="21dp"
-            android:contentDescription="@string/minus_desc"
-            android:minHeight="48dp"
-            app:srcCompat="@drawable/ic_remove"
-            tools:ignore="TouchTargetSizeCheck" />
+            <TextView
+                android:id="@+id/snamecard"
+                android:layout_width="119dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="260dp"
+                android:text="@{stock.name}"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold|italic" />
 
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignTop="@+id/sfave"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="-2dp"
+                android:layout_marginEnd="168dp"
+                android:background="@color/orange" />
 
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

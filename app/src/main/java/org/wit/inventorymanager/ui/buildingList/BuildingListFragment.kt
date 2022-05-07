@@ -62,7 +62,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
         })
         setSwipeRefresh()
 
-        fragBinding.fab.setOnClickListener { view ->
+        fragBinding.fab.setOnClickListener {
             val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment()
             findNavController().navigate(action)
         }
@@ -171,7 +171,8 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     override fun onBuildingClick(building: BuildingModel) {
         // Open this buildings stock list
-        findNavController().navigate(R.id.action_buildingListFragment_to_stockListFragment)
+        val action = BuildingListFragmentDirections.actionBuildingListFragmentToStockListFragment(building.id)
+        findNavController().navigate(action)
 
     }
 
@@ -185,16 +186,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
     }
 
 
-
-
-
-
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun showBuildings (buildingList: ArrayList<BuildingModel>) {
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = BuildingAdapter(buildingList, this@BuildingListFragment, buildingListViewModel.readOnly.value!!)
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
-    }
 
 
     override fun onDestroyView() {
