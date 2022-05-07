@@ -117,7 +117,7 @@ object StockManager : StockStore {
 
     override fun findById(userid: String, stockid: String, stock: MutableLiveData<StockModel>) {
 
-        database.child("user-stock").child(userid)
+        database.child("user-stock").child(userid).child(stockid)
             .get().addOnSuccessListener {
                 stock.value = it.getValue(StockModel::class.java)
                 Timber.i("firebase Got value ${it.value}")

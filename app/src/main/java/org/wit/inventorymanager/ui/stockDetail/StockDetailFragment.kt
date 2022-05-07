@@ -159,8 +159,7 @@ class StockDetailFragment : Fragment() {
         val units = resources.getStringArray(R.array.units)
         val unitAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, units)
         fragBinding.unitDetail.setAdapter(unitAdapter)
-        fragBinding.stockDetailQuantity.value = args.stock.max
-        fragBinding.stockDetailQuantity2.value = args.stock.inStock
+
         super.onResume()
     }
 

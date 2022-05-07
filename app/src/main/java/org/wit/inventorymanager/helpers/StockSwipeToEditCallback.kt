@@ -27,7 +27,7 @@ abstract class StockSwipeToEditCallback(context: Context) : ItemTouchHelper.Simp
          * if (viewHolder?.itemViewType == YourAdapter.SOME_TYPE) return 0
          * if (viewHolder?.adapterPosition == 0) return 0
          */
-        if ((viewHolder as StockAdapter.MainHolder).readOnlyRow) return 0
+
         return super.getMovementFlags(recyclerView, viewHolder)
     }
 

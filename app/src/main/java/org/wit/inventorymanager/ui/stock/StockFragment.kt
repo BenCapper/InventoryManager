@@ -157,7 +157,7 @@ class StockFragment : Fragment() {
                     )
                     stockViewModel.addStock(loggedInViewModel.liveFirebaseUser, stock)
                     val action =
-                        StockFragmentDirections.actionStockFragmentToStockListFragment("")
+                        StockFragmentDirections.actionStockFragmentToStockListFragment(branch)
                     findNavController().navigate(action)
                 }
             }

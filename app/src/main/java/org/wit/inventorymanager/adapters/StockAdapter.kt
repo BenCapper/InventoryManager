@@ -61,7 +61,6 @@ class StockAdapter constructor(private var stock: ArrayList<StockModel>, private
             binding.root.tag = stock
             binding.stock = stock
             binding.sfave.setOnClickListener { listener.onFave(stock) }
-            binding.root.setOnClickListener { listener.onStockClick(stock) }
             binding.executePendingBindings()
         }
     }

@@ -25,6 +25,7 @@ import org.wit.inventorymanager.ui.building.BuildingViewModel
 import org.wit.inventorymanager.ui.stockDetail.StockDetailFragmentArgs
 import org.wit.inventorymanager.ui.stockDetail.StockDetailViewModel
 import splitties.fragmentargs.arg
+import timber.log.Timber
 
 
 class StockListFragment : Fragment(), StockListener {
@@ -57,6 +58,7 @@ class StockListFragment : Fragment(), StockListener {
         loader = createLoader(requireActivity())
         activity?.title = getString(R.string.action_location)
         fragBinding.srecyclerView.layoutManager = LinearLayoutManager(activity)
+        stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
         showLoader(loader, "Downloading Stock")
         stockListViewModel.observableStockList.observe(viewLifecycleOwner, Observer { stock ->
             stock?.let {
@@ -78,6 +80,7 @@ class StockListFragment : Fragment(), StockListener {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
+
                     stockListViewModel.search(loggedInViewModel.liveFirebaseUser.value?.uid!!,args.buildingid, newText)
                 }
                 else {
@@ -146,7 +149,7 @@ class StockListFragment : Fragment(), StockListener {
             if(stockListViewModel.readOnly.value!!)
                 stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
             else
-                stockListViewModel.load()
+                stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
         }
     }
 
@@ -185,9 +188,8 @@ class StockListFragment : Fragment(), StockListener {
 
 
     override fun onEditSwipe(stock: StockModel) {
-        val action = StockListFragmentDirections.actionStockListFragmentToStockDetailFragment(stock, args.buildingid)
-        if(!stockListViewModel.readOnly.value!!)
-            findNavController().navigate(action)
+        val action = StockListFragmentDirections.actionStockListFragmentToStockDetailFragment(stock, stock.id)
+        findNavController().navigate(action)
     }
 
 
