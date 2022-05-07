@@ -18,6 +18,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Theme.InventoryManager.bold">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/orange</item>
+    </style>
+
     <style name="Theme.InventoryManager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorControlNormal">@color/orange</item>"
         <item name="actionMenuTextColor">@color/orange</item>"
@@ -37,6 +42,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
 
     <!-- Dark Buttons -->
     <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">

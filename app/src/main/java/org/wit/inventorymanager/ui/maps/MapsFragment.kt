@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
+import org.wit.inventorymanager.ui.auth.LoggedInViewModel
+import org.wit.inventorymanager.ui.building.BuildingViewModel
 import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailViewModel
 import splitties.snackbar.snack
 import timber.log.Timber
@@ -29,7 +31,8 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
 
     private val mapsViewModel: MapsViewModel by activityViewModels()
     private val args by navArgs<MapsFragmentArgs>()
-    private val buildingDetailViewModel: BuildingDetailViewModel by activityViewModels()
+    private val buildingViewModel: BuildingViewModel by activityViewModels()
+    private val loggedInViewModel: LoggedInViewModel by activityViewModels()
     private lateinit var action: NavDirections
     var lat = ""
     var lng = ""
@@ -114,7 +117,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
             }
             var build = BuildingModel(id=args.building.id, uid=args.building.uid,name=args.building.name, phone = args.building.phone, hiring = args.building.hiring, town=args.building.town,
                                                     county=args.building.county, staff=args.building.staff, lat =lat,lng=lng , faved = false)
-            buildingDetailViewModel.updateBuild(args.building.uid, args.building.id, build)
+            buildingViewModel.addBuilding(loggedInViewModel.liveFirebaseUser, build)
             action = MapsFragmentDirections.actionMapsFragmentToBuildingListFragment()
             Timber.i("BUILD BEING SENT: $build")
             findNavController().navigate(action)

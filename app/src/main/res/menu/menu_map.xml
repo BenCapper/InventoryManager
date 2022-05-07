@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:checkable="false"
+        android:title="Show All"
+        android:visibility="visible"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/toggle"
+        android:title="@string/fave"
+        android:visibility="visible"
+        android:tooltipText="Favourite"
+
+        app:actionLayout="@layout/switch_item"
+        app:showAsAction="always" />
+</menu>
