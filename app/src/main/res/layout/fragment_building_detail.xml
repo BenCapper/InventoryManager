@@ -14,43 +14,36 @@
         android:autofillHints="County"
         tools:context="org.wit.inventorymanager.ui.building.BuildingDetailFragment">
 
-        <EditText
-            android:id="@+id/lng"
-            android:layout_width="120dp"
-            android:layout_height="48dp"
-            android:backgroundTint="@color/orange"
-            android:ems="10"
-            android:hint="@string/hint_lng"
-            android:inputType="numberDecimal"
-            android:textColor="@color/dark"
-            android:textColorHint="@color/dark"
-            android:textSize="14sp"
-            android:text="@{buildDetailVm.observableBuild.lng}"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="144dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="15dp"
+            android:maxLength="10"
+            app:boxStrokeColor="@color/orange"
+            app:boxStrokeWidth="3dp"
+            app:endIconCheckable="true"
+            app:endIconDrawable="@drawable/ic_baseline_close_24"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/orange"
+            app:hintTextColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.054"
+            app:layout_constraintHorizontal_bias="0.07"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.928" />
+            app:layout_constraintVertical_bias="0.95">
 
-        <EditText
-            android:id="@+id/lat"
-            android:layout_width="120dp"
-            android:layout_height="48dp"
-            android:backgroundTint="@color/orange"
-            android:ems="10"
-            android:hint="@string/hint_lat"
-            android:inputType="numberDecimal"
-            android:textColor="@color/dark"
-            android:textColorHint="@color/dark"
-            android:textSize="14sp"
-            android:text="@{buildDetailVm.observableBuild.lat}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.054"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.843" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/lng"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_lng"
+                android:maxLength="9"
+                android:text="@{buildDetailVm.observableBuild.lng}"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/staffText"
@@ -65,7 +58,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.654" />
+            app:layout_constraintVertical_bias="0.64" />
 
         <NumberPicker
             android:id="@+id/staffQuantity"
@@ -75,36 +68,14 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:value="@{buildDetailVm.observableBuild.staff}"
             android:outlineAmbientShadowColor="@color/color_secondary"
+            android:value="@{buildDetailVm.observableBuild.staff}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.464"
+            app:layout_constraintHorizontal_bias="0.461"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.679" />
-
-        <EditText
-            android:id="@+id/town"
-            android:layout_width="258dp"
-            android:layout_height="48dp"
-            android:autofillHints=""
-            android:backgroundTint="@color/orange"
-            android:hint="@string/hint_town"
-            android:inputType="text"
-            android:maxLength="25"
-            android:maxLines="1"
-            android:padding="8dp"
-            android:textColor="@color/dark"
-            android:textColorHint="@color/dark"
-            android:textSize="14sp"
-            android:text="@{buildDetailVm.observableBuild.town}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.102"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.364" />
+            app:layout_constraintVertical_bias="0.653" />
 
         <Button
             android:id="@+id/buildingLocation"
@@ -138,54 +109,131 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.928" />
 
-        <EditText
-            android:id="@+id/buildingName"
-            android:layout_width="255dp"
-            android:layout_height="48dp"
-            android:autofillHints=""
-            android:backgroundTint="@color/orange"
-            android:hint="@string/hint_buildingName"
-            android:inputType="text"
-            android:maxLength="25"
-            android:maxLines="1"
-            android:padding="8dp"
-            android:textColor="@color/dark"
-            android:textColorHint="@color/dark"
-            android:textSize="14sp"
-            android:text="@{buildDetailVm.observableBuild.name}"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="144dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="15dp"
+            app:boxStrokeColor="@color/orange"
+            app:boxStrokeWidth="3dp"
+            app:endIconDrawable="@drawable/ic_baseline_close_24"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/orange"
+            app:hintTextColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.102"
+            app:layout_constraintHorizontal_bias="0.07"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.156" />
+            app:layout_constraintVertical_bias="0.83">
 
-        <EditText
-            android:id="@+id/editTextPhone"
-            android:layout_width="258dp"
-            android:layout_height="48dp"
-            android:backgroundTint="@color/orange"
-            android:ems="10"
-            android:hint="@string/hint_buildingPhone"
-            android:inputType="phone"
-            android:textColor="@color/dark"
-            android:textColorHint="@color/dark"
-            android:textSize="14sp"
-            android:text="@{buildDetailVm.observableBuild.phone}"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/lat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_lat"
+                android:maxLength="9"
+                android:text="@{buildDetailVm.observableBuild.lat}"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="285dp"
+            android:layout_height="61dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="15dp"
+            app:boxStrokeColor="@color/orange"
+            app:boxStrokeWidth="3dp"
+            app:endIconDrawable="@drawable/ic_baseline_close_24"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/orange"
+            app:hintTextColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.104"
+            app:layout_constraintHorizontal_bias="0.15"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.262" />
+            app:layout_constraintVertical_bias="0.120000005">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/buildingName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{buildDetailVm.observableBuild.name}"
+                android:hint="@string/hint_buildingName"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="285dp"
+            android:layout_height="61dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="15dp"
+            android:textSize="14sp"
+            app:boxStrokeColor="@color/orange"
+            app:boxStrokeWidth="3dp"
+            app:endIconDrawable="@drawable/ic_baseline_close_24"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/orange"
+            app:hintTextColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.24000001">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{buildDetailVm.observableBuild.phone}"
+                android:hint="@string/hint_buildingPhone"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="285dp"
+            android:layout_height="61dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="15dp"
+            android:textSize="14sp"
+            app:boxStrokeColor="@color/orange"
+            app:boxStrokeWidth="3dp"
+            app:endIconDrawable="@drawable/ic_baseline_close_24"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/orange"
+            app:hintTextColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.36">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/town"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{buildDetailVm.observableBuild.town}"
+                android:hint="@string/hint_town"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="200dp"
             android:layout_height="70dp"
+            app:boxStrokeColor="@color/orange"
+            app:boxStrokeWidth="3dp"
+            app:endIconTint="@color/orange"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.075"
+            app:layout_constraintHorizontal_bias="0.07"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.485">

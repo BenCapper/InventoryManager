@@ -2,22 +2,20 @@ package org.wit.inventorymanager.ui.faveMaps
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import androidx.fragment.app.Fragment
-
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Switch
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.helpers.createLoader
 import org.wit.inventorymanager.helpers.hideLoader
@@ -27,6 +25,7 @@ import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
 import org.wit.inventorymanager.ui.maps.MapsViewModel
 
+
 class FaveMapsFragment : Fragment() {
 
 
@@ -34,6 +33,7 @@ class FaveMapsFragment : Fragment() {
     private val buildingListViewModel: BuildingListViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
     lateinit var loader : AlertDialog
+
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -49,6 +49,7 @@ class FaveMapsFragment : Fragment() {
             mapsViewModel.map.uiSettings.isZoomControlsEnabled = true
             mapsViewModel.map.uiSettings.isMyLocationButtonEnabled = true
 
+
             buildingListViewModel.observableBuildingList.observe(
                 viewLifecycleOwner,
                 Observer { buildings ->
@@ -56,8 +57,17 @@ class FaveMapsFragment : Fragment() {
                         render(buildings as ArrayList<BuildingModel>)
                         hideLoader(loader)
                     }
-                })
+                }
+            )
         }
+    }
+
+
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -85,11 +95,88 @@ class FaveMapsFragment : Fragment() {
                         MarkerOptions().position(LatLng(it.lat.toDouble(), it.lng.toDouble()))
                             .title("${it.name} , ${it.county}")
                             .snippet("Number of Staff: ${it.staff}")
-                            .icon(
-                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
-                            )
+                            .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_lightloc))
                     )
                 }
+            }
+        }
+    }
+
+    private fun renderAll(buildingList: ArrayList<BuildingModel>) {
+        var markerColour: Float
+        if (buildingList.isNotEmpty()) {
+            mapsViewModel.map.clear()
+            buildingList.forEach {
+                if (it.uid == this.buildingListViewModel.liveFirebaseUser.value!!.uid && it.faved) {
+                    //markerColour = BitmapDescriptorFactory.HUE_ORANGE
+                    mapsViewModel.map.addMarker(
+                        MarkerOptions().position(LatLng(it.lat.toDouble(), it.lng.toDouble()))
+                            .title("${it.name} , ${it.county}")
+                            .snippet("Number of Staff: ${it.staff}")
+                            .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_lightloc))
+                    )
+                }
+                else {
+                    mapsViewModel.map.addMarker(
+                        MarkerOptions().position(LatLng(it.lat.toDouble(), it.lng.toDouble()))
+                            .title("${it.name} , ${it.county}")
+                            .snippet("Number of Staff: ${it.staff}")
+                            .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_darkloc))
+                    )
+                }
+
+
+            }
+        }
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+        val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
+        vectorDrawable!!.setBounds(
+            0,
+            0,
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight
+        )
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_map, menu)
+
+        val item = menu.findItem(R.id.toggle) as MenuItem
+        item.setActionView(R.layout.switch_item)
+        val toggleBuilds: Switch = item.actionView.findViewById(R.id.switch_menu)
+        toggleBuilds.isChecked = false
+
+        toggleBuilds.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                buildingListViewModel.observableBuildingList.observe(
+                    viewLifecycleOwner,
+                    Observer { buildings ->
+                        buildings?.let {
+                            renderAll(buildings as ArrayList<BuildingModel>)
+                            hideLoader(loader)
+                        }
+                    }
+                )
+            }
+            else{
+                buildingListViewModel.observableBuildingList.observe(
+                    viewLifecycleOwner,
+                    Observer { buildings ->
+                        buildings?.let {
+                            render(buildings as ArrayList<BuildingModel>)
+                            hideLoader(loader)
+                        }
+                    }
+                )
             }
         }
     }
@@ -103,5 +190,9 @@ class FaveMapsFragment : Fragment() {
                 buildingListViewModel.load()
             }
         })
+
     }
+
+
+
 }

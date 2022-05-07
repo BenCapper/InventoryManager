@@ -34,10 +34,10 @@ class BuildingListViewModel : ViewModel() {
             readOnly.value = false
             BuildingManager.findAll(liveFirebaseUser.value?.uid!!,
                 buildingList)
-            Timber.i("Report Load Success : ${buildingList.value.toString()}")
+            Timber.i("Load Success : ${buildingList.value.toString()}")
         }
         catch (e: Exception) {
-            Timber.i("Report Load Error : $e.message")
+            Timber.i("Load Error : $e.message")
         }
     }
 
