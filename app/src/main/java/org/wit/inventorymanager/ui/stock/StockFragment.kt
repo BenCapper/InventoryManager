@@ -97,7 +97,7 @@ class StockFragment : Fragment() {
             max = newVal
         }
 
-        fragBinding.stockQuantity.setOnValueChangedListener { _, _, newVal ->
+        fragBinding.stockQuantity2.setOnValueChangedListener { _, _, newVal ->
             current = newVal
         }
 
@@ -151,10 +151,11 @@ class StockFragment : Fragment() {
                         weight = weight,
                         price = price.toDouble(),
                         max = max,
+                        unit = unit,
                         inStock = current,
-                        image = "",
                         faved = fav!!
                     )
+
                     stockViewModel.addStock(loggedInViewModel.liveFirebaseUser, stock)
                     val action =
                         StockFragmentDirections.actionStockFragmentToStockListFragment(branch)

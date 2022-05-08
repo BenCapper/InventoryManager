@@ -131,6 +131,8 @@
 
     <string name="nav_loc">Locations</string>
 
+    <string name="instock">In Stock:</string>
+    <string name="wweight">Weight:</string>
 
     <string name="iname">Enter the Item Name</string>
     <string name="charsmax">15 Characters Max</string>

@@ -99,14 +99,12 @@ object StockManager : StockStore {
                     val localList = ArrayList<StockModel>()
                     val children = snapshot.children
                     children.forEach {
-                        if (it.getValue(StockModel::class.java)?.name!!.contains(term) ) {
                             val stock = it.getValue(StockModel::class.java)
-                            if(stock?.branch == buildingid && stock?.uid == userid) {
+                            if(stock?.name!!.contains(term)) {
+                                Timber.i("DATYACHANGE::::: ${stock?.name} + +++++ + ${term}")
                                 localList.add(stock!!)
                             }
-                            localList.add(stock!!)
                         }
-                    }
                     database.child("user-stock").child(userid)
                         .removeEventListener(this)
 

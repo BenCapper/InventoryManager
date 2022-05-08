@@ -159,6 +159,7 @@
                 android:id="@+id/editDetailWeight"
                 android:layout_width="match_parent"
                 android:layout_height="61dp"
+                android:inputType="numberDecimal"
                 android:hint="@string/hint_stockWeight"
                 android:text="@{stockDetailVm.observableStock.weight}"
                 android:textSize="14sp" />
@@ -189,6 +190,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_stockPrice"
+                android:inputType="numberDecimal"
                 android:text="@{Double.toString(stockDetailVm.observableStock.price)}"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>

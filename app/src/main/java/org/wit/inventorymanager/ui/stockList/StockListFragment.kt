@@ -19,6 +19,7 @@ import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentStockListBinding
 import org.wit.inventorymanager.helpers.*
 import org.wit.inventorymanager.models.BuildingModel
+import org.wit.inventorymanager.models.StockManager
 import org.wit.inventorymanager.models.StockModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import org.wit.inventorymanager.ui.building.BuildingViewModel
@@ -58,7 +59,6 @@ class StockListFragment : Fragment(), StockListener {
         loader = createLoader(requireActivity())
         activity?.title = getString(R.string.action_location)
         fragBinding.srecyclerView.layoutManager = LinearLayoutManager(activity)
-        stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
         showLoader(loader, "Downloading Stock")
         stockListViewModel.observableStockList.observe(viewLifecycleOwner, Observer { stock ->
             stock?.let {
@@ -79,12 +79,11 @@ class StockListFragment : Fragment(), StockListener {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
                 if (newText != null) {
-
-                    stockListViewModel.search(loggedInViewModel.liveFirebaseUser.value?.uid!!,args.buildingid, newText)
-                }
-                else {
-
+                    Timber.i("UUUUUUUUUUUUUId = ${uid} = ${args.buildingid} = ${newText}")
+                    stockListViewModel.search(uid,args.buildingid, newText)
+                    stockListViewModel.loadAll(uid,args.buildingid,)
                 }
                 return true
             }
@@ -161,13 +160,13 @@ class StockListFragment : Fragment(), StockListener {
     override fun onResume() {
         super.onResume()
         showLoader(loader, "Downloading Stock")
-
         loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
             if (firebaseUser != null) {
                 stockListViewModel.liveFirebaseUser.value = firebaseUser
-                stockListViewModel.loadAll(firebaseUser.uid, args.buildingid)
+                stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
             }
         })
+
     }
 
 
@@ -179,10 +178,14 @@ class StockListFragment : Fragment(), StockListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         val action = StockListFragmentDirections.actionStockListFragmentToStockFragment(args.buildingid)
+        val action2 = StockListFragmentDirections.actionStockListFragmentToBuildingListFragment()
         if (id == R.id.item_new){
             findNavController().navigate(action)
         }
-        return super.onOptionsItemSelected(item)
+        else {
+            findNavController().navigate(action2)
+        }
+        return true
     }
 
 

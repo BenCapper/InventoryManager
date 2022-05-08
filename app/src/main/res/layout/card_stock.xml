@@ -21,18 +21,18 @@
 
             <TextView
                 android:id="@+id/price"
-                android:layout_width="110dp"
-                android:layout_height="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="335dp"
-                android:text="$"
-                android:textColor="@color/dark"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:layout_marginEnd="350dp"
+                android:text="@string/eu"
+                android:textColor="@color/orange"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/sbranch"
@@ -46,7 +46,7 @@
                 android:layout_marginEnd="160dp"
                 android:text="@{stock.branch}"
                 android:textColor="@color/black"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="bold|italic" />
 
             <TextView
@@ -59,10 +59,10 @@
                 android:layout_marginStart="200dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="145dp"
-                android:text="@{Long.toString(stock.inStock)}"
+                android:text="@{Integer.toString(stock.inStock)}"
                 android:textColor="@color/orange"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/sweight"
@@ -72,27 +72,26 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="200dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="22dp"
                 android:layout_marginEnd="145dp"
                 android:text="@{stock.weight.toString()}"
                 android:textColor="@color/orange"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/weighttext"
-                android:layout_width="110dp"
-                android:layout_height="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="140dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="180dp"
-                android:text="Weight:"
+                android:layout_marginEnd="188dp"
+                android:text="@string/wweight"
                 android:textColor="@color/dark"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/instocktext"
@@ -104,10 +103,9 @@
                 android:layout_marginStart="140dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="180dp"
-                android:text="In Stock:"
+                android:text="@string/instock"
                 android:textColor="@color/dark"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/sprice"
@@ -116,13 +114,12 @@
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="35dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="270dp"
                 android:text="@{Double.toString(stock.price)}"
                 android:textColor="@color/dark"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/towncard2"
@@ -133,6 +130,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="3dp"
+                android:inputType="numberDecimal"
                 android:layout_marginEnd="270dp"
                 android:textColor="@color/dark"
                 android:textSize="12sp"
