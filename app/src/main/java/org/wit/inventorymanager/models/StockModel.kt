@@ -12,7 +12,6 @@ data class StockModel(var id: String = "",
                       var weight: String = "",
                       var unit: String = "",
                       var price: Double = 0.00,
-                      var faved: Boolean = false,
                       var inStock: Int = 0,
                       var max: Int = 0)
     : Parcelable
@@ -27,7 +26,6 @@ data class StockModel(var id: String = "",
                 "weight" to weight,
                 "unit" to unit,
                 "price" to price,
-                "faved" to faved,
                 "inStock" to inStock,
                 "max" to max,
 

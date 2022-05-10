@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -23,6 +24,7 @@ import org.wit.inventorymanager.models.StockModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import org.wit.inventorymanager.ui.building.BuildingViewModel
 import org.wit.inventorymanager.ui.stockDetail.StockDetailViewModel
+import splitties.snackbar.snack
 import timber.log.Timber
 
 
@@ -125,17 +127,7 @@ class StockListFragment : Fragment(), StockListener {
 
     }
 
-    override fun onFave(stock: StockModel) {
-        if (stock.faved){
-            stock.faved = false
-            stockListViewModel.update(stock.uid, stock.id, stock)
-        }
-        else if (!stock.faved){
-            stock.faved = true
-            stockListViewModel.update(stock.uid, stock.id, stock)
-        }
 
-    }
 
     override fun onStockClick(stock: StockModel) {
 
@@ -206,7 +198,9 @@ class StockListFragment : Fragment(), StockListener {
         findNavController().navigate(action)
     }
 
+    override fun onFave(stock: StockModel) {
 
+    }
 
 
     override fun onDestroyView() {
@@ -216,10 +210,30 @@ class StockListFragment : Fragment(), StockListener {
 
 
     override fun onAddStockClick(stock: StockModel) {
-
+        val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
+        if (stock.inStock < 1000) {
+            stock.inStock += 1
+            stockDetailViewModel.updateStock(uid, stock.id, stock)
+            stockListViewModel.loadAll(uid, args.buildingid)
+            Timber.i("INSTOCK: ${stock.inStock}")
+        }
+        else {
+            view?.snack("Max Stock Level of 1000 Units")
+        }
     }
 
     override fun onMinusStockClick(stock: StockModel) {
+        val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
+        if (stock.inStock > 0) {
+            stock.inStock -= 1
+            stockDetailViewModel.updateStock(uid, stock.id, stock)
+            stockListViewModel.loadAll(uid, args.buildingid)
+            Timber.i("INSTOCK: ${stock.inStock}")
+        }
+        else {
+            view?.snack("Stock Level cannot be Negative")
+        }
+
 
     }
 

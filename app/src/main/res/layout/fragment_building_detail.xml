@@ -253,7 +253,7 @@
             android:layout_width="170dp"
             android:layout_height="24dp"
             android:checked="@{buildDetailVm.observableBuild.hiring}"
-            android:text="Hiring"
+            android:text="@string/hiring"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.937"

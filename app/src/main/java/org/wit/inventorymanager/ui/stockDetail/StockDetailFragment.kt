@@ -58,16 +58,7 @@ class StockDetailFragment : Fragment() {
         val unitAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, units)
         fragBinding.unitDetail.setAdapter(unitAdapter)
         current = fragBinding.stockDetailQuantity2.value
-        Timber.i("TTTTTTTTTTTTTT      ${current}")
-            fragBinding.sfaveDetail.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
-            fav = b
-            if (fragBinding.sfaveDetail.isChecked){
-                fragBinding.sfaveDetail.setTextColor(Color.argb(255,235, 172, 12))
-            }
-            else {
-                fragBinding.sfaveDetail.setTextColor(Color.BLACK)
-            }
-        }
+
         fragBinding.stockDetailQuantity.minValue = 1
         fragBinding.stockDetailQuantity.maxValue = 1000
 
@@ -127,6 +118,12 @@ class StockDetailFragment : Fragment() {
                 inStock < 0 -> {
                     view?.snack(R.string.charsmin)
                 }
+                max <= 0 -> {
+                    view?.snack(R.string.stock_lvl)
+                }
+                max < inStock -> {
+                    view?.snack(R.string.stock_lvlmax)
+                }
                 else -> {
                     if(fav == null){
                         fav = false
@@ -142,9 +139,7 @@ class StockDetailFragment : Fragment() {
                         price = price.toDouble(),
                         max = max,
                         inStock = current,
-                        faved = fav!!
                     )
-                    Timber.i("STTTTTOCK" + stock.toString())
                     stockDetailViewModel.updateStock(uid, stock.id,stock)
                     val action =
                         StockDetailFragmentDirections.actionStockDetailFragmentToStockListFragment(stock.branch)

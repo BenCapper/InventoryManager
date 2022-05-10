@@ -60,7 +60,8 @@ class StockAdapter constructor(private var stock: ArrayList<StockModel>, private
             * Building details act as links to that buildings stock */
             binding.root.tag = stock
             binding.stock = stock
-            binding.sfave.setOnClickListener { listener.onFave(stock) }
+            binding.btnup.setOnClickListener { listener.onAddStockClick(stock) }
+            binding.btndown.setOnClickListener { listener.onMinusStockClick(stock) }
             binding.executePendingBindings()
         }
     }

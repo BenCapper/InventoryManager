@@ -150,18 +150,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.679" />
 
-        <Switch
-            android:id="@+id/sfave"
-            android:layout_width="170dp"
-            android:layout_height="24dp"
-            android:text="@string/fav"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.066"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.82" />
-
         <TextView
             android:id="@+id/max"
             android:layout_width="108dp"

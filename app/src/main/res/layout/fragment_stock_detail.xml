@@ -14,6 +14,35 @@
         android:autofillHints="County"
         tools:context="org.wit.inventorymanager.ui.stockDetail.StockDetailFragment">
 
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="150dp"
+            android:layout_height="54dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="15dp"
+            android:textSize="14sp"
+            app:boxStrokeColor="@color/orange"
+            app:boxStrokeWidth="3dp"
+            app:hintTextColor="@color/black"
+            app:startIconDrawable="@drawable/ic_round_euro_24"
+            app:startIconTint="@color/orange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.52"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.84000003">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editDetailValue"
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+                android:maxLength="10"
+                android:inputType="none"
+                android:text="@{Double.toString(stockDetailVm.observableStock.price * stockDetailVm.observableStock.inStock)}"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <TextView
             android:id="@+id/quantDetail2"
             android:layout_width="70dp"
@@ -45,19 +74,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.679" />
-
-        <Switch
-            android:id="@+id/sfaveDetail"
-            android:layout_width="170dp"
-            android:layout_height="48dp"
-            android:checked="@{stockDetailVm.observableStock.faved}"
-            android:text="@string/fav"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.066"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.82" />
 
         <TextView
             android:id="@+id/max"
@@ -219,6 +235,19 @@
                 android:text="@{stockDetailVm.observableStock.unit}"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="95dp"
+            android:layout_height="30dp"
+            android:textColor="@color/black"
+            android:text="@string/stock_value"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.063"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.82" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
