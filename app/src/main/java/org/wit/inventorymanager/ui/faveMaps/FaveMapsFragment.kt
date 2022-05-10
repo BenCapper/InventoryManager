@@ -7,16 +7,24 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import android.widget.Switch
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import org.wit.inventorymanager.R
+import org.wit.inventorymanager.adapters.BuildingAdapter
+import org.wit.inventorymanager.adapters.BuildingListener
+import org.wit.inventorymanager.adapters.MapAdapter
+import org.wit.inventorymanager.databinding.FragmentBuildingDetailBinding
+import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
+import org.wit.inventorymanager.databinding.FragmentFaveMapsBinding
 import org.wit.inventorymanager.helpers.createLoader
 import org.wit.inventorymanager.helpers.hideLoader
 import org.wit.inventorymanager.helpers.showLoader
@@ -26,9 +34,10 @@ import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
 import org.wit.inventorymanager.ui.maps.MapsViewModel
 
 
-class FaveMapsFragment : Fragment() {
+class FaveMapsFragment : Fragment(), BuildingListener {
 
-
+    private var nFragBinding: FragmentFaveMapsBinding? = null
+    private val fragBinding get() = nFragBinding!!
     private val mapsViewModel: MapsViewModel by activityViewModels()
     private val buildingListViewModel: BuildingListViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
@@ -76,16 +85,28 @@ class FaveMapsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         loader = createLoader(requireActivity())
-
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+        nFragBinding = FragmentFaveMapsBinding.inflate(inflater, container, false)
+        val root = fragBinding.root
+        nFragBinding!!.mrecycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFave) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner, Observer { building ->
+            building?.let {
+                renderRecycle(building as ArrayList<BuildingModel>)
+                hideLoader(loader)
+                checkSwipeRefresh()
+            }
+        })
+        setSwipeRefresh()
     }
-
+    private fun renderRecycle(buildingList: ArrayList<BuildingModel>) {
+        nFragBinding?.mrecycler?.adapter = MapAdapter(buildingList,this, buildingListViewModel.readOnly.value!!)
+    }
     private fun render(buildingList: ArrayList<BuildingModel>) {
         if (buildingList.isNotEmpty()) {
             mapsViewModel.map.clear()
@@ -192,7 +213,44 @@ class FaveMapsFragment : Fragment() {
         })
 
     }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        nFragBinding = null
+    }
 
+    private fun setSwipeRefresh() {
+        fragBinding.swiperefresh.setOnRefreshListener {
+            fragBinding.swiperefresh.isRefreshing = true
+            showLoader(loader, "Downloading Buildings")
+            if(buildingListViewModel.readOnly.value!!)
+                buildingListViewModel.loadAll()
+            else
+                buildingListViewModel.load()
+        }
+    }
+
+    private fun checkSwipeRefresh() {
+        if (fragBinding.swiperefresh.isRefreshing)
+            fragBinding.swiperefresh.isRefreshing = false
+    }
+
+    override fun onBuildingClick(building: BuildingModel) {
+    }
+
+    override fun onEditSwipe(building: BuildingModel) {
+    }
+
+    override fun onFave(building: BuildingModel) {
+        if (building.faved){
+            building.faved = false
+            buildingListViewModel.update(building.uid, building.id, building)
+        }
+        else if (!building.faved){
+            building.faved = true
+            buildingListViewModel.update(building.uid, building.id, building)
+        }
+
+    }
 
 
 }

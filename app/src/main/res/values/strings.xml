@@ -95,8 +95,6 @@
     <string name="verify_email">Verify Email</string>
     <string name="disconnect">Disconnect</string>
     <string name="loading">Loading…</string>
-    <string name="signed_in">Signed In</string>
-    <string name="signed_out">Signed Out</string>
     <string name="token_null">Token: null</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -127,9 +125,14 @@
     <string name="warn_phone_len">Phone: Max 10 Characters </string>
 
     <string name="fave">Favourite</string>
+    <string name="faves">Favourites</string>
     <string name="faved">Favourited</string>
+    <string name="co">Co.</string>
+    <string name="hiring">Hiring:</string>
+    <string name="staff">Staff:</string>
 
     <string name="nav_loc">Locations</string>
+    <string name="all_loc">All Locations</string>
 
     <string name="instock">In Stock:</string>
     <string name="wweight">Weight:</string>
@@ -144,6 +147,8 @@
     <string name="noprice">Invalid Price</string>
     <string name="imax">Select a Maximum Amount</string>
     <string name="charsmin">Minimum Stock Level 0</string>
+    <string name="invlogin">Inventory Manager Login</string>
+
 
     <string-array name="counties">
         <item>Carlow</item>
