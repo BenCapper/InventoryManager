@@ -235,6 +235,8 @@ class FaveMapsFragment : Fragment(), BuildingListener {
     }
 
     override fun onBuildingClick(building: BuildingModel) {
+        val loc = LatLng(building.lat.toDouble(), building.lng.toDouble())
+        mapsViewModel.map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14f))
     }
 
     override fun onEditSwipe(building: BuildingModel) {
@@ -244,12 +246,15 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         if (building.faved){
             building.faved = false
             buildingListViewModel.update(building.uid, building.id, building)
+            setSwipeRefresh()
         }
         else if (!building.faved){
             building.faved = true
             buildingListViewModel.update(building.uid, building.id, building)
+            setSwipeRefresh()
         }
-
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFave) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
     }
 
 
