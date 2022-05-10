@@ -5,17 +5,10 @@ import android.app.Application
 import android.location.Location
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.GoogleMap
-import org.wit.inventorymanager.models.BuildingManager
-import org.wit.inventorymanager.models.BuildingModel
 import timber.log.Timber
-import java.lang.Exception
-import java.lang.NullPointerException
-import java.lang.RuntimeException
 
 @SuppressLint("MissingPermission")
 class MapsViewModel(application: Application) : AndroidViewModel(application) {

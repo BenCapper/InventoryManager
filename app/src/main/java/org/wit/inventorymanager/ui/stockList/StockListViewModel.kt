@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
-import org.wit.inventorymanager.models.StockManager
+import org.wit.inventorymanager.firebase.StockManager
 import org.wit.inventorymanager.models.StockModel
 import timber.log.Timber
 import java.lang.Exception

@@ -19,13 +19,10 @@ import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentStockListBinding
 import org.wit.inventorymanager.helpers.*
 import org.wit.inventorymanager.models.BuildingModel
-import org.wit.inventorymanager.models.StockManager
 import org.wit.inventorymanager.models.StockModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import org.wit.inventorymanager.ui.building.BuildingViewModel
-import org.wit.inventorymanager.ui.stockDetail.StockDetailFragmentArgs
 import org.wit.inventorymanager.ui.stockDetail.StockDetailViewModel
-import splitties.fragmentargs.arg
 import timber.log.Timber
 
 
@@ -83,7 +80,10 @@ class StockListFragment : Fragment(), StockListener {
                 if (newText != null) {
                     Timber.i("UUUUUUUUUUUUUId = ${uid} = ${args.buildingid} = ${newText}")
                     stockListViewModel.search(uid,args.buildingid, newText)
-                    stockListViewModel.loadAll(uid,args.buildingid,)
+                    checkSwipeRefresh()
+                }
+                else{
+                    stockListViewModel.loadAll(uid, args.buildingid)
                 }
                 return true
             }
@@ -149,6 +149,17 @@ class StockListFragment : Fragment(), StockListener {
                 stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
             else
                 stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
+        }
+    }
+    private fun setSecondSwipeRefresh(term:String) {
+        fragBinding.sswiperefresh.setOnRefreshListener {
+            fragBinding.sswiperefresh.isRefreshing = true
+            showLoader(loader, "Downloading stock")
+            if (stockListViewModel.readOnly.value!!)
+                stockListViewModel.search(
+                    loggedInViewModel.liveFirebaseUser.value?.uid!!,
+                    args.buildingid, term
+                )
         }
     }
 

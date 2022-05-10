@@ -4,8 +4,8 @@ import android.app.Application
 
 
 import org.wit.inventorymanager.models.BuildingStore
-import org.wit.inventorymanager.models.BuildingManager
-import org.wit.inventorymanager.models.StockManager
+import org.wit.inventorymanager.firebase.BuildingManager
+import org.wit.inventorymanager.firebase.StockManager
 import org.wit.inventorymanager.models.StockStore
 import timber.log.Timber
 
