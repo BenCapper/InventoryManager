@@ -30,7 +30,10 @@ class StockListViewModel : ViewModel() {
 
     init { load() }
 
-    fun load() {
+    /**
+     * It loads the stockList from the database.
+     */
+    private fun load() {
         try {
             readOnly.value = false
             StockManager.findAll(liveFirebaseUser.value?.uid!!,stockList)
@@ -41,6 +44,12 @@ class StockListViewModel : ViewModel() {
         }
     }
 
+    /**
+     * It loads all the stock items from the database.
+     *
+     * @param userid The user's ID
+     * @param buildingid The building ID to search for.
+     */
     fun loadAll(userid: String,buildingid: String) {
         try {
             readOnly.value = true
@@ -52,6 +61,13 @@ class StockListViewModel : ViewModel() {
         }
     }
 
+    /**
+     * It searches for a stock in the stockList.
+     *
+     * @param userid The user's id
+     * @param buildingid The building id of the building you want to search in.
+     * @param term The search term
+     */
     fun search(userid: String,buildingid: String, term: String) {
         try {
             StockManager.search(userid,buildingid,term,stockList)
@@ -62,6 +78,12 @@ class StockListViewModel : ViewModel() {
         }
     }
 
+    /**
+     * It deletes a stock from the database.
+     *
+     * @param userid The user's ID
+     * @param id The id of the stock you want to delete
+     */
     fun delete(userid: String, id: String) {
         try {
             StockManager.delete(userid,id)
@@ -72,6 +94,13 @@ class StockListViewModel : ViewModel() {
         }
     }
 
+    /**
+     * It updates the stock in the database.
+     *
+     * @param userid The user's ID.
+     * @param id The id of the stock you want to update.
+     * @param stock StockModel
+     */
     fun update(userid: String, id: String, stock: StockModel) {
         try {
             StockManager.update(userid,id,stock)

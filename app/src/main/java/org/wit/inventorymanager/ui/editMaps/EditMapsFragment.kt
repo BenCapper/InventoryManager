@@ -1,17 +1,13 @@
 package org.wit.inventorymanager.ui.editMaps
 
 import android.annotation.SuppressLint
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.view.*
-import androidx.activity.addCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,12 +18,9 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
-import org.wit.inventorymanager.ui.building.BuildingFragment
 import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailViewModel
 import org.wit.inventorymanager.ui.maps.MapsFragmentArgs
-import org.wit.inventorymanager.ui.maps.MapsFragmentDirections
 import org.wit.inventorymanager.ui.maps.MapsViewModel
-import splitties.snackbar.snack
 import timber.log.Timber
 
 class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {
@@ -37,22 +30,18 @@ class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.O
     private val buildingDetailViewModel: BuildingDetailViewModel by activityViewModels()
     private lateinit var action: NavDirections
     var lat = ""
-    var lng = ""
-    var latUpdate = ""
-    var lngUpdate = ""
+    private var lng = ""
+    private var latUpdate = ""
+    private var lngUpdate = ""
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
         mapsViewModel.map = googleMap
         mapsViewModel.map.isMyLocationEnabled = true
         mapsViewModel.currentLocation.observe(viewLifecycleOwner) {
-            val loc = LatLng(
-                mapsViewModel.currentLocation.value!!.latitude,
-                mapsViewModel.currentLocation.value!!.longitude
-            )
             lat = args.building.lat
             lng = args.building.lng
-            var currentLocation: LatLng = if (lat.isNullOrEmpty() || lng.isNullOrEmpty()){
+            val currentLocation: LatLng = if (lat.isEmpty() || lng.isEmpty()){
                 LatLng(52.2461,-7.1387)
             } else{
                 LatLng(args.building.lat.toDouble(), args.building.lng.toDouble())
@@ -96,14 +85,19 @@ class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.O
         setHasOptionsMenu(true)
     }
 
+
     override fun onMarkerDrag(p0: Marker) {
 
     }
 
+    /**
+     * When the marker is dragged, the latitude and longitude of the marker are updated
+     *
+     * @param p0 Marker - The marker that was dragged.
+     */
     override fun onMarkerDragEnd(p0: Marker) {
         latUpdate = p0.position.latitude.toString()
         lngUpdate = p0.position.longitude.toString()
-
     }
 
     override fun onMarkerDragStart(p0: Marker) {
@@ -119,6 +113,15 @@ class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.O
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    /**
+     * This function is executed when the user clicks the confirm button. It checks if the latUpdate
+     * and lngUpdate are empty, if they are it sets them to the current location. It then creates a new
+     * building model with the updated latitude and longitude and sends it to the
+     * buildingDetailViewModel to be updated. It then navigates to the buildingDetailFragment
+     *
+     * @param item MenuItem - The item that was clicked
+     * @return The superclass method is being returned.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
@@ -129,7 +132,7 @@ class EditMapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.O
 
 
             }
-            var build = BuildingModel(id=args.building.id, uid=args.building.uid,name=args.building.name, phone = args.building.phone, hiring = args.building.hiring, town=args.building.town,
+            val build = BuildingModel(id=args.building.id, uid=args.building.uid,name=args.building.name, phone = args.building.phone, hiring = args.building.hiring, town=args.building.town,
                 county=args.building.county, staff=args.building.staff, lat =latUpdate,lng=lngUpdate )
             buildingDetailViewModel.updateBuild(args.building.uid, args.building.id, build)
             action = EditMapsFragmentDirections.actionEditMapsFragmentToBuildingDetailFragment(build)

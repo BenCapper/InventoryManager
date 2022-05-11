@@ -17,6 +17,12 @@ class BuildingDetailViewModel : ViewModel() {
         set(value) {build.value = value.value}
 
 
+    /**
+     * It gets the building with the given userid and id.
+     *
+     * @param userid The user's id.
+     * @param id The id of the building you want to get.
+     */
     fun getBuild(userid: String, id: String) {
         try {
             BuildingManager.findById(userid, id, build)
@@ -28,6 +34,13 @@ class BuildingDetailViewModel : ViewModel() {
         }
     }
 
+    /**
+     * It updates the building with the given id.
+     *
+     * @param userid The user's ID.
+     * @param id The id of the building you want to update.
+     * @param build BuildingModel
+     */
     fun updateBuild(userid: String, id: String,build: BuildingModel) {
         try {
             BuildingManager.update(userid,id, build)

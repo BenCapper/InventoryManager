@@ -14,6 +14,12 @@ object BuildingManager : BuildingStore {
 
     var database: DatabaseReference = FirebaseDatabase.getInstance().reference
 
+    /**
+     * We're using the Firebase database to get a list of buildings, and then we're adding a listener
+     * to the database to get the data
+     *
+     * @param buildingList MutableLiveData<List<BuildingModel>>
+     */
     override fun findAll(buildingList: MutableLiveData<List<BuildingModel>>) {
         database.child("buildings")
             .addValueEventListener(object : ValueEventListener {
@@ -36,6 +42,12 @@ object BuildingManager : BuildingStore {
             })
     }
 
+    /**
+     * We're using the Firebase database to get a list of buildings that belong to a user
+     *
+     * @param userid The user's id
+     * @param buildingList MutableLiveData<List<BuildingModel>>
+     */
     override fun findAll(userid: String, buildingList: MutableLiveData<List<BuildingModel>>) {
 
         database.child("user-buildings").child(userid)
@@ -60,6 +72,14 @@ object BuildingManager : BuildingStore {
             })
     }
 
+    /**
+     * We are adding a listener to the database, and when the data changes, we are adding the data to a
+     * local list, and then setting the value of the MutableLiveData object to the local list
+     *
+     * @param userid The user's id
+     * @param term The search term
+     * @param buildingList MutableLiveData<List<BuildingModel>>
+     */
     override fun search(userid: String,term: String, buildingList: MutableLiveData<List<BuildingModel>>) {
 
         database.child("user-buildings").child(userid)
@@ -85,6 +105,13 @@ object BuildingManager : BuildingStore {
             })
     }
 
+    /**
+     * We're getting the building from the database by using the userid and buildingid
+     *
+     * @param userid The user's id
+     * @param buildingid The id of the building you want to get
+     * @param building MutableLiveData<BuildingModel>
+     */
     override fun findById(userid: String, buildingid: String, building: MutableLiveData<BuildingModel>) {
 
         database.child("user-buildings").child(userid)
@@ -96,6 +123,14 @@ object BuildingManager : BuildingStore {
             }
     }
 
+    /**
+     * We create a new building in the database by creating a new key, adding the building to the
+     * buildings table, and adding the building to the user-buildings table
+     *
+     * @param firebaseUser MutableLiveData<FirebaseUser>
+     * @param building BuildingModel
+     * @return A HashMap of the building values.
+     */
     override fun create(firebaseUser: MutableLiveData<FirebaseUser>, building: BuildingModel) {
         Timber.i("Firebase DB Reference : $database")
 
@@ -115,6 +150,12 @@ object BuildingManager : BuildingStore {
         database.updateChildren(childAdd)
     }
 
+    /**
+     * This function deletes a building from the database
+     *
+     * @param userid The user's id
+     * @param buildingid The id of the building to be deleted
+     */
     override fun delete(userid: String, buildingid: String) {
 
         val childDelete : MutableMap<String, Any?> = HashMap()
@@ -124,6 +165,14 @@ object BuildingManager : BuildingStore {
         database.updateChildren(childDelete)
     }
 
+    /**
+     * We create a map of the building values, then create a map of the building values and the
+     * building id, then update the database with the child update map
+     *
+     * @param userid The userid of the user who owns the building
+     * @param buildingid The id of the building to update
+     * @param building BuildingModel - this is the building object that we want to update
+     */
     override fun update(userid: String, buildingid: String, building: BuildingModel) {
 
         val buildingValues = building.toMap()
@@ -136,6 +185,12 @@ object BuildingManager : BuildingStore {
     }
 
 
+    /**
+     * > Update the profile picture of all buildings that the user has donated to
+     *
+     * @param userid The user's id
+     * @param imageUri The imageUri that you want to update the image to.
+     */
     fun updateImageRef(userid: String,imageUri: String) {
 
         val userBuildings = database.child("user-buildings").child(userid)

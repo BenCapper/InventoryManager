@@ -1,6 +1,5 @@
 package org.wit.inventorymanager.ui.buildingDetail
 
-import android.content.Intent
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -11,37 +10,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.addCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.NavigationUI
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingDetailBinding
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
-import org.wit.inventorymanager.ui.building.BuildingFragmentDirections
-import org.wit.inventorymanager.ui.building.BuildingViewModel
-import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
-import org.wit.inventorymanager.ui.maps.MapsViewModel
 import splitties.snackbar.snack
 import timber.log.Timber
-import kotlin.random.Random
+
 
 class BuildingDetailFragment : Fragment() {
 
     private var nFragBinding: FragmentBuildingDetailBinding? = null
     private val fragBinding get() = nFragBinding!!
-    private var building = BuildingModel()
     private val args by navArgs<BuildingDetailFragmentArgs>()
-    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
-    private val buildingViewModel: BuildingViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
-    private val buildingListViewModel: BuildingListViewModel by activityViewModels()
-    private val mapsViewModel: MapsViewModel by activityViewModels()
     private lateinit var buildingDetailViewModel: BuildingDetailViewModel
-    var hire:Boolean?  = null
+    private var hire:Boolean?  = null
     var staff = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,16 +48,18 @@ class BuildingDetailFragment : Fragment() {
         setButtonListener(fragBinding)
         activity?.title = getString(R.string.action_location)
 
+
         buildingDetailViewModel = ViewModelProvider(this)[BuildingDetailViewModel::class.java]
         buildingDetailViewModel.observableBuild.observe(viewLifecycleOwner) { renderBuild() }
 
+        /* This is setting up the dropdown menu for the county field. */
         val counties = resources.getStringArray(R.array.counties)
         val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
         fragBinding.county.setAdapter(countyAdapter)
 
-        if (args.building.lat.toString() != "default"){
-            fragBinding.lat.setText(args.building.lat.toString())
-            fragBinding.lng.setText(args.building.lat.toString())
+        if (args.building.lat != "default"){
+            fragBinding.lat.setText(args.building.lat)
+            fragBinding.lng.setText(args.building.lat)
         }
 
         fragBinding.staffQuantity.minValue = 1
@@ -84,6 +74,8 @@ class BuildingDetailFragment : Fragment() {
          findNavController().navigate(R.id.action_buildingDetailFragment_to_buildingListFragment)
         }
 
+        /* This is setting up the listener for the hiring checkbox. If the checkbox is checked, the
+        text color is changed to orange. If it is not checked, the text color is changed to black. */
         fragBinding.hiring.setOnCheckedChangeListener { _, isChecked ->
             hire = isChecked
             if (fragBinding.hiring.isChecked){
@@ -95,6 +87,8 @@ class BuildingDetailFragment : Fragment() {
         }
 
 
+        /* This is setting up the listener for the location button. When the button is clicked, the
+        user is navigated to the EditMapsFragment. */
         fragBinding.buildingLocation.setOnClickListener {
             val action = BuildingDetailFragmentDirections.actionBuildingDetailFragmentToEditMapsFragment(args.building)
             findNavController().navigate(action)
@@ -120,6 +114,14 @@ class BuildingDetailFragment : Fragment() {
 
     }
 
+    /**
+     * This is the code that is executed when the user clicks the save button. It checks to make sure
+     * that all the fields are filled in correctly. If they are not, it displays a snackbar with the
+     * appropriate warning. If they are, it creates a new BuildingModel object and passes it to the
+     * updateBuild function in the BuildingDetailViewModel
+     *
+     * @param layout FragmentBuildingDetailBinding - This is the binding object for the fragment.
+     */
     private fun setButtonListener(layout: FragmentBuildingDetailBinding) {
         layout.btnAdd.setOnClickListener {
             when {
@@ -148,7 +150,7 @@ class BuildingDetailFragment : Fragment() {
                     if(hire == null){
                         hire = false
                     }
-                    var build = BuildingModel(
+                    val build = BuildingModel(
                         id = args.building.id,
                         uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
                         name = layout.buildingName.text.toString(),
@@ -174,13 +176,7 @@ class BuildingDetailFragment : Fragment() {
         return true
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            BuildingDetailFragment().apply {
-                arguments = Bundle().apply {}
-            }
-    }
+
 
 
 }

@@ -14,6 +14,14 @@ object StockManager : StockStore {
 
     var database: DatabaseReference = FirebaseDatabase.getInstance().reference
 
+
+    /**
+     * We're using the Firebase database to get a list of all the stocks in the database, and then
+     * we're setting the value of the MutableLiveData object to the list of stocks we got from the
+     * database
+     *
+     * @param stockList MutableLiveData<List<StockModel>>
+     */
     override fun findAll(stockList: MutableLiveData<List<StockModel>>) {
         database.child("stock")
             .addValueEventListener(object : ValueEventListener {
@@ -36,6 +44,12 @@ object StockManager : StockStore {
             })
     }
 
+    /**
+     * It gets all the stocks from the database and returns them in a list.
+     *
+     * @param userid The user's id
+     * @param stockList MutableLiveData<List<StockModel>>
+     */
     override fun findAll(
         userid: String,
         stockList: MutableLiveData<List<StockModel>>
@@ -62,6 +76,13 @@ object StockManager : StockStore {
             })
     }
 
+    /**
+     * It searches for the stock in the database by building id.
+     *
+     * @param userid The user's id
+     * @param buildingid The building id of the building you want to search for.
+     * @param stockList MutableLiveData<List<StockModel>>
+     */
     override fun searchByBuild(userid: String,buildingid: String, stockList: MutableLiveData<List<StockModel>>) {
 
         database.child("user-stock").child(userid)
@@ -75,8 +96,8 @@ object StockManager : StockStore {
                     val children = snapshot.children
                     children.forEach {
                             val stock = it.getValue(StockModel::class.java)
-                            if(stock?.branch == buildingid && stock?.uid == userid) {
-                                localList.add(stock!!)
+                            if(stock?.branch == buildingid && stock.uid == userid) {
+                                localList.add(stock)
                             }
                     }
                     database.child("user-stock").child(userid)
@@ -87,6 +108,14 @@ object StockManager : StockStore {
             })
     }
 
+    /**
+     * It searches the database for a stock item that matches the search term and the building id
+     *
+     * @param userid The user's id
+     * @param buildingid The building id of the user
+     * @param term The search term
+     * @param stockList MutableLiveData<List<StockModel>>
+     */
     override fun search(userid: String,buildingid: String, term: String, stockList: MutableLiveData<List<StockModel>>) {
 
         database.child("user-stock").child(userid)
@@ -100,8 +129,8 @@ object StockManager : StockStore {
                     val children = snapshot.children
                     children.forEach {
                             val stock = it.getValue(StockModel::class.java)
-                            if(stock?.name!!.contains(term) && stock.branch!! == buildingid) {
-                                localList.add(stock!!)
+                            if(stock?.name!!.contains(term) && stock.branch == buildingid) {
+                                localList.add(stock)
                             }
                         }
                     database.child("user-stock").child(userid)
@@ -112,6 +141,14 @@ object StockManager : StockStore {
             })
     }
 
+    /**
+     * We're getting the stock data from the database, and if we get it, we're setting the value of the
+     * stock MutableLiveData object to the value we got from the database
+     *
+     * @param userid The user's id
+     * @param stockid The id of the stock you want to get.
+     * @param stock MutableLiveData<StockModel>
+     */
     override fun findById(userid: String, stockid: String, stock: MutableLiveData<StockModel>) {
 
         database.child("user-stock").child(userid).child(stockid)
@@ -123,6 +160,13 @@ object StockManager : StockStore {
             }
     }
 
+    /**
+     * We create a new stock object in the database, and then we add it to the user's list of stocks
+     *
+     * @param firebaseUser MutableLiveData<FirebaseUser>
+     * @param stock The StockModel object that you want to add to the database.
+     * @return A HashMap of the stock and user-stock
+     */
     override fun create(firebaseUser: MutableLiveData<FirebaseUser>, stock: StockModel) {
         Timber.i("Firebase DB Reference : $database")
 
@@ -142,6 +186,12 @@ object StockManager : StockStore {
         database.updateChildren(childAdd)
     }
 
+    /**
+     * Delete the stock from the user's stock list and delete the stock from the stock list
+     *
+     * @param userid The user's id
+     * @param stockid The stock's unique ID
+     */
     override fun delete(userid: String, stockid: String) {
 
         val childDelete : MutableMap<String, Any?> = HashMap()
@@ -151,6 +201,14 @@ object StockManager : StockStore {
         database.updateChildren(childDelete)
     }
 
+    /**
+     * We create a map of the stock values, then we create a map of the stock values and the user-stock
+     * values, then we update the database with the childUpdate map
+     *
+     * @param userid The userid of the user who owns the stock
+     * @param stockid The unique ID of the stock
+     * @param stock The stock to be updated
+     */
     override fun update(userid: String, stockid: String, stock: StockModel) {
 
         val stockValues = stock.toMap()
@@ -162,27 +220,6 @@ object StockManager : StockStore {
         database.updateChildren(childUpdate)
     }
 
-
-    fun updateImageRef(userid: String,imageUri: String) {
-
-        val userStock = database.child("user-stock").child(userid)
-        val allStock = database.child("stock")
-
-        userStock.addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onCancelled(error: DatabaseError) {}
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach {
-                        //Update Users imageUri
-                        it.ref.child("image").setValue(imageUri)
-                        //Update all donations that match 'it'
-                        val stock = it.getValue(StockModel::class.java)
-                        allStock.child(stock!!.uid!!)
-                            .child("image").setValue(imageUri)
-                    }
-                }
-            })
-    }
 
 }
 

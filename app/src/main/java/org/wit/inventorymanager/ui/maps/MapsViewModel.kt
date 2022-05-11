@@ -15,11 +15,8 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
     lateinit var map : GoogleMap
     var currentLocation = MutableLiveData<Location>()
-    var locationClient : FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(application)
+    private var locationClient : FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(application)
     private val locationRequest = LocationRequest.create().apply {
-        //interval = 10000
-        //fastestInterval = 5000
-        //priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -32,6 +29,10 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
             Looper.getMainLooper())
     }
 
+    /**
+     * > If the last location is successful, then add a success listener to the last location and set
+     * the current location to the location
+     */
     fun updateCurrentLocation() {
         if(locationClient.lastLocation.isSuccessful)
             locationClient.lastLocation

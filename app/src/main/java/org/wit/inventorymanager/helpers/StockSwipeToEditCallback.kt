@@ -7,8 +7,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.wit.inventorymanager.R
-import org.wit.inventorymanager.adapters.BuildingAdapter
-import org.wit.inventorymanager.adapters.StockAdapter
 
 
 abstract class StockSwipeToEditCallback(context: Context) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -20,21 +18,31 @@ abstract class StockSwipeToEditCallback(context: Context) : ItemTouchHelper.Simp
     private val backgroundColor = Color.parseColor("#FFAB00")
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
-    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-        /**
-         * To disable "swipe" for specific item return 0 here.
-         * For example:
-         * if (viewHolder?.itemViewType == YourAdapter.SOME_TYPE) return 0
-         * if (viewHolder?.adapterPosition == 0) return 0
-         */
-
-        return super.getMovementFlags(recyclerView, viewHolder)
-    }
-
+    /**
+     * > This function is called when the user drags an item from one position to another
+     *
+     * @param recyclerView The RecyclerView to which the ViewHolder belongs.
+     * @param viewHolder The view holder that is being dragged.
+     * @param target The target view holder you are switching the original one with.
+     * @return Boolean
+     */
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
         return false
     }
 
+    /**
+     * It draws the edit icon on the right side of the recycler view item.
+     *
+     * @param c Canvas - The canvas on which we will draw
+     * @param recyclerView The RecyclerView to which the ItemTouchHelper is attached to.
+     * @param viewHolder The ViewHolder that is being swiped.
+     * @param dX The amount of horizontal displacement caused by user's action
+     * @param dY The vertical distance the user has moved the item.
+     * @param actionState The current state of the item. Is it swiped? Is it dragged? Is it idle?
+     * @param isCurrentlyActive This is a boolean which returns true if the user is still dragging or
+     * swiping the row.
+     * @return The return type is a Boolean.
+     */
     override fun onChildDraw(
         c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
         dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
@@ -50,7 +58,7 @@ abstract class StockSwipeToEditCallback(context: Context) : ItemTouchHelper.Simp
             return
         }
 
-        // Draw the blue edit background
+        // Draw the orange edit background
         background.color = backgroundColor
         background.setBounds(itemView.left + dX.toInt(), itemView.top, itemView.left, itemView.bottom)
         background.draw(c)
@@ -69,6 +77,15 @@ abstract class StockSwipeToEditCallback(context: Context) : ItemTouchHelper.Simp
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
+    /**
+     * Clear the canvas by drawing a rectangle with the clearPaint.
+     *
+     * @param c Canvas? - The canvas to draw on.
+     * @param left The left coordinate of the rectangle to clear.
+     * @param top The top of the rectangle to be cleared.
+     * @param right The right side of the rectangle to clear.
+     * @param bottom The bottom position of the rectangle to be cleared.
+     */
     private fun clearCanvas(c: Canvas?, left: Float, top: Float, right: Float, bottom: Float) {
         c?.drawRect(left, top, right, bottom, clearPaint)
     }

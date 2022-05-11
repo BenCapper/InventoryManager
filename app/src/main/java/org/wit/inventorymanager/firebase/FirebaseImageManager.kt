@@ -16,16 +16,19 @@ import java.io.ByteArrayOutputStream
 
 object FirebaseImageManager {
 
-    var storage = FirebaseStorage.getInstance().reference
+    private var storage = FirebaseStorage.getInstance().reference
     var imageUri = MutableLiveData<Uri>()
 
-    //1. checkStorageForExistingProfilePic
-    //2. if true - update imageuri else No File so add to storage
-    //3. If checkStorageForExistingProfilePic and Updating ProfilePic overwrite existing photo
 
+
+    /**
+     * Check if the user has a profile picture, if they do, set the imageUri to the download url of the
+     * image, if they don't, set the imageUri to an empty Uri
+     *
+     * @param userid The user's id
+     */
     fun checkStorageForExistingProfilePic(userid: String) {
         val imageRef = storage.child("photos").child("${userid}.jpg")
-        //val defaultImageRef = storage.child("homer.jpg")
 
         imageRef.metadata.addOnSuccessListener { //File Exists
             imageRef.downloadUrl.addOnCompleteListener { task ->
@@ -37,6 +40,14 @@ object FirebaseImageManager {
         }
     }
 
+    /**
+     * This function uploads an image to Firebase Storage and returns the download URL of the image
+     *
+     * @param userid The user's id
+     * @param bitmap The bitmap of the image you want to upload
+     * @param updating Boolean - This is a boolean that is used to determine if the user is updating
+     * their profile or not.
+     */
     fun uploadImageToFirebase(userid: String, bitmap: Bitmap, updating : Boolean) {
         // Get the data from an ImageView as bytes
         val imageRef = storage.child("photos").child("${userid}.jpg")
@@ -51,7 +62,7 @@ object FirebaseImageManager {
             if(updating) // Update existing Image
             {
                 uploadTask = imageRef.putBytes(data)
-                uploadTask.addOnSuccessListener { it ->
+                uploadTask.addOnSuccessListener {
                     it.metadata!!.reference!!.downloadUrl.addOnCompleteListener { task ->
                         imageUri.value = task.result!!
                         BuildingManager.updateImageRef(userid,imageUri.value.toString())
@@ -60,7 +71,7 @@ object FirebaseImageManager {
             }
         }.addOnFailureListener { //File Doesn't Exist
             uploadTask = imageRef.putBytes(data)
-            uploadTask.addOnSuccessListener { it ->
+            uploadTask.addOnSuccessListener {
                 it.metadata!!.reference!!.downloadUrl.addOnCompleteListener { task ->
                     imageUri.value = task.result!!
                 }
@@ -68,6 +79,15 @@ object FirebaseImageManager {
         }
     }
 
+    /**
+     * It uploads an image to firebase storage.
+     *
+     * @param userid The user's id
+     * @param imageUri The Uri of the image to be uploaded
+     * @param imageView ImageView - The ImageView that will display the image
+     * @param updating Boolean - This is a flag to determine if the user is updating their profile or
+     * not.
+     */
     fun updateUserImage(userid: String, imageUri : Uri?, imageView: ImageView, updating : Boolean) {
         Picasso.get().load(imageUri)
             .resize(200, 200)
@@ -95,6 +115,13 @@ object FirebaseImageManager {
             })
     }
 
+    /**
+     * It uploads a default image to Firebase Storage.
+     *
+     * @param userid The user's id
+     * @param resource The resource ID of the image to be loaded.
+     * @param imageView ImageView - the imageView that will be updated with the image
+     */
     fun updateDefaultImage(userid: String, resource: Int, imageView: ImageView) {
         Picasso.get().load(resource)
                 .resize(200, 200)

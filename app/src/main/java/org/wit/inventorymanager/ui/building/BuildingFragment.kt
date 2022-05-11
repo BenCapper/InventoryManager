@@ -2,30 +2,23 @@ package org.wit.inventorymanager.ui.building
 
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
-import android.widget.Switch
 import androidx.activity.addCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
-import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
-import org.wit.inventorymanager.ui.maps.MapsViewModel
 import splitties.snackbar.snack
-import timber.log.Timber
 import kotlin.random.Random
 
 
@@ -58,10 +51,15 @@ class BuildingFragment : Fragment() {
         buildingViewModel.observableStatus.observe(viewLifecycleOwner) { status ->
             status?.let { render(status) }
         }
+        /* This is populating the dropdown menu with the counties from the counties array in the
+        strings.xml file. */
         val counties = resources.getStringArray(R.array.counties)
         val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
         fragBinding.county.setAdapter(countyAdapter)
 
+        /* This is a listener for the hiring switch. It sets the hire variable to true or false
+        depending on the state of the switch. It also changes the colour of the switch text
+        depending on the state of the switch. */
         fragBinding.hiring.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
             hire = b
             if (fragBinding.hiring.isChecked){
@@ -89,9 +87,16 @@ class BuildingFragment : Fragment() {
         return root
     }
 
+    /**
+     * This function is called when the user clicks the "Set Location" button. It checks if the user
+     * has entered all the required information and if so, it creates a new BuildingModel object and
+     * passes it to the MapsFragment
+     *
+     * @param layout FragmentBuildingBinding - This is the binding object for the fragment.
+     */
     private fun setButtonListener(layout: FragmentBuildingBinding){
         layout.buildingLocation.setOnClickListener {
-            var newid = Random.nextLong().toString()
+            val newid = Random.nextLong().toString()
             when {
                 fragBinding.buildingName.text.toString().isEmpty() -> {
                     view?.snack(R.string.warn_name)
@@ -118,7 +123,7 @@ class BuildingFragment : Fragment() {
                     if(hire == null){
                         hire = false
                     }
-                    var build = BuildingModel(
+                    val build = BuildingModel(
                         id = newid,
                         uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
                         name = fragBinding.buildingName.text.toString(),
@@ -137,6 +142,12 @@ class BuildingFragment : Fragment() {
         }
     }
 
+    /**
+     * > If the status is true, do something with the view, otherwise show a snackbar with the message
+     * "Failed"
+     *
+     * @param status Boolean - This is the status of the operation.
+     */
     private fun render(status: Boolean) {
         when (status) {
             true -> {
@@ -149,6 +160,8 @@ class BuildingFragment : Fragment() {
 
 
     override fun onResume() {
+        /* This is setting the button listener for the "Set Location" button. It is also populating the
+        dropdown menu with the counties from the counties array in the strings.xml file. */
         setButtonListener(fragBinding)
         val counties = resources.getStringArray(R.array.counties)
         val countyAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, counties)
@@ -161,14 +174,6 @@ class BuildingFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return NavigationUI.onNavDestinationSelected(item,
             requireView().findNavController()) || super.onOptionsItemSelected(item)
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            BuildingFragment().apply {
-                arguments = Bundle().apply {}
-            }
     }
 
 

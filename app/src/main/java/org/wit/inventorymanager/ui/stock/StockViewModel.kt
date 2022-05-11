@@ -14,6 +14,12 @@ class StockViewModel : ViewModel() {
     val observableStatus: LiveData<Boolean>
         get() = status
 
+    /**
+     * It adds a stock to the database.
+     *
+     * @param firebaseUser The user that is currently logged in.
+     * @param stock StockModel - The stock to be added to the database
+     */
     fun addStock(firebaseUser: MutableLiveData<FirebaseUser>, stock: StockModel) {
         status.value = try {
             StockManager.create(firebaseUser,stock)

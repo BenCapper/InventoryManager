@@ -7,7 +7,6 @@ import android.view.*
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,19 +18,14 @@ import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.helpers.*
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
-import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailViewModel
 
-/* This is the code for the building list fragment. It is the fragment that displays the list of
-buildings. */
+
 class BuildingListFragment : Fragment(), BuildingListener {
 
     private var _fragBinding: FragmentBuildingListBinding? = null
     private val fragBinding get() = _fragBinding!!
-    private lateinit var buildings: MutableList<BuildingModel>
     lateinit var loader : AlertDialog
-    private lateinit var foundList: ArrayList<BuildingModel>
     private val buildingListViewModel: BuildingListViewModel by activityViewModels()
-    private val buildingDetailViewModel: BuildingDetailViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
 
@@ -64,13 +58,13 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
         /* This is the code that observes the observable building list. It is observing the list for
         changes. When the list changes, it renders the list to the recycler view. */
-        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner, Observer { building ->
+        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner) { building ->
             building?.let {
                 render(building as ArrayList<BuildingModel>)
                 hideLoader(loader)
                 checkSwipeRefresh()
             }
-        })
+        }
         setSwipeRefresh()
 
         /* This is the code that is executed when the floating action button is clicked. It navigates
@@ -91,7 +85,7 @@ class BuildingListFragment : Fragment(), BuildingListener {
                 adapter.removeAt(viewHolder.absoluteAdapterPosition)
                 buildingListViewModel.delete(
                     buildingListViewModel.liveFirebaseUser.value?.uid!!,
-                    (viewHolder.itemView.tag as BuildingModel).id!!
+                    (viewHolder.itemView.tag as BuildingModel).id
                 )
                 hideLoader(loader)
             }
@@ -174,12 +168,12 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
         /* Observing the live firebase user. If the user is not null, it sets the live firebase user
         value to the firebase user and loads the buildings. */
-        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner) { firebaseUser ->
             if (firebaseUser != null) {
                 buildingListViewModel.liveFirebaseUser.value = firebaseUser
                 buildingListViewModel.load()
             }
-        })
+        }
     }
 
 
@@ -205,8 +199,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
                         loggedInViewModel.liveFirebaseUser.value?.uid!!,
                         newText
                     )
-                } else {
-
                 }
                 return true
             }
@@ -240,8 +232,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
      * @param building BuildingModel - The building that was swiped
      */
     override fun onEditSwipe(building: BuildingModel) {
-        /* This is the code that is executed when a building is swiped to edit. It navigates to the
-                building detail fragment. */
         val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingDetailFragment(building)
         if(!buildingListViewModel.readOnly.value!!)
             findNavController().navigate(action)
