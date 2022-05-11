@@ -4,10 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
-import org.wit.inventorymanager.models.StockManager
+import org.wit.inventorymanager.firebase.StockManager
 import org.wit.inventorymanager.models.StockModel
 import timber.log.Timber
 import java.lang.Exception
+
 
 class StockListViewModel : ViewModel() {
 
@@ -54,16 +55,6 @@ class StockListViewModel : ViewModel() {
     fun search(userid: String,buildingid: String, term: String) {
         try {
             StockManager.search(userid,buildingid,term,stockList)
-            Timber.i("Stock Search Success")
-        }
-        catch (e: Exception) {
-            Timber.i("Stock Search Error : $e.message")
-        }
-    }
-
-    fun searchByBuild(userid: String,buildingid: String){
-        try {
-            StockManager.searchByBuild(userid,buildingid,stockList)
             Timber.i("Stock Search Success")
         }
         catch (e: Exception) {

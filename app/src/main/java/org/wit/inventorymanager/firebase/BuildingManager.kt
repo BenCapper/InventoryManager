@@ -1,9 +1,11 @@
-package org.wit.inventorymanager.models
+package org.wit.inventorymanager.firebase
 
 
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import org.wit.inventorymanager.models.BuildingModel
+import org.wit.inventorymanager.models.BuildingStore
 import timber.log.Timber
 import java.util.*
 

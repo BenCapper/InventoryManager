@@ -77,27 +77,19 @@ class StockFragment : Fragment() {
         val unitAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, units)
         fragBinding.unit.setAdapter(unitAdapter)
 
-        fragBinding.sfave.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
-            fav = b
-            if (fragBinding.sfave.isChecked){
-                fragBinding.sfave.setTextColor(Color.argb(255,235, 172, 12))
-            }
-            else {
-                fragBinding.sfave.setTextColor(Color.BLACK)
-            }
-        }
+
         fragBinding.stockQuantity.minValue = 0
-        fragBinding.stockQuantity.maxValue = 10000
+        fragBinding.stockQuantity.maxValue = 1000
 
         fragBinding.stockQuantity2.minValue = 0
-        fragBinding.stockQuantity2.maxValue = 10000
+        fragBinding.stockQuantity2.maxValue = 1000
 
         // Number picker listener
         fragBinding.stockQuantity.setOnValueChangedListener { _, _, newVal ->
             max = newVal
         }
 
-        fragBinding.stockQuantity.setOnValueChangedListener { _, _, newVal ->
+        fragBinding.stockQuantity2.setOnValueChangedListener { _, _, newVal ->
             current = newVal
         }
 
@@ -138,6 +130,12 @@ class StockFragment : Fragment() {
                 inStock < 0 -> {
                     view?.snack(R.string.charsmin)
                 }
+                max <= 0 -> {
+                    view?.snack(R.string.stock_lvl)
+                }
+                max < inStock -> {
+                    view?.snack(R.string.stock_lvlmax)
+                }
                 else -> {
                     if(fav == null){
                         fav = false
@@ -151,10 +149,10 @@ class StockFragment : Fragment() {
                         weight = weight,
                         price = price.toDouble(),
                         max = max,
+                        unit = unit,
                         inStock = current,
-                        image = "",
-                        faved = fav!!
                     )
+
                     stockViewModel.addStock(loggedInViewModel.liveFirebaseUser, stock)
                     val action =
                         StockFragmentDirections.actionStockFragmentToStockListFragment(branch)

@@ -13,6 +13,7 @@ import android.widget.CompoundButton
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import org.wit.inventorymanager.R
@@ -56,16 +57,8 @@ class StockDetailFragment : Fragment() {
         val units = resources.getStringArray(R.array.units)
         val unitAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, units)
         fragBinding.unitDetail.setAdapter(unitAdapter)
+        current = fragBinding.stockDetailQuantity2.value
 
-        fragBinding.sfaveDetail.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
-            fav = b
-            if (fragBinding.sfaveDetail.isChecked){
-                fragBinding.sfaveDetail.setTextColor(Color.argb(255,235, 172, 12))
-            }
-            else {
-                fragBinding.sfaveDetail.setTextColor(Color.BLACK)
-            }
-        }
         fragBinding.stockDetailQuantity.minValue = 1
         fragBinding.stockDetailQuantity.maxValue = 1000
 
@@ -77,7 +70,7 @@ class StockDetailFragment : Fragment() {
             max = newVal
         }
 
-        fragBinding.stockDetailQuantity.setOnValueChangedListener { _, _, newVal ->
+        fragBinding.stockDetailQuantity2.setOnValueChangedListener { _, _, newVal ->
             current = newVal
         }
 
@@ -96,7 +89,7 @@ class StockDetailFragment : Fragment() {
         layout.stockDetailAdd.setOnClickListener {
             val id = args.stock.id
             val uid = args.stock.uid
-            val branch = args.buildingid
+            val branch = args.stock.branch
             val name = layout.stockDetailName.text.toString()
             val weight = layout.editDetailWeight.text.toString()
             val price = layout.priceDetail.text.toString()
@@ -125,6 +118,12 @@ class StockDetailFragment : Fragment() {
                 inStock < 0 -> {
                     view?.snack(R.string.charsmin)
                 }
+                max <= 0 -> {
+                    view?.snack(R.string.stock_lvl)
+                }
+                max < inStock -> {
+                    view?.snack(R.string.stock_lvlmax)
+                }
                 else -> {
                     if(fav == null){
                         fav = false
@@ -140,13 +139,11 @@ class StockDetailFragment : Fragment() {
                         price = price.toDouble(),
                         max = max,
                         inStock = current,
-                        image = "",
-                        faved = fav!!
                     )
                     stockDetailViewModel.updateStock(uid, stock.id,stock)
                     val action =
-                        StockDetailFragmentDirections.actionStockDetailFragmentToStockListFragment(args.buildingid)
-                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(action)
+                        StockDetailFragmentDirections.actionStockDetailFragmentToStockListFragment(stock.branch)
+                    findNavController().navigate(action)
                 }
             }
         }

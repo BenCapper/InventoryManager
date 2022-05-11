@@ -17,22 +17,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#E1E3E1E1"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:paddingStart="20dp">
 
             <TextView
                 android:id="@+id/price"
-                android:layout_width="110dp"
-                android:layout_height="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="335dp"
-                android:text="$"
-                android:textColor="@color/dark"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:layout_marginEnd="340dp"
+                android:text="@string/eu"
+                android:textColor="@color/orange"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/sbranch"
@@ -41,12 +42,12 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="140dp"
+                android:layout_marginStart="150dp"
                 android:layout_marginTop="2dp"
-                android:layout_marginEnd="160dp"
+                android:layout_marginEnd="150dp"
                 android:text="@{stock.branch}"
                 android:textColor="@color/black"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="bold|italic" />
 
             <TextView
@@ -58,11 +59,11 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="200dp"
                 android:layout_marginTop="3dp"
-                android:layout_marginEnd="145dp"
-                android:text="@{Long.toString(stock.inStock)}"
+                android:layout_marginEnd="125dp"
+                android:text="@{Integer.toString(stock.inStock)}"
                 android:textColor="@color/orange"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/sweight"
@@ -72,27 +73,26 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="200dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="145dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="125dp"
                 android:text="@{stock.weight.toString()}"
                 android:textColor="@color/orange"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/weighttext"
-                android:layout_width="110dp"
-                android:layout_height="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="140dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="180dp"
-                android:text="Weight:"
+                android:layout_marginEnd="188dp"
+                android:text="@string/wweight"
                 android:textColor="@color/dark"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/instocktext"
@@ -104,10 +104,9 @@
                 android:layout_marginStart="140dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="180dp"
-                android:text="In Stock:"
+                android:text="@string/instock"
                 android:textColor="@color/dark"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/sprice"
@@ -116,13 +115,12 @@
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="35dp"
+                android:layout_marginStart="40dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="270dp"
+                android:layout_marginEnd="260dp"
                 android:text="@{Double.toString(stock.price)}"
                 android:textColor="@color/dark"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/towncard2"
@@ -131,27 +129,13 @@
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="270dp"
+                android:inputType="numberDecimal"
                 android:textColor="@color/dark"
                 android:textSize="12sp"
                 android:textStyle="normal|italic" />
-
-            <ToggleButton
-                android:id="@+id/sfave"
-                android:layout_width="83dp"
-                android:layout_height="34dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="250dp"
-                android:layout_marginTop="19dp"
-                android:layout_marginEnd="30dp"
-                android:textOff="@string/fave"
-                android:textOn="@string/faved"
-                android:checked="@{stock.faved}"
-                android:textSize="8sp" />
 
             <TextView
                 android:id="@+id/snamecard"
@@ -160,9 +144,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="0dp"
-                android:layout_marginEnd="260dp"
+                android:layout_marginEnd="250dp"
                 android:text="@{stock.name}"
                 android:textColor="@color/black"
                 android:textSize="15sp"
@@ -172,14 +156,38 @@
                 android:id="@+id/divider3"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_alignTop="@+id/sfave"
+                android:layout_alignTop="@+id/btndown"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="-2dp"
-                android:layout_marginEnd="168dp"
+                android:layout_marginStart="26dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="148dp"
                 android:background="@color/orange" />
 
+            <Button
+                android:id="@+id/btndown"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="276dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="77dp"
+                android:background="@drawable/ic_down" />
+
+            <Button
+                android:id="@+id/btnup"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="323dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/ic_up"
+                android:textColor="@color/orange" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </layout>

@@ -1,8 +1,10 @@
-package org.wit.inventorymanager.models
+package org.wit.inventorymanager.firebase
 
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import org.wit.inventorymanager.models.StockModel
+import org.wit.inventorymanager.models.StockStore
 import timber.log.Timber
 import java.util.ArrayList
 import java.util.HashMap
@@ -51,7 +53,6 @@ object StockManager : StockStore {
                     children.forEach {
                         val stock= it.getValue(StockModel::class.java)
                             localList.add(stock!!)
-                            Timber.i("TTTTTTTTTTTTTIMBER::::    ${stock}")
                     }
                     database.child("user-stock").child(userid)
                         .removeEventListener(this)
@@ -76,7 +77,6 @@ object StockManager : StockStore {
                             val stock = it.getValue(StockModel::class.java)
                             if(stock?.branch == buildingid && stock?.uid == userid) {
                                 localList.add(stock!!)
-                                Timber.i("TTTTTTTTTTTTTIMBER::::    ${stock}")
                             }
                     }
                     database.child("user-stock").child(userid)
@@ -99,14 +99,11 @@ object StockManager : StockStore {
                     val localList = ArrayList<StockModel>()
                     val children = snapshot.children
                     children.forEach {
-                        if (it.getValue(StockModel::class.java)?.name!!.contains(term) ) {
                             val stock = it.getValue(StockModel::class.java)
-                            if(stock?.branch == buildingid && stock?.uid == userid) {
+                            if(stock?.name!!.contains(term) && stock.branch!! == buildingid) {
                                 localList.add(stock!!)
                             }
-                            localList.add(stock!!)
                         }
-                    }
                     database.child("user-stock").child(userid)
                         .removeEventListener(this)
 

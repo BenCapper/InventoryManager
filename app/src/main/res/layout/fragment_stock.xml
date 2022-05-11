@@ -61,6 +61,7 @@
                 android:id="@+id/editWeight"
                 android:layout_width="match_parent"
                 android:layout_height="61dp"
+                android:inputType="numberDecimal"
                 android:hint="@string/hint_stockWeight"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -89,6 +90,7 @@
                 android:id="@+id/price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
                 android:hint="@string/hint_stockPrice"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -147,18 +149,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.679" />
-
-        <Switch
-            android:id="@+id/sfave"
-            android:layout_width="170dp"
-            android:layout_height="24dp"
-            android:text="@string/fav"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.066"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.82" />
 
         <TextView
             android:id="@+id/max"

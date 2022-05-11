@@ -29,7 +29,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="335dp"
-            android:text="Co."
+            android:text="@string/co"
             android:textColor="@color/dark"
             android:textSize="12sp"
             android:textStyle="italic" />
@@ -89,7 +89,7 @@
             android:layout_marginStart="140dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="200dp"
-            android:text="Hiring:"
+            android:text="@string/hiring"
             android:textColor="@color/dark"
             android:textSize="12sp"
             android:textStyle="italic" />

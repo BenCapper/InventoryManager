@@ -12,10 +12,8 @@ data class StockModel(var id: String = "",
                       var weight: String = "",
                       var unit: String = "",
                       var price: Double = 0.00,
-                      var faved: Boolean = false,
                       var inStock: Int = 0,
-                      var max: Int = 0,
-                      var image: String = "" )
+                      var max: Int = 0)
     : Parcelable
 {
         @Exclude
@@ -26,11 +24,10 @@ data class StockModel(var id: String = "",
                 "name" to name,
                 "branch" to branch,
                 "weight" to weight,
+                "unit" to unit,
                 "price" to price,
-                "faved" to faved,
                 "inStock" to inStock,
                 "max" to max,
-                "image" to image,
 
             )
         }

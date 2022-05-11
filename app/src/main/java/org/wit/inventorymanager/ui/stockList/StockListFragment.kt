@@ -7,39 +7,31 @@ import android.view.*
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.wit.inventorymanager.R
 import org.wit.inventorymanager.adapters.StockAdapter
 import org.wit.inventorymanager.adapters.StockListener
-import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentStockListBinding
 import org.wit.inventorymanager.helpers.*
-import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.StockModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
-import org.wit.inventorymanager.ui.building.BuildingViewModel
-import org.wit.inventorymanager.ui.stockDetail.StockDetailFragmentArgs
 import org.wit.inventorymanager.ui.stockDetail.StockDetailViewModel
-import splitties.fragmentargs.arg
-import timber.log.Timber
+import splitties.snackbar.snack
 
 
 class StockListFragment : Fragment(), StockListener {
 
     private var _fragBinding: FragmentStockListBinding? = null
     private val fragBinding get() = _fragBinding!!
-    private lateinit var buildings: MutableList<BuildingModel>
     lateinit var loader : AlertDialog
-    private lateinit var foundList: ArrayList<StockModel>
     private val args by navArgs<StockListFragmentArgs>()
     private val stockListViewModel: StockListViewModel by activityViewModels()
     private val stockDetailViewModel: StockDetailViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
-    private val buildingViewModel : BuildingViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,37 +50,20 @@ class StockListFragment : Fragment(), StockListener {
         loader = createLoader(requireActivity())
         activity?.title = getString(R.string.action_location)
         fragBinding.srecyclerView.layoutManager = LinearLayoutManager(activity)
-        stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
         showLoader(loader, "Downloading Stock")
-        stockListViewModel.observableStockList.observe(viewLifecycleOwner, Observer { stock ->
+        stockListViewModel.observableStockList.observe(viewLifecycleOwner) { stock ->
             stock?.let {
                 render(stock as ArrayList<StockModel>)
                 hideLoader(loader)
                 checkSwipeRefresh()
             }
-        })
+        }
         setSwipeRefresh()
 
         fragBinding.sfab.setOnClickListener {
             val action = StockListFragmentDirections.actionStockListFragmentToStockFragment(args.buildingid)
             findNavController().navigate(action)
         }
-        fragBinding.stockSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-
-                    stockListViewModel.search(loggedInViewModel.liveFirebaseUser.value?.uid!!,args.buildingid, newText)
-                }
-                else {
-
-                }
-                return true
-            }
-        })
 
 
 
@@ -99,7 +74,7 @@ class StockListFragment : Fragment(), StockListener {
                 adapter.removeAt(viewHolder.absoluteAdapterPosition)
                 stockListViewModel.delete(
                     stockListViewModel.liveFirebaseUser.value?.uid!!,
-                    (viewHolder.itemView.tag as StockModel).id!!
+                    (viewHolder.itemView.tag as StockModel).id
                 )
                 hideLoader(loader)
             }
@@ -126,17 +101,7 @@ class StockListFragment : Fragment(), StockListener {
 
     }
 
-    override fun onFave(stock: StockModel) {
-        if (stock.faved){
-            stock.faved = false
-            stockListViewModel.update(stock.uid, stock.id, stock)
-        }
-        else if (!stock.faved){
-            stock.faved = true
-            stockListViewModel.update(stock.uid, stock.id, stock)
-        }
 
-    }
 
     override fun onStockClick(stock: StockModel) {
 
@@ -153,6 +118,7 @@ class StockListFragment : Fragment(), StockListener {
         }
     }
 
+
     private fun checkSwipeRefresh() {
         if (fragBinding.sswiperefresh.isRefreshing)
             fragBinding.sswiperefresh.isRefreshing = false
@@ -161,28 +127,54 @@ class StockListFragment : Fragment(), StockListener {
     override fun onResume() {
         super.onResume()
         showLoader(loader, "Downloading Stock")
-
-        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner) { firebaseUser ->
             if (firebaseUser != null) {
                 stockListViewModel.liveFirebaseUser.value = firebaseUser
-                stockListViewModel.loadAll(firebaseUser.uid, args.buildingid)
+                stockListViewModel.loadAll(
+                    loggedInViewModel.liveFirebaseUser.value?.uid!!,
+                    args.buildingid
+                )
             }
-        })
+        }
+
     }
 
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_building, menu)
+        val item = menu.findItem(R.id.app_bar_search)
+        val searchView = item.actionView as SearchView
+        searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
+                if (newText != null) {
+                    stockListViewModel.search(uid,args.buildingid, newText)
+                    checkSwipeRefresh()
+                }
+                else{
+                    stockListViewModel.loadAll(uid, args.buildingid)
+                }
+                return true
+            }
+        })
         super.onCreateOptionsMenu(menu, inflater)
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         val action = StockListFragmentDirections.actionStockListFragmentToStockFragment(args.buildingid)
+        val action2 = StockListFragmentDirections.actionStockListFragmentToBuildingListFragment()
         if (id == R.id.item_new){
             findNavController().navigate(action)
         }
-        return super.onOptionsItemSelected(item)
+        else {
+            findNavController().navigate(action2)
+        }
+        return true
     }
 
 
@@ -192,7 +184,9 @@ class StockListFragment : Fragment(), StockListener {
         findNavController().navigate(action)
     }
 
+    override fun onFave(stock: StockModel) {
 
+    }
 
 
     override fun onDestroyView() {
@@ -202,10 +196,28 @@ class StockListFragment : Fragment(), StockListener {
 
 
     override fun onAddStockClick(stock: StockModel) {
-
+        val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
+        if (stock.inStock < 1000 && stock.max > stock.inStock) {
+            stock.inStock += 1
+            stockDetailViewModel.updateStock(uid, stock.id, stock)
+            stockListViewModel.loadAll(uid, args.buildingid)
+        }
+        else {
+            view?.snack("Max stock level reached")
+        }
     }
 
     override fun onMinusStockClick(stock: StockModel) {
+        val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
+        if (stock.inStock > 0) {
+            stock.inStock -= 1
+            stockDetailViewModel.updateStock(uid, stock.id, stock)
+            stockListViewModel.loadAll(uid, args.buildingid)
+        }
+        else {
+            view?.snack("Stock Level cannot be Negative")
+        }
+
 
     }
 
