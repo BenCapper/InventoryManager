@@ -7,23 +7,18 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.Switch
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import org.wit.inventorymanager.R
-import org.wit.inventorymanager.adapters.BuildingAdapter
 import org.wit.inventorymanager.adapters.BuildingListener
 import org.wit.inventorymanager.adapters.MapAdapter
-import org.wit.inventorymanager.databinding.FragmentBuildingDetailBinding
-import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.databinding.FragmentFaveMapsBinding
 import org.wit.inventorymanager.helpers.createLoader
 import org.wit.inventorymanager.helpers.hideLoader
@@ -60,14 +55,13 @@ class FaveMapsFragment : Fragment(), BuildingListener {
 
 
             buildingListViewModel.observableBuildingList.observe(
-                viewLifecycleOwner,
-                Observer { buildings ->
-                    buildings?.let {
-                        render(buildings as ArrayList<BuildingModel>)
-                        hideLoader(loader)
-                    }
+                viewLifecycleOwner
+            ) { buildings ->
+                buildings?.let {
+                    render(buildings as ArrayList<BuildingModel>)
+                    hideLoader(loader)
                 }
-            )
+            }
         }
     }
 
@@ -83,7 +77,7 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         loader = createLoader(requireActivity())
         nFragBinding = FragmentFaveMapsBinding.inflate(inflater, container, false)
         val root = fragBinding.root
@@ -95,17 +89,17 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFave) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner, Observer { building ->
+        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner) { building ->
             building?.let {
                 renderRecycle(building as ArrayList<BuildingModel>)
                 hideLoader(loader)
                 checkSwipeRefresh()
             }
-        })
+        }
         setSwipeRefresh()
     }
     private fun renderRecycle(buildingList: ArrayList<BuildingModel>) {
-        nFragBinding?.mrecycler?.adapter = MapAdapter(buildingList,this, buildingListViewModel.readOnly.value!!)
+        nFragBinding?.mrecycler?.adapter = MapAdapter(buildingList,this)
     }
     private fun render(buildingList: ArrayList<BuildingModel>) {
         if (buildingList.isNotEmpty()) {
@@ -124,7 +118,6 @@ class FaveMapsFragment : Fragment(), BuildingListener {
     }
 
     private fun renderAll(buildingList: ArrayList<BuildingModel>) {
-        var markerColour: Float
         if (buildingList.isNotEmpty()) {
             mapsViewModel.map.clear()
             buildingList.forEach {
@@ -151,7 +144,7 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         }
     }
 
-    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor {
         val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
         vectorDrawable!!.setBounds(
             0,
@@ -168,6 +161,7 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         vectorDrawable.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_map, menu)
 
@@ -179,25 +173,23 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         toggleBuilds.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 buildingListViewModel.observableBuildingList.observe(
-                    viewLifecycleOwner,
-                    Observer { buildings ->
-                        buildings?.let {
-                            renderAll(buildings as ArrayList<BuildingModel>)
-                            hideLoader(loader)
-                        }
+                    viewLifecycleOwner
+                ) { buildings ->
+                    buildings?.let {
+                        renderAll(buildings as ArrayList<BuildingModel>)
+                        hideLoader(loader)
                     }
-                )
+                }
             }
             else{
                 buildingListViewModel.observableBuildingList.observe(
-                    viewLifecycleOwner,
-                    Observer { buildings ->
-                        buildings?.let {
-                            render(buildings as ArrayList<BuildingModel>)
-                            hideLoader(loader)
-                        }
+                    viewLifecycleOwner
+                ) { buildings ->
+                    buildings?.let {
+                        render(buildings as ArrayList<BuildingModel>)
+                        hideLoader(loader)
                     }
-                )
+                }
             }
         }
     }
@@ -205,12 +197,12 @@ class FaveMapsFragment : Fragment(), BuildingListener {
     override fun onResume() {
         super.onResume()
         showLoader(loader, "Downloading Buildings")
-        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner) { firebaseUser ->
             if (firebaseUser != null) {
                 buildingListViewModel.liveFirebaseUser.value = firebaseUser
                 buildingListViewModel.load()
             }
-        })
+        }
 
     }
     override fun onDestroyView() {

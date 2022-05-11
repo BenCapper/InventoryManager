@@ -97,7 +97,7 @@ class StockListFragment : Fragment(), StockListener {
 
 
     private fun render(stockList: ArrayList<StockModel>) {
-        fragBinding.srecyclerView.adapter = StockAdapter(stockList,this, stockListViewModel.readOnly.value!!)
+        fragBinding.srecyclerView.adapter = StockAdapter(stockList,this)
 
     }
 

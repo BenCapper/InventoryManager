@@ -50,7 +50,7 @@ object BuildingManager : BuildingStore {
                     children.forEach {
                         val building = it.getValue(BuildingModel::class.java)
                         localList.add(building!!)
-                        Timber.i("TTTTTTTTTTTTTIMBER::::    ${building}")
+
                     }
                     database.child("user-buildings").child(userid)
                         .removeEventListener(this)
@@ -150,7 +150,7 @@ object BuildingManager : BuildingStore {
                         it.ref.child("profilepic").setValue(imageUri)
                         //Update all donations that match 'it'
                         val building = it.getValue(BuildingModel::class.java)
-                        allBuildings.child(building!!.uid!!)
+                        allBuildings.child(building!!.uid)
                             .child("profilepic").setValue(imageUri)
                     }
                 }

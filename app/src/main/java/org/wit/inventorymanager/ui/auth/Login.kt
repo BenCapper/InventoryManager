@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import org.wit.inventorymanager.R
-import org.wit.inventorymanager.activities.Home
+import org.wit.inventorymanager.ui.home.Home
 import org.wit.inventorymanager.databinding.LoginBinding
 import timber.log.Timber
 
