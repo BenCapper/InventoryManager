@@ -16,6 +16,12 @@ class BuildingViewModel : ViewModel() {
         get() = status
 
 
+    /**
+     * It adds a building to the database.
+     *
+     * @param firebaseUser MutableLiveData<FirebaseUser>
+     * @param building BuildingModel - The building object that you want to add to the database.
+     */
     fun addBuilding(firebaseUser: MutableLiveData<FirebaseUser>,building: BuildingModel) {
         status.value = try {
             BuildingManager.create(firebaseUser,building)

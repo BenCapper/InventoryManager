@@ -3,11 +3,9 @@ package org.wit.inventorymanager.ui.maps
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
-import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,8 +20,6 @@ import org.wit.inventorymanager.R
 import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
 import org.wit.inventorymanager.ui.building.BuildingViewModel
-import org.wit.inventorymanager.ui.buildingDetail.BuildingDetailViewModel
-import splitties.snackbar.snack
 import timber.log.Timber
 
 
@@ -35,7 +31,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
     private val loggedInViewModel: LoggedInViewModel by activityViewModels()
     private lateinit var action: NavDirections
     var lat = ""
-    var lng = ""
+    private var lng = ""
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -106,6 +102,14 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    /**
+     * It checks if the user has dragged the marker, if not it uses the current location. It then
+     * creates a new building object with the new location and adds it to the database. It then
+     * navigates back to the building list
+     *
+     * @param item MenuItem - The menu item that was selected.
+     * @return The superclass method is being returned.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.item_confirm){
@@ -115,7 +119,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerDragListener, GoogleMap.OnMar
 
 
             }
-            var build = BuildingModel(id=args.building.id, uid=args.building.uid,name=args.building.name, phone = args.building.phone, hiring = args.building.hiring, town=args.building.town,
+            val build = BuildingModel(id=args.building.id, uid=args.building.uid,name=args.building.name, phone = args.building.phone, hiring = args.building.hiring, town=args.building.town,
                                                     county=args.building.county, staff=args.building.staff, lat =lat,lng=lng , faved = false)
             buildingViewModel.addBuilding(loggedInViewModel.liveFirebaseUser, build)
             action = MapsFragmentDirections.actionMapsFragmentToBuildingListFragment()

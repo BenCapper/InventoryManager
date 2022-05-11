@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import org.wit.inventorymanager.R
-import org.wit.inventorymanager.activities.Home
+import org.wit.inventorymanager.ui.home.Home
 import org.wit.inventorymanager.databinding.LoginBinding
 import timber.log.Timber
 
@@ -44,13 +44,20 @@ class Login : AppCompatActivity() {
         { status -> checkStatus(status) })
     }
 
-    //Required to exit app from Login Screen - must investigate this further
+
     override fun onBackPressed() {
         super.onBackPressed()
         Toast.makeText(this,"Click again to Close App...", Toast.LENGTH_SHORT).show()
         finish()
     }
 
+    /**
+     * It creates an account for the user.
+     *
+     * @param email The email address of the user.
+     * @param password The password for the new account.
+     * @return A boolean value
+     */
     private fun createAccount(email: String, password: String) {
         Timber.d("createAccount:$email")
         if (!validateForm()) { return }
@@ -58,6 +65,13 @@ class Login : AppCompatActivity() {
         loginRegisterViewModel.register(email,password)
     }
 
+    /**
+     * It signs in the user with the email and password provided.
+     *
+     * @param email The email address of the user.
+     * @param password The user's password.
+     * @return a boolean value.
+     */
     private fun signIn(email: String, password: String) {
         Timber.d("signIn:$email")
         if (!validateForm()) { return }
@@ -65,6 +79,11 @@ class Login : AppCompatActivity() {
         loginRegisterViewModel.login(email,password)
     }
 
+    /**
+     * If the error is true, show a toast message
+     *
+     * @param error Boolean - true if the authentication failed, false if it succeeded
+     */
     private fun checkStatus(error:Boolean) {
         if (error)
             Toast.makeText(this,
@@ -72,6 +91,11 @@ class Login : AppCompatActivity() {
                 Toast.LENGTH_LONG).show()
     }
 
+    /**
+     * If the email and password fields are not empty, then return true
+     *
+     * @return A boolean value.
+     */
     private fun validateForm(): Boolean {
         var valid = true
 

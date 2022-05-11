@@ -2,17 +2,12 @@ package org.wit.inventorymanager.ui.stock
 
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.CompoundButton
-import androidx.activity.addCallback
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -20,24 +15,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
-import splitties.snackbar.snack
-import com.squareup.picasso.Picasso
 import org.wit.inventorymanager.R
-import org.wit.inventorymanager.databinding.FragmentBuildingBinding
 import org.wit.inventorymanager.databinding.FragmentStockBinding
-import org.wit.inventorymanager.main.InventoryApp
-import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.StockModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
-import org.wit.inventorymanager.ui.building.BuildingFragmentDirections
-import org.wit.inventorymanager.ui.building.BuildingViewModel
-import org.wit.inventorymanager.ui.buildingList.BuildingListViewModel
-import org.wit.inventorymanager.ui.maps.MapsViewModel
-import org.wit.inventorymanager.ui.stock.StockFragmentDirections.Companion.actionStockFragmentToStockListFragment
-import org.wit.inventorymanager.ui.stockList.StockListFragmentArgs
-import org.wit.inventorymanager.ui.stockList.StockListViewModel
-import timber.log.Timber
-import java.util.*
+import splitties.snackbar.snack
 import kotlin.random.Random
 
 
@@ -45,12 +27,11 @@ class StockFragment : Fragment() {
 
     private var nFragBinding: FragmentStockBinding? = null
     private val fragBinding get() = nFragBinding!!
-    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var stockViewModel: StockViewModel
     private val args by navArgs<StockFragmentArgs>()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
     private var fav: Boolean? = null
-    var max = 0
+    private var max = 0
     var current = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +59,7 @@ class StockFragment : Fragment() {
         fragBinding.unit.setAdapter(unitAdapter)
 
 
+        /* This is setting the minimum and maximum values for the number pickers. */
         fragBinding.stockQuantity.minValue = 0
         fragBinding.stockQuantity.maxValue = 1000
 
@@ -99,7 +81,17 @@ class StockFragment : Fragment() {
         return root
     }
 
+
+    /**
+     * This function is used to set the onClickListener for the add button
+     *
+     * @param layout FragmentStockBinding - This is the binding variable that is used to access the
+     * layout.
+     */
     private fun setButtonListener(layout: FragmentStockBinding){
+        /* This is the code that is executed when the user clicks the add button. It is checking if the
+        user has entered all the required information and if they have it will add the stock to the
+        database. */
         layout.stockAdd.setOnClickListener {
             val name = layout.stockName.text.toString()
             val branch = args.buildingid
@@ -141,7 +133,7 @@ class StockFragment : Fragment() {
                         fav = false
                     }
 
-                    var stock = StockModel(
+                    val stock = StockModel(
                         id = Random.nextLong().toString(),
                         uid = loggedInViewModel.liveFirebaseUser.value?.uid!!,
                         name = name,
@@ -162,6 +154,12 @@ class StockFragment : Fragment() {
         }
     }
 
+    /**
+     * > If the status is true, do something with the view, otherwise show a snackbar with the message
+     * "Failed"
+     *
+     * @param status Boolean
+     */
     private fun render(status: Boolean) {
         when (status) {
             true -> {
@@ -189,11 +187,6 @@ class StockFragment : Fragment() {
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance() =
-            StockFragment().apply {
-                arguments = Bundle().apply {}
-            }
     }
 
 

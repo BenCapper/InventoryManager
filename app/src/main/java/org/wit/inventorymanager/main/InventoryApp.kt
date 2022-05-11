@@ -11,8 +11,8 @@ import timber.log.Timber
 
 class InventoryApp : Application() {
 
-    lateinit var builds: BuildingStore
-    lateinit var stocks: StockStore
+    private lateinit var builds: BuildingStore
+    private lateinit var stocks: StockStore
 
     override fun onCreate() {
         super.onCreate()

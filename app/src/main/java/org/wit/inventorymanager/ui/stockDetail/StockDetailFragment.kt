@@ -1,15 +1,13 @@
 package org.wit.inventorymanager.ui.stockDetail
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.CompoundButton
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -32,7 +30,7 @@ class StockDetailFragment : Fragment() {
     private val args by navArgs<StockDetailFragmentArgs>()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
     private var fav: Boolean? = null
-    var max = 0
+    private var max = 0
     var current = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,8 +83,17 @@ class StockDetailFragment : Fragment() {
         Timber.i("Retrofit fragBinding.stockDetailVm == $fragBinding.stockDetailVm")
     }
 
+    /**
+     * This function sets the onClickListener for the add button
+     *
+     * @param layout FragmentStockDetailBinding - This is the binding object for the fragment.
+     */
     private fun setButtonListener(layout: FragmentStockDetailBinding){
         layout.stockDetailAdd.setOnClickListener {
+            /* This is the code that is executed when the user clicks the add button. It checks if the
+            user has entered all the required information and if not it displays a snackbar with the
+            error message. If the user has entered all the required information it creates a new
+            stock object and updates the stock in the database. */
             val id = args.stock.id
             val uid = args.stock.uid
             val branch = args.stock.branch
@@ -129,7 +136,7 @@ class StockDetailFragment : Fragment() {
                         fav = false
                     }
 
-                    var stock = StockModel(
+                    val stock = StockModel(
                         id = id,
                         uid = uid,
                         name = name,
@@ -167,13 +174,7 @@ class StockDetailFragment : Fragment() {
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            StockDetailFragment().apply {
-                arguments = Bundle().apply {}
-            }
-    }
+    companion object
 
 
 }

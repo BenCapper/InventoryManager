@@ -17,6 +17,12 @@ class StockDetailViewModel : ViewModel() {
         set(value) {stock.value = value.value}
 
 
+    /**
+     * It gets the stock from the database.
+     *
+     * @param userid The user's ID.
+     * @param id The id of the stock you want to get.
+     */
     fun getStock(userid: String, id: String) {
         try {
             StockManager.findById(userid,id, stock)
@@ -28,6 +34,13 @@ class StockDetailViewModel : ViewModel() {
         }
     }
 
+    /**
+     * It updates the stock in the database.
+     *
+     * @param userid The user's ID.
+     * @param id The id of the stock you want to update.
+     * @param stock StockModel
+     */
     fun updateStock(userid: String, id: String,stock: StockModel) {
         try {
             StockManager.update(userid,id, stock)

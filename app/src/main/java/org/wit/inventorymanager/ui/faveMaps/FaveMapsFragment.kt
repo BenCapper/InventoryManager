@@ -7,23 +7,18 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.Switch
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import org.wit.inventorymanager.R
-import org.wit.inventorymanager.adapters.BuildingAdapter
 import org.wit.inventorymanager.adapters.BuildingListener
 import org.wit.inventorymanager.adapters.MapAdapter
-import org.wit.inventorymanager.databinding.FragmentBuildingDetailBinding
-import org.wit.inventorymanager.databinding.FragmentBuildingListBinding
 import org.wit.inventorymanager.databinding.FragmentFaveMapsBinding
 import org.wit.inventorymanager.helpers.createLoader
 import org.wit.inventorymanager.helpers.hideLoader
@@ -41,7 +36,7 @@ class FaveMapsFragment : Fragment(), BuildingListener {
     private val mapsViewModel: MapsViewModel by activityViewModels()
     private val buildingListViewModel: BuildingListViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
-    lateinit var loader : AlertDialog
+    private lateinit var loader : AlertDialog
 
 
     @SuppressLint("MissingPermission")
@@ -60,14 +55,13 @@ class FaveMapsFragment : Fragment(), BuildingListener {
 
 
             buildingListViewModel.observableBuildingList.observe(
-                viewLifecycleOwner,
-                Observer { buildings ->
-                    buildings?.let {
-                        render(buildings as ArrayList<BuildingModel>)
-                        hideLoader(loader)
-                    }
+                viewLifecycleOwner
+            ) { buildings ->
+                buildings?.let {
+                    render(buildings as ArrayList<BuildingModel>)
+                    hideLoader(loader)
                 }
-            )
+            }
         }
     }
 
@@ -83,7 +77,7 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         loader = createLoader(requireActivity())
         nFragBinding = FragmentFaveMapsBinding.inflate(inflater, container, false)
         val root = fragBinding.root
@@ -95,18 +89,30 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFave) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner, Observer { building ->
+        buildingListViewModel.observableBuildingList.observe(viewLifecycleOwner) { building ->
             building?.let {
                 renderRecycle(building as ArrayList<BuildingModel>)
                 hideLoader(loader)
                 checkSwipeRefresh()
             }
-        })
+        }
         setSwipeRefresh()
     }
+    /**
+     * It renders the recycler view with the building list.
+     *
+     * @param buildingList ArrayList<BuildingModel>
+     */
     private fun renderRecycle(buildingList: ArrayList<BuildingModel>) {
-        nFragBinding?.mrecycler?.adapter = MapAdapter(buildingList,this, buildingListViewModel.readOnly.value!!)
+        nFragBinding?.mrecycler?.adapter = MapAdapter(buildingList,this)
     }
+
+    /**
+     * The function takes in an arraylist of building models, clears the map, and then adds a marker to
+     * the map for each building in the arraylist
+     *
+     * @param buildingList ArrayList<BuildingModel>
+     */
     private fun render(buildingList: ArrayList<BuildingModel>) {
         if (buildingList.isNotEmpty()) {
             mapsViewModel.map.clear()
@@ -123,8 +129,16 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         }
     }
 
+    /**
+     * This function is called when the user clicks on the search button in the search bar. It takes
+     * the user's input and searches the database for any buildings that match the user's input. If
+     * there are any matches, the map is cleared and the markers for the buildings that match the
+     * user's input are added to the map
+     *
+     * @param buildingList ArrayList<BuildingModel> - This is the list of buildings that we want to
+     * render on the map.
+     */
     private fun renderAll(buildingList: ArrayList<BuildingModel>) {
-        var markerColour: Float
         if (buildingList.isNotEmpty()) {
             mapsViewModel.map.clear()
             buildingList.forEach {
@@ -145,13 +159,18 @@ class FaveMapsFragment : Fragment(), BuildingListener {
                             .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_darkloc))
                     )
                 }
-
-
             }
         }
     }
 
-    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+    /**
+     * It takes a vector drawable and converts it into a bitmap
+     *
+     * @param context Context - The context of the activity.
+     * @param vectorResId The resource ID of the vector drawable.
+     * @return A BitmapDescriptor object.
+     */
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor {
         val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
         vectorDrawable!!.setBounds(
             0,
@@ -168,6 +187,15 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         vectorDrawable.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    /**
+     * This function adds a switch to the menu bar. When the switch is checked, the renderAll function
+     * is called. When the switch is not checked, the render function is called
+     *
+     * @param menu Menu - This is the menu that is being created.
+     * @param inflater MenuInflater - This is the menu inflater that is used to inflate the menu.
+     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_map, menu)
 
@@ -179,25 +207,23 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         toggleBuilds.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 buildingListViewModel.observableBuildingList.observe(
-                    viewLifecycleOwner,
-                    Observer { buildings ->
-                        buildings?.let {
-                            renderAll(buildings as ArrayList<BuildingModel>)
-                            hideLoader(loader)
-                        }
+                    viewLifecycleOwner
+                ) { buildings ->
+                    buildings?.let {
+                        renderAll(buildings as ArrayList<BuildingModel>)
+                        hideLoader(loader)
                     }
-                )
+                }
             }
             else{
                 buildingListViewModel.observableBuildingList.observe(
-                    viewLifecycleOwner,
-                    Observer { buildings ->
-                        buildings?.let {
-                            render(buildings as ArrayList<BuildingModel>)
-                            hideLoader(loader)
-                        }
+                    viewLifecycleOwner
+                ) { buildings ->
+                    buildings?.let {
+                        render(buildings as ArrayList<BuildingModel>)
+                        hideLoader(loader)
                     }
-                )
+                }
             }
         }
     }
@@ -205,12 +231,12 @@ class FaveMapsFragment : Fragment(), BuildingListener {
     override fun onResume() {
         super.onResume()
         showLoader(loader, "Downloading Buildings")
-        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner) { firebaseUser ->
             if (firebaseUser != null) {
                 buildingListViewModel.liveFirebaseUser.value = firebaseUser
                 buildingListViewModel.load()
             }
-        })
+        }
 
     }
     override fun onDestroyView() {
@@ -218,6 +244,9 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         nFragBinding = null
     }
 
+    /**
+     * It sets the swipe refresh listener.
+     */
     private fun setSwipeRefresh() {
         fragBinding.swiperefresh.setOnRefreshListener {
             fragBinding.swiperefresh.isRefreshing = true
@@ -229,11 +258,19 @@ class FaveMapsFragment : Fragment(), BuildingListener {
         }
     }
 
+    /**
+     * It checks if the swipe refresh is refreshing and if it is, it sets it to false.
+     */
     private fun checkSwipeRefresh() {
         if (fragBinding.swiperefresh.isRefreshing)
             fragBinding.swiperefresh.isRefreshing = false
     }
 
+    /**
+     * When a building is clicked, move the camera to the building's location
+     *
+     * @param building BuildingModel - The building that was clicked
+     */
     override fun onBuildingClick(building: BuildingModel) {
         val loc = LatLng(building.lat.toDouble(), building.lng.toDouble())
         mapsViewModel.map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14f))
@@ -242,6 +279,13 @@ class FaveMapsFragment : Fragment(), BuildingListener {
     override fun onEditSwipe(building: BuildingModel) {
     }
 
+    /**
+     * The function is called when the user clicks the favorite button on the building card. If the
+     * building is already favorited, it will unfavorite it. If the building is not favorited, it will
+     * favorite it
+     *
+     * @param building BuildingModel - the building that was clicked on
+     */
     override fun onFave(building: BuildingModel) {
         if (building.faved){
             building.faved = false

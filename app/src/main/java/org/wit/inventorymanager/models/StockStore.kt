@@ -4,16 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 
 interface StockStore {
-    fun findAll(stockList:
-                MutableLiveData<List<StockModel>>
-    )
-    fun findAll(userid:String,
-                stockList:
-                MutableLiveData<List<StockModel>>
-    )
-    fun findById(userid:String, stockid: String,
-                 stock: MutableLiveData<StockModel>
-    )
+    fun findAll(stockList: MutableLiveData<List<StockModel>>)
+    fun findAll(userid:String, stockList: MutableLiveData<List<StockModel>>)
+    fun findById(userid:String, stockid: String, stock: MutableLiveData<StockModel>)
     fun create(firebaseUser: MutableLiveData<FirebaseUser>, stock: StockModel)
     fun delete(userid:String,  stockid: String)
     fun update(userid:String, stockid: String , stock: StockModel)

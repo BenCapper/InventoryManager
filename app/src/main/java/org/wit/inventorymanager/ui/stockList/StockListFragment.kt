@@ -60,6 +60,8 @@ class StockListFragment : Fragment(), StockListener {
         }
         setSwipeRefresh()
 
+        /* This is the code that allows the user to navigate to the stock fragment when they click the
+        add stock button. */
         fragBinding.sfab.setOnClickListener {
             val action = StockListFragmentDirections.actionStockListFragmentToStockFragment(args.buildingid)
             findNavController().navigate(action)
@@ -67,6 +69,7 @@ class StockListFragment : Fragment(), StockListener {
 
 
 
+        /* This is the code that allows the user to swipe to delete a stock item. */
         val swipeDeleteHandler = object : StockSwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 showLoader(loader, "Deleting Stock")
@@ -82,6 +85,7 @@ class StockListFragment : Fragment(), StockListener {
         val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
         itemTouchDeleteHelper.attachToRecyclerView(fragBinding.srecyclerView)
 
+        /* This is the code that allows the user to swipe to edit a stock item. */
         val swipeEditHandler = object : StockSwipeToEditCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 onEditSwipe(viewHolder.itemView.tag as StockModel)
@@ -96,9 +100,13 @@ class StockListFragment : Fragment(), StockListener {
 
 
 
+    /**
+     * It renders the data in the recycler view.
+     *
+     * @param stockList ArrayList<StockModel> - This is the list of stocks that we want to display.
+     */
     private fun render(stockList: ArrayList<StockModel>) {
-        fragBinding.srecyclerView.adapter = StockAdapter(stockList,this, stockListViewModel.readOnly.value!!)
-
+        fragBinding.srecyclerView.adapter = StockAdapter(stockList,this)
     }
 
 
@@ -107,6 +115,9 @@ class StockListFragment : Fragment(), StockListener {
 
     }
 
+    /**
+     * This function sets the swipe refresh listener to the swipe refresh layout
+     */
     private fun setSwipeRefresh() {
         fragBinding.sswiperefresh.setOnRefreshListener {
             fragBinding.sswiperefresh.isRefreshing = true
@@ -119,6 +130,9 @@ class StockListFragment : Fragment(), StockListener {
     }
 
 
+    /**
+     * It checks if the swipe refresh is refreshing and if it is, it sets it to false.
+     */
     private fun checkSwipeRefresh() {
         if (fragBinding.sswiperefresh.isRefreshing)
             fragBinding.sswiperefresh.isRefreshing = false
@@ -143,6 +157,7 @@ class StockListFragment : Fragment(), StockListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_building, menu)
+        /* This is the code that allows the user to search for a stock item. */
         val item = menu.findItem(R.id.app_bar_search)
         val searchView = item.actionView as SearchView
         searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
@@ -179,6 +194,11 @@ class StockListFragment : Fragment(), StockListener {
 
 
 
+    /**
+     * It navigates to the StockDetailFragment when the user swipes to edit a stock.
+     *
+     * @param stock StockModel - The stock that was swiped
+     */
     override fun onEditSwipe(stock: StockModel) {
         val action = StockListFragmentDirections.actionStockListFragmentToStockDetailFragment(stock, stock.id)
         findNavController().navigate(action)
@@ -195,6 +215,12 @@ class StockListFragment : Fragment(), StockListener {
     }
 
 
+    /**
+     * When the user clicks the add stock button, the stock level is increased by one, and the stock is
+     * updated in the database
+     *
+     * @param stock StockModel - this is the stock item that was clicked on
+     */
     override fun onAddStockClick(stock: StockModel) {
         val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
         if (stock.inStock < 1000 && stock.max > stock.inStock) {
@@ -207,6 +233,13 @@ class StockListFragment : Fragment(), StockListener {
         }
     }
 
+
+    /**
+     * When the user clicks the minus button, the stock level is decreased by one, and the stock is
+     * updated in the database
+     *
+     * @param stock StockModel - This is the stock item that was clicked on.
+     */
     override fun onMinusStockClick(stock: StockModel) {
         val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
         if (stock.inStock > 0) {
@@ -217,8 +250,6 @@ class StockListFragment : Fragment(), StockListener {
         else {
             view?.snack("Stock Level cannot be Negative")
         }
-
-
     }
 
 }

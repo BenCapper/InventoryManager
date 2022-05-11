@@ -1,4 +1,4 @@
-package org.wit.inventorymanager.activities
+package org.wit.inventorymanager.ui.home
 
 
 import android.annotation.SuppressLint
@@ -14,7 +14,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -76,6 +75,14 @@ class Home : AppCompatActivity() {
     }
 
     @SuppressLint("MissingPermission")
+    /**
+     * If the user grants the permission, update the current location, otherwise use a default location
+     *
+     * @param requestCode The request code passed in requestPermissions(android.app.Activity, String[],
+     * int)
+     * @param permissions The permissions that were requested.
+     * @param grantResults An array of the results of each permission
+     */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (isPermissionGranted(requestCode, grantResults))
@@ -92,6 +99,8 @@ class Home : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
+        /* This is the code that is used to observe the logged in user and update the nav header with
+        the user's details. */
         loggedInViewModel = ViewModelProvider(this)[LoggedInViewModel::class.java]
         loggedInViewModel.liveFirebaseUser.observe(this) { firebaseUser ->
             if (firebaseUser != null) {
@@ -108,17 +117,26 @@ class Home : AppCompatActivity() {
         registerImagePickerCallback()
     }
 
+    /**
+     * We get the header view from the navigation view, bind it to a NavHeaderBinding object, and set
+     * an onClickListener on the imageView
+     */
     private fun initNavHeader() {
         Timber.i("Init Nav Header")
         headerView = homeBinding.navView.getHeaderView(0)
         navHeaderBinding = NavHeaderBinding.bind(headerView)
-
         navHeaderBinding.imageView.setOnClickListener {
             showImagePicker(intentLauncher)
         }
     }
 
+    /**
+     * If the user has an image stored in Firebase, load it. If not, load the default image
+     *
+     * @param currentUser FirebaseUser - the current user
+     */
     private fun updateNavHeader(currentUser: FirebaseUser) {
+        FirebaseImageManager.checkStorageForExistingProfilePic(currentUser.uid)
         FirebaseImageManager.imageUri.observe(this) { result ->
             if (result == Uri.EMPTY) {
                 Timber.i("NO Existing imageUri")
@@ -158,6 +176,11 @@ class Home : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    /**
+     * It logs the user out and redirects them to the login page.
+     *
+     * @param item MenuItem - The menu item that was clicked.
+     */
     fun signOut(item: MenuItem) {
         loggedInViewModel.logOut()
         val intent = Intent(this, Login::class.java)
@@ -165,11 +188,19 @@ class Home : AppCompatActivity() {
         startActivity(intent)
     }
 
+    /**
+     * It navigates to the Favourite Maps Fragment
+     *
+     * @param item MenuItem - this is the item that was clicked on.
+     */
     fun faveLocation(item: MenuItem){
         findNavController(R.id.nav_host_fragment).navigate(R.id.faveMapsFragment)
         findViewById<DrawerLayout>(R.id.drawer_layout).closeDrawers()
     }
 
+    /**
+     * It registers a callback for the image picker.
+     */
     private fun registerImagePickerCallback() {
         intentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

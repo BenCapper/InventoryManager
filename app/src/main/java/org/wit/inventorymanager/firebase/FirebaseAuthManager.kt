@@ -26,6 +26,16 @@ class FirebaseAuthManager(application: Application) {
         }
     }
 
+    /**
+     * > The function takes in two parameters, email and password, and then uses Firebase's
+     * signInWithEmailAndPassword function to sign in the user. If the sign in is successful, the
+     * current user is posted to the liveFirebaseUser MutableLiveData object, and the errorStatus
+     * MutableLiveData object is set to false. If the sign in is unsuccessful, the errorStatus
+     * MutableLiveData object is set to true
+     *
+     * @param email The email address of the user.
+     * @param password String? - The password of the user
+     */
     fun login(email: String?, password: String?) {
         firebaseAuth!!.signInWithEmailAndPassword(email!!, password!!)
             .addOnCompleteListener(application!!.mainExecutor) { task ->
@@ -39,6 +49,14 @@ class FirebaseAuthManager(application: Application) {
             }
     }
 
+    /**
+     * We're creating a new user with the email and password provided by the user, and if the task is
+     * successful, we're posting the current user to the liveFirebaseUser MutableLiveData object, and
+     * if the task is unsuccessful, we're posting an error to the errorStatus MutableLiveData object
+     *
+     * @param email String? - The email address of the user
+     * @param password String? - The password for the new account.
+     */
     fun register(email: String?, password: String?) {
         firebaseAuth!!.createUserWithEmailAndPassword(email!!, password!!)
             .addOnCompleteListener(application!!.mainExecutor) { task ->
@@ -52,6 +70,10 @@ class FirebaseAuthManager(application: Application) {
             }
     }
 
+    /**
+     * The function logs out the user and sets the loggedOut and errorStatus LiveData objects to true
+     * and false respectively
+     */
     fun logOut() {
         firebaseAuth!!.signOut()
         loggedOut.postValue(true)
