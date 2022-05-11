@@ -5,41 +5,33 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.wit.inventorymanager.R
 import org.wit.inventorymanager.adapters.StockAdapter
 import org.wit.inventorymanager.adapters.StockListener
-import org.wit.inventorymanager.R
 import org.wit.inventorymanager.databinding.FragmentStockListBinding
 import org.wit.inventorymanager.helpers.*
-import org.wit.inventorymanager.models.BuildingModel
 import org.wit.inventorymanager.models.StockModel
 import org.wit.inventorymanager.ui.auth.LoggedInViewModel
-import org.wit.inventorymanager.ui.building.BuildingViewModel
 import org.wit.inventorymanager.ui.stockDetail.StockDetailViewModel
 import splitties.snackbar.snack
-import timber.log.Timber
 
 
 class StockListFragment : Fragment(), StockListener {
 
     private var _fragBinding: FragmentStockListBinding? = null
     private val fragBinding get() = _fragBinding!!
-    private lateinit var buildings: MutableList<BuildingModel>
     lateinit var loader : AlertDialog
-    private lateinit var foundList: ArrayList<StockModel>
     private val args by navArgs<StockListFragmentArgs>()
     private val stockListViewModel: StockListViewModel by activityViewModels()
     private val stockDetailViewModel: StockDetailViewModel by activityViewModels()
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
-    private val buildingViewModel : BuildingViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,37 +51,19 @@ class StockListFragment : Fragment(), StockListener {
         activity?.title = getString(R.string.action_location)
         fragBinding.srecyclerView.layoutManager = LinearLayoutManager(activity)
         showLoader(loader, "Downloading Stock")
-        stockListViewModel.observableStockList.observe(viewLifecycleOwner, Observer { stock ->
+        stockListViewModel.observableStockList.observe(viewLifecycleOwner) { stock ->
             stock?.let {
                 render(stock as ArrayList<StockModel>)
                 hideLoader(loader)
                 checkSwipeRefresh()
             }
-        })
+        }
         setSwipeRefresh()
 
         fragBinding.sfab.setOnClickListener {
             val action = StockListFragmentDirections.actionStockListFragmentToStockFragment(args.buildingid)
             findNavController().navigate(action)
         }
-        fragBinding.stockSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
-                if (newText != null) {
-                    Timber.i("UUUUUUUUUUUUUId = ${uid} = ${args.buildingid} = ${newText}")
-                    stockListViewModel.search(uid,args.buildingid, newText)
-                    checkSwipeRefresh()
-                }
-                else{
-                    stockListViewModel.loadAll(uid, args.buildingid)
-                }
-                return true
-            }
-        })
 
 
 
@@ -100,7 +74,7 @@ class StockListFragment : Fragment(), StockListener {
                 adapter.removeAt(viewHolder.absoluteAdapterPosition)
                 stockListViewModel.delete(
                     stockListViewModel.liveFirebaseUser.value?.uid!!,
-                    (viewHolder.itemView.tag as StockModel).id!!
+                    (viewHolder.itemView.tag as StockModel).id
                 )
                 hideLoader(loader)
             }
@@ -143,17 +117,7 @@ class StockListFragment : Fragment(), StockListener {
                 stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
         }
     }
-    private fun setSecondSwipeRefresh(term:String) {
-        fragBinding.sswiperefresh.setOnRefreshListener {
-            fragBinding.sswiperefresh.isRefreshing = true
-            showLoader(loader, "Downloading stock")
-            if (stockListViewModel.readOnly.value!!)
-                stockListViewModel.search(
-                    loggedInViewModel.liveFirebaseUser.value?.uid!!,
-                    args.buildingid, term
-                )
-        }
-    }
+
 
     private fun checkSwipeRefresh() {
         if (fragBinding.sswiperefresh.isRefreshing)
@@ -163,12 +127,15 @@ class StockListFragment : Fragment(), StockListener {
     override fun onResume() {
         super.onResume()
         showLoader(loader, "Downloading Stock")
-        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner) { firebaseUser ->
             if (firebaseUser != null) {
                 stockListViewModel.liveFirebaseUser.value = firebaseUser
-                stockListViewModel.loadAll(loggedInViewModel.liveFirebaseUser.value?.uid!!, args.buildingid)
+                stockListViewModel.loadAll(
+                    loggedInViewModel.liveFirebaseUser.value?.uid!!,
+                    args.buildingid
+                )
             }
-        })
+        }
 
     }
 
@@ -176,6 +143,25 @@ class StockListFragment : Fragment(), StockListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_building, menu)
+        val item = menu.findItem(R.id.app_bar_search)
+        val searchView = item.actionView as SearchView
+        searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
+                if (newText != null) {
+                    stockListViewModel.search(uid,args.buildingid, newText)
+                    checkSwipeRefresh()
+                }
+                else{
+                    stockListViewModel.loadAll(uid, args.buildingid)
+                }
+                return true
+            }
+        })
         super.onCreateOptionsMenu(menu, inflater)
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -211,14 +197,13 @@ class StockListFragment : Fragment(), StockListener {
 
     override fun onAddStockClick(stock: StockModel) {
         val uid = loggedInViewModel.liveFirebaseUser.value?.uid!!
-        if (stock.inStock < 1000) {
+        if (stock.inStock < 1000 && stock.max > stock.inStock) {
             stock.inStock += 1
             stockDetailViewModel.updateStock(uid, stock.id, stock)
             stockListViewModel.loadAll(uid, args.buildingid)
-            Timber.i("INSTOCK: ${stock.inStock}")
         }
         else {
-            view?.snack("Max Stock Level of 1000 Units")
+            view?.snack("Max stock level reached")
         }
     }
 
@@ -228,7 +213,6 @@ class StockListFragment : Fragment(), StockListener {
             stock.inStock -= 1
             stockDetailViewModel.updateStock(uid, stock.id, stock)
             stockListViewModel.loadAll(uid, args.buildingid)
-            Timber.i("INSTOCK: ${stock.inStock}")
         }
         else {
             view?.snack("Stock Level cannot be Negative")

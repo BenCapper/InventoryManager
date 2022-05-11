@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
+import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -66,21 +67,6 @@ class BuildingListFragment : Fragment(), BuildingListener {
             val action = BuildingListFragmentDirections.actionBuildingListFragmentToBuildingFragment()
             findNavController().navigate(action)
         }
-        fragBinding.buildingSearch.setOnQueryTextListener(object :  SearchView.OnQueryTextListener  {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-                    buildingListViewModel.search(loggedInViewModel.liveFirebaseUser.value?.uid!!, newText)
-                }
-                else {
-
-                }
-                return true
-            }
-        })
 
 
 
@@ -159,6 +145,26 @@ class BuildingListFragment : Fragment(), BuildingListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_building, menu)
+
+        val item = menu.findItem(R.id.app_bar_search)
+        val searchView = item.actionView as SearchView
+        searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    buildingListViewModel.search(
+                        loggedInViewModel.liveFirebaseUser.value?.uid!!,
+                        newText
+                    )
+                } else {
+
+                }
+                return true
+            }
+        })
         super.onCreateOptionsMenu(menu, inflater)
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

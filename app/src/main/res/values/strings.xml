@@ -133,6 +133,7 @@
     <string name="stock_value">Stock Value: </string>
     <string name="stock_lvl">Max Stock Level must be more than 0 </string>
     <string name="stock_lvlmax">Max Stock must be less than the current level </string>
+    <string name="search">Search</string>
 
     <string name="nav_loc">Locations</string>
     <string name="all_loc">All Locations</string>

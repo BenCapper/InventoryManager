@@ -17,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#E1E3E1E1"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:paddingStart="20dp">
 
             <TextView
                 android:id="@+id/price"
@@ -26,9 +27,9 @@
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="350dp"
+                android:layout_marginEnd="340dp"
                 android:text="@string/eu"
                 android:textColor="@color/orange"
                 android:textSize="13sp"
@@ -41,9 +42,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="140dp"
+                android:layout_marginStart="150dp"
                 android:layout_marginTop="2dp"
-                android:layout_marginEnd="160dp"
+                android:layout_marginEnd="150dp"
                 android:text="@{stock.branch}"
                 android:textColor="@color/black"
                 android:textSize="13sp"
@@ -73,7 +74,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="200dp"
                 android:layout_marginTop="22dp"
-                android:layout_marginEnd="145dp"
+                android:layout_marginEnd="125dp"
                 android:text="@{stock.weight.toString()}"
                 android:textColor="@color/orange"
                 android:textSize="13sp"
@@ -114,9 +115,9 @@
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="40dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="270dp"
+                android:layout_marginEnd="260dp"
                 android:text="@{Double.toString(stock.price)}"
                 android:textColor="@color/dark"
                 android:textSize="12sp" />
@@ -128,10 +129,10 @@
                 android:layout_below="@+id/snamecard"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="3dp"
-                android:inputType="numberDecimal"
                 android:layout_marginEnd="270dp"
+                android:inputType="numberDecimal"
                 android:textColor="@color/dark"
                 android:textSize="12sp"
                 android:textStyle="normal|italic" />
@@ -143,9 +144,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="0dp"
-                android:layout_marginEnd="260dp"
+                android:layout_marginEnd="250dp"
                 android:text="@{stock.name}"
                 android:textColor="@color/black"
                 android:textSize="15sp"
@@ -158,9 +159,9 @@
                 android:layout_alignTop="@+id/btndown"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="2dp"
-                android:layout_marginEnd="168dp"
+                android:layout_marginEnd="148dp"
                 android:background="@color/orange" />
 
             <Button
@@ -170,9 +171,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="266dp"
+                android:layout_marginStart="276dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="87dp"
+                android:layout_marginEnd="77dp"
                 android:background="@drawable/ic_down" />
 
             <Button
